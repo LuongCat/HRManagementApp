@@ -13,4 +13,21 @@
       <ProjectReference Include="..\HRManagementApp.Models\HRManagementApp.Models.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Views\Employees\EmployeesView.xml.cs">
+        <DependentUpon>EmployeesView.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\DashboardView.cs">
+        <DependentUpon>DashboardView.xaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\Payroll\PayrollView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
 </Project>

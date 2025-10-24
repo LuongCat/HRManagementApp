@@ -13,3 +13,6 @@ This project aims to provide a simple yet effective solution for managing employ
 Developed by **SCC Team**.
 ## 📜 License
 You are free to use, modify, and distribute this project with proper attribution.
+
+## libary
+dotnet add package MySql.Data

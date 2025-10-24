@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using HRManagementApp.BLL;
 
-namespace HRManagementApp.Views
+namespace HRManagementApp.UI.Views
 {
     public partial class PayrollView : UserControl
     {

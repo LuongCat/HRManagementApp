@@ -1,7 +1,7 @@
 using HRManagementApp.models;
 
-namespace HRManagementApp.Services;
-using HRManagementApp.Data;
+namespace HRManagementApp.BLL;
+using HRManagementApp.DAL;
 public class PhongBanService
 {
     private readonly PhongBanReponsitory _phongBanReponsitory;

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
-namespace HRManagementApp.Views
+namespace HRManagementApp.UI.Views
 {
     public partial class InfoEditWindow : Window
     {

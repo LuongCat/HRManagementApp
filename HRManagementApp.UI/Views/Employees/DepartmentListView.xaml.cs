@@ -3,10 +3,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using HRManagementApp.Services;
+using HRManagementApp.BLL;
 using HRManagementApp.models;
 
-namespace HRManagementApp.Views
+namespace HRManagementApp.UI.Views
 {
     /// <summary>
     /// View hiển thị danh sách phòng ban dạng card

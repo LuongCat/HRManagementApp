@@ -11,3 +11,5 @@ This project aims to provide a simple yet effective solution for managing employ
 - Scalable and maintainable code structure.
 ## 👨‍💻 Team
 Developed by **SCC Team**.
+## 📜 License
+You are free to use, modify, and distribute this project with proper attribution.

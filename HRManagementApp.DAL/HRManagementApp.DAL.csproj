@@ -11,4 +11,8 @@
       <ProjectReference Include="..\HRManagementApp.Models\HRManagementApp.Models.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="MySql.Data" Version="9.5.0" />
+    </ItemGroup>
+
 </Project>

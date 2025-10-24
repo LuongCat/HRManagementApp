@@ -1,12 +1,182 @@
-﻿<Window x:Class="HRManagementApp.UI.MainWindow"
+<Window x:Class="HRManagementApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:HRManagementApp.UI"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="HR Management System"
+        Height="800"
+        Width="1200"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
 
+    <Window.Resources>
+        <!-- Color Definitions -->
+        <SolidColorBrush x:Key="PrimaryColor" Color="#2E86AB"/>
+        <SolidColorBrush x:Key="SecondaryColor" Color="#A23B72"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#F18F01"/>
+        <SolidColorBrush x:Key="BackgroundColor" Color="#F5F7FA"/>
+        <SolidColorBrush x:Key="SidebarColor" Color="#2C3E50"/>
+        <SolidColorBrush x:Key="CardColor" Color="White"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#2C3E50"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#7F8C8D"/>
+
+        <!-- Button Styles -->
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,15"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#34495E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1ABC9C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2574A9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Card Style -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardColor}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Gray" Direction="270" ShadowDepth="2" BlurRadius="8" Opacity="0.1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource BackgroundColor}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Background="{StaticResource SidebarColor}">
+            <StackPanel>
+                <!-- Logo/Header -->
+                <Border Background="{StaticResource PrimaryColor}" Padding="20,25">
+                    <StackPanel>
+                        <TextBlock Text="HR Management" Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="System" Foreground="White" FontSize="14" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- User Info -->
+                <Border Padding="20,15" Background="#34495E">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="40" Height="40" Fill="{StaticResource AccentColor}"/>
+                        <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Admin User" Foreground="White" FontWeight="SemiBold"/>
+                            <TextBlock Text="HR Manager" Foreground="#BDC3C7" FontSize="11"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Navigation Menu -->
+                <StackPanel Margin="0,20,0,0">
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="DashboardBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📊" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Dashboard"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="EmployeesBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="👥" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Employees"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="AttendanceBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⏰" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Attendance"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="PayrollBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="💰" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Payroll"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="LeaveBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📅" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Leave Management"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="ReportsBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📈" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Reports"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="SettingsBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚙️" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Settings"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Logout Button -->
+                <Button Style="{StaticResource SidebarButtonStyle}" Name="LogoutBtn" VerticalAlignment="Bottom" Margin="0,50,0,20" Background="{StaticResource SecondaryColor}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🚪" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock Text="Logout"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content Area -->
+        <ContentControl x:Name="ContentArea" Grid.Column="1"/>
     </Grid>
 </Window>

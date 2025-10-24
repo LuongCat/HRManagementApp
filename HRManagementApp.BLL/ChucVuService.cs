@@ -1,5 +1,5 @@
-namespace HRManagementApp.Services;
-using HRManagementApp.Data;
+namespace HRManagementApp.BLL;
+using HRManagementApp.DAL;
 using HRManagementApp.models; 
 public class ChucVuService
 {

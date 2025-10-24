@@ -1,7 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
-
 namespace HRManagementApp.UI;
 
 /// <summary>
@@ -9,4 +8,6 @@ namespace HRManagementApp.UI;
 /// </summary>
 public partial class App : Application
 {
+    
 }
+

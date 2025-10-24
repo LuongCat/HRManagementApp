@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace HRManagementApp.Views
+namespace HRManagementApp.UI.Views
 {
     /// <summary>
     /// View chính quản lý Nhân viên với tabs (Danh sách, Phòng ban, Chức vụ)

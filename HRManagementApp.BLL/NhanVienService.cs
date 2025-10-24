@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HRManagementApp.Data;
+using HRManagementApp.DAL;
 using HRManagementApp.models;
 
-namespace HRManagementApp.Services
+namespace HRManagementApp.BLL
 {
     public class NhanVienService
     {

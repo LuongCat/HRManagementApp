@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 
-namespace HRManagementApp.Views
+namespace HRManagementApp.UI.Views
 {
     /// <summary>
     /// Window hiển thị thông tin dạng key-value chung cho toàn app

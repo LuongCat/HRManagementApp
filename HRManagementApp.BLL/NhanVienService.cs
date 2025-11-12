@@ -33,7 +33,6 @@ namespace HRManagementApp.BLL
         {
             return _repository.GetAllFull();
         }
-        
 
         /// <summary>
         /// Cập nhật thông tin nhân viên

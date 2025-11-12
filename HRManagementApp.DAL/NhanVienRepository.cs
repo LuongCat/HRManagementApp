@@ -83,6 +83,24 @@ namespace HRManagementApp.DAL
             return list;
         }
 
+        public int CountEmployees()
+        {
+            string query = "SELECT COUNT(*) as TotalEmployee FROM NhanVien";
+            object result = Database.ExecuteScalar(query);
+            
+            return  Convert.ToInt32(result);
+        }
+
+        public int CountJoinedThisMonth()
+        {
+            string query = "SELECT COUNT(*) as TotalEmployee FROM NhanVien " +
+                           "WHERE NgayVaoLam >= DATE_FORMAT(CURDATE(), '%Y-%m-01') " +
+                           "AND NgayVaoLam < DATE_ADD(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH)";
+            
+            object result = Database.ExecuteScalar(query);
+            return Convert.ToInt32(result);
+        }
+
         public NhanVien GetById(int id)
         {
             String query = @" Select * From  NhanVien Where MaNV = @MaNV";

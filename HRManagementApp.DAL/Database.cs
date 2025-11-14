@@ -62,4 +62,20 @@ public static class Database
             }
         }
     }
+    
+    public static int ExecuteNonQueryTransaction(string query, Dictionary<string, object>? parameters, MySqlConnection conn, MySqlTransaction transaction)
+    {
+        using (var cmd = new MySqlCommand(query, conn, transaction))
+        {
+            if (parameters != null)
+            {
+                foreach (var param in parameters)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value);
+                }
+            }
+            return cmd.ExecuteNonQuery();
+        }
+    }
+
 }

@@ -15,19 +15,20 @@ namespace HRManagementApp.UI.Views
         private readonly NhanVienService _service;
         private ObservableCollection<NhanVien> _allEmployees;
         private ObservableCollection<NhanVien> _filteredEmployees;
+        
 
         public EmployeesView()
         {
             InitializeComponent();
             _service = new NhanVienService();
             LoadNhanVien();
-        }   
+        }
 
         private void LoadNhanVien()
         {
             // Lấy danh sách nhân viên từ Service
-            var nhanViens = _service.GetNhanVienDayDu();
-            
+            var nhanViens = _service.GetListNhanVien();
+
             // Nếu danh sách rỗng hoặc null, tránh crash
             if (nhanViens == null || nhanViens.Count == 0)
             {
@@ -62,8 +63,9 @@ namespace HRManagementApp.UI.Views
                 var filtered = _allEmployees.Where(e =>
                     (!string.IsNullOrEmpty(e.HoTen) && e.HoTen.ToLower().Contains(searchText)) ||
                     (e.MaNV.ToString().Contains(searchText)) ||
-                    (e.PhongBan != null && e.PhongBan.TenPB.ToLower().Contains(searchText)) ||
-                    (e.ChucVu != null && e.ChucVu.TenCV.ToLower().Contains(searchText)) ||
+                    
+                    // tạm thời chưa lọc theo phòng ban và chức vụ 
+                    
                     (!string.IsNullOrEmpty(e.DienThoai) && e.DienThoai.Contains(searchText))
                 ).ToList();
 
@@ -75,64 +77,99 @@ namespace HRManagementApp.UI.Views
                 }
             }
         }
-        
+
 
         // Thêm nhân viên mới
         private void BtnThemNV_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Mở form thêm nhân viên mới", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-            
-            // TODO: Mở Window/Dialog thêm nhân viên
-            // Sau khi thêm thành công, gọi LoadNhanVien() để refresh
+            // Mở form thêm nhân viên
+            var window = new AddEmployeeWindow();
+            window.ShowDialog();
         }
 
+        
+        
+        
         // Xem chi tiết nhân viên
         private void BtnView_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             string maNV = button?.Tag?.ToString();
-            
+
             if (!string.IsNullOrEmpty(maNV) && int.TryParse(maNV, out int id))
             {
+                // Lấy thông tin nhân viên
                 var employee = _allEmployees.FirstOrDefault(emp => emp.MaNV == id);
+
+                // Lấy danh sách phòng ban của nhân viên
+                var listPhongBan = "";
+                var phongBanList = _service.GetListPhongBanOfNhanVien(id);
+
+                if (phongBanList != null && phongBanList.Count > 0)
+                {
+                    foreach (var pb in phongBanList)
+                    {
+                        listPhongBan += pb.TenPB + ", ";
+                    }
+
+                    // Xóa dấu phẩy cuối nếu có
+                    listPhongBan = listPhongBan.TrimEnd(',', ' ');
+                }
+                else
+                {
+                    listPhongBan = "Không thuộc phòng ban nào ";
+                }
+                
+                // lấy danh sách chức vụ của nhân viên
+                var listChucVu = "";
+                var ChucVuList = _service.GetListChucVuOfNhanVien(id);
+
+                if (ChucVuList != null && ChucVuList.Count > 0)
+                {
+                    foreach (var chv in ChucVuList)
+                    {
+                        listChucVu += chv.TenCV + ", ";
+                    }
+                    listChucVu = listChucVu.TrimEnd(',', ' ');
+                }
+                else
+                {
+                    listChucVu = "khong thuoc chuc vu nao";
+                }
+                
+
                 if (employee != null)
                 {
-                    // Tạo danh sách thông tin
+                    // Tạo danh sách thông tin hiển thị
                     var infoItems = new List<InfoItem>
                     {
                         new InfoItem("Mã nhân viên:", employee.MaNV.ToString(), "#1F2937", true),
                         new InfoItem("Họ và tên:", employee.HoTen, "#1F2937", true),
                         new InfoItem("Ngày sinh:", employee.NgaySinh.ToString()),
-                        
                         new InfoItem("Điện thoại:", employee.DienThoai),
-                        
-                        new InfoItem("Phòng ban:", employee.PhongBan?.TenPB ?? "Chưa có", "#2563EB", true),
-                        new InfoItem("Chức vụ:", employee.ChucVu?.TenCV ?? "Chưa có", "#2563EB", true),
+                        new InfoItem("Phòng ban:", listPhongBan, "#2563EB", true),
+                        new InfoItem("Chức vụ:", listChucVu, "#2563EB", true),
                         new InfoItem("Ngày vào làm:", employee.NgayVaoLam?.ToString("dd/MM/yyyy") ?? "Chưa có"),
                         new InfoItem("Trạng thái:", employee.TrangThai, "#10B981", true),
                         new InfoItem("Lương cơ bản:", $"{employee.ChucVu?.LuongCB:N0} VNĐ", "#10B981", true),
                         new InfoItem("Phụ cấp:", $"{employee.ChucVu?.PhuCap:N0} VNĐ", "#10B981", true)
                     };
 
-                    // Mở window hiển thị
+                    // Mở cửa sổ hiển thị
                     var window = new InfoDisplayWindow();
-                    window.SetInfo(
-                        "THÔNG TIN NHÂN VIÊN",
-                        employee.HoTen,
-                        infoItems
-                    );
+                    window.SetInfo("THÔNG TIN NHÂN VIÊN", employee.HoTen, infoItems);
                     window.ShowDialog();
                 }
             }
         }
 
-        // Chỉnh sửa nhân viên
+
         // Chỉnh sửa nhân viên
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             string maNV = button?.Tag?.ToString();
-            
+
             if (!string.IsNullOrEmpty(maNV) && int.TryParse(maNV, out int id))
             {
                 var employee = _allEmployees.FirstOrDefault(emp => emp.MaNV == id);
@@ -145,65 +182,42 @@ namespace HRManagementApp.UI.Views
                 // Tạo danh sách các trường có thể chỉnh sửa
                 var editItems = new List<InfoEditItem>
                 {
-                    new InfoEditItem 
-                    { 
-                        Label = "Họ và tên:", 
-                        Value = employee.HoTen, 
-                        PropertyName = "HoTen" 
+                    new InfoEditItem
+                    {
+                        Label = "Họ và tên:",
+                        Value = employee.HoTen,
+                        PropertyName = "HoTen"
                     },
-                    new InfoEditItem 
-                    { 
-                        Label = "Ngày sinh:", 
-                        Value = employee.NgaySinh?.ToString("dd/MM/yyyy") ?? "", 
+                    new InfoEditItem
+                    {
+                        Label = "Ngày sinh:",
+                        Value = employee.NgaySinh?.ToString("dd/MM/yyyy") ?? "",
                         PropertyName = "NgaySinh" 
                     },
-                    new InfoEditItem 
-                    { 
-                        Label = "Số CCCD:", 
-                        Value = employee.SoCCCD ?? "", 
-                        PropertyName = "SoCCCD" 
+                    new InfoEditItem
+                    {
+                        Label = "Số CCCD:",
+                        Value = employee.SoCCCD ?? "",
+                        PropertyName = "SoCCCD"
                     },
-                    new InfoEditItem 
-                    { 
-                        Label = "Điện thoại:", 
-                        Value = employee.DienThoai ?? "", 
-                        PropertyName = "DienThoai" 
+                    new InfoEditItem
+                    {
+                        Label = "Điện thoại:",
+                        Value = employee.DienThoai ?? "",
+                        PropertyName = "DienThoai"
                     },
-                    new InfoEditItem 
-                    { 
-                        Label = "Mã phòng ban:", 
-                        Value = employee.MaPB?.ToString() ?? "", 
-                        PropertyName = "MaPB" 
+                    
+                    new InfoEditItem
+                    {
+                        Label = "Ngày vào làm:",
+                        Value = employee.NgayVaoLam?.ToString("dd/MM/yyyy") ?? "",
+                        PropertyName = "NgayVaoLam"
                     },
-                    new InfoEditItem 
-                    { 
-                        Label = "Tên phòng ban:", 
-                        Value = employee.PhongBan?.TenPB ?? "Chưa có", 
-                        PropertyName = "TenPB" 
-                    },
-                    new InfoEditItem 
-                    { 
-                        Label = "Mã chức vụ:", 
-                        Value = employee.MaCV?.ToString() ?? "", 
-                        PropertyName = "MaCV" 
-                    },
-                    new InfoEditItem 
-                    { 
-                        Label = "Tên chức vụ:", 
-                        Value = employee.ChucVu?.TenCV ?? "Chưa có", 
-                        PropertyName = "TenCV" 
-                    },
-                    new InfoEditItem 
-                    { 
-                        Label = "Ngày vào làm:", 
-                        Value = employee.NgayVaoLam?.ToString("dd/MM/yyyy") ?? "", 
-                        PropertyName = "NgayVaoLam" 
-                    },
-                    new InfoEditItem 
-                    { 
-                        Label = "Trạng thái:", 
-                        Value = employee.TrangThai ?? "Đang làm việc", 
-                        PropertyName = "TrangThai" 
+                    new InfoEditItem
+                    {
+                        Label = "Trạng thái:",
+                        Value = employee.TrangThai ?? "Đang làm việc",
+                        PropertyName = "TrangThai"
                     }
                 };
 
@@ -231,12 +245,13 @@ namespace HRManagementApp.UI.Views
                                     break;
 
                                 case "NgaySinh":
-                                    if (DateTime.TryParseExact(item.Value, "dd/MM/yyyy", 
-                                        System.Globalization.CultureInfo.InvariantCulture, 
-                                        System.Globalization.DateTimeStyles.None, out DateTime ngaySinh))
+                                    if (DateTime.TryParseExact(item.Value, "dd/MM/yyyy",
+                                            System.Globalization.CultureInfo.InvariantCulture,
+                                            System.Globalization.DateTimeStyles.None, out DateTime ngaySinh))
                                     {
                                         employee.NgaySinh = ngaySinh;
                                     }
+
                                     break;
 
                                 case "SoCCCD":
@@ -246,28 +261,16 @@ namespace HRManagementApp.UI.Views
                                 case "DienThoai":
                                     employee.DienThoai = item.Value;
                                     break;
-
-                                case "MaPB":
-                                    if (int.TryParse(item.Value, out int maPB))
-                                    {
-                                        employee.MaPB = maPB;
-                                    }
-                                    break;
-
-                                case "MaCV":
-                                    if (int.TryParse(item.Value, out int maCV))
-                                    {
-                                        employee.MaCV = maCV;
-                                    }
-                                    break;
+                                
 
                                 case "NgayVaoLam":
-                                    if (DateTime.TryParseExact(item.Value, "dd/MM/yyyy", 
-                                        System.Globalization.CultureInfo.InvariantCulture, 
-                                        System.Globalization.DateTimeStyles.None, out DateTime ngayVaoLam))
+                                    if (DateTime.TryParseExact(item.Value, "dd/MM/yyyy",
+                                            System.Globalization.CultureInfo.InvariantCulture,
+                                            System.Globalization.DateTimeStyles.None, out DateTime ngayVaoLam))
                                     {
                                         employee.NgayVaoLam = ngayVaoLam;
                                     }
+
                                     break;
 
                                 case "TrangThai":
@@ -283,7 +286,7 @@ namespace HRManagementApp.UI.Views
                         {
                             // Refresh lại danh sách để hiển thị thông tin mới
                             LoadNhanVien();
-                            
+
                             MessageBox.Show(
                                 "Cập nhật thông tin nhân viên thành công!",
                                 "Thành công",
@@ -311,54 +314,56 @@ namespace HRManagementApp.UI.Views
             }
         }
 
+        
+        
+        
         // Xóa nhân viên
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
-        {/*
+        {
             var button = sender as Button;
-            string maNV = button?.Tag?.ToString();
-            
-            if (!string.IsNullOrEmpty(maNV))
-            {
-                var employee = _allEmployees.FirstOrDefault(emp => emp.MaNV == maNV);
-                if (employee == null)
-                {
-                    MessageBox.Show("Không tìm thấy nhân viên!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+            if (button == null) return;
 
-                var result = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn xóa nhân viên?\n\n" +
-                    $"Mã NV: {employee.MaNV}\n" +
-                    $"Họ tên: {employee.HoTen}\n\n" +
-                    $"Hành động này không thể hoàn tác!",
-                    "Xác nhận xóa",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
-                
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        // Gọi service để xóa
-                        bool success = _service.DeleteNhanVien(maNV);
-                        
-                        if (success)
-                        {
-                            _allEmployees.Remove(employee);
-                            _filteredEmployees.Remove(employee);
-                            MessageBox.Show("Xóa nhân viên thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Xóa nhân viên thất bại!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Lỗi khi xóa nhân viên: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-            }*/
+            // Lấy MaNV từ Tag
+            if (!int.TryParse(button.Tag?.ToString(), out int maNV))
+            {
+                MessageBox.Show("Mã nhân viên không hợp lệ!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // Tạo đối tượng NhanVien (nếu cần, tùy service)
+            var nhanVien = new NhanVien { MaNV = maNV };
+
+            // Xác nhận xóa
+            var result = MessageBox.Show($"Bạn có chắc muốn xóa nhân viên {maNV} không?", 
+                "Xác nhận xóa", 
+                MessageBoxButton.YesNo, 
+                MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.Yes) return;
+
+            // Gọi service/repository xóa
+            bool deleted = false;
+            try
+            {
+                deleted = _service.DeleteNhanVien(nhanVien); 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi xóa nhân viên: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // Thông báo kết quả
+            if (deleted)
+            {
+                MessageBox.Show("Xóa nhân viên thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                LoadNhanVien(); 
+            }
+            else
+            {
+                MessageBox.Show("Không tìm thấy nhân viên hoặc xóa thất bại.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
+
     }
 }

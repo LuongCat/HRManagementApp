@@ -7,8 +7,8 @@ public class NhanVien
     public DateTime? NgaySinh { get; set; }
     public string? SoCCCD { get; set; }
     public string? DienThoai { get; set; }
-    public int? MaPB { get; set; }
-    public int? MaCV { get; set; }
+    
+    public bool GioiTinh { get; set; }
     public DateTime? NgayVaoLam { get; set; }
     
     public PhongBan PhongBan { get; set; }

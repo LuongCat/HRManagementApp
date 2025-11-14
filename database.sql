@@ -171,8 +171,8 @@ CREATE TABLE `taikhoan_vaitro` (
 CREATE TABLE `nhanvien_chucvu` (
   `MaNV` int NOT NULL,
   `MaCV` int NOT NULL,
-  `HeSoPhuCapKiemNhiem` decimal(6,4) DEFAULT NULL,
-  `TienPhuCapKiemNhiem` decimal(18,2) DEFAULT NULL,
+  `HeSoPhuCapKiemNhiem` decimal(6,4) DEFAULT 0,
+  `TienPhuCapKiemNhiem` decimal(18,2) DEFAULT 0,
   `LoaiChucVu` ENUM('Chính thức', 'Kiêm nhiệm') DEFAULT 'Chính thức',
   `GhiChu` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`MaNV`,`MaCV`),
@@ -253,8 +253,8 @@ INSERT INTO `luong` VALUES
 (4,4,9,2024,25,10500000.00,'Đã trả');
 
 INSERT INTO `nhanvien_chucvu` VALUES 
-(1,2,NULL,NULL,'Chính thức',''),
-(1,3,NULL,NULL,'Chính thức',''),
+(1,2,0,0,'Chính thức',''),
+(1,3,0,0,'Chính thức',''),
 (2,3,0.1500,1500000.00,'Kiêm nhiệm','');
 
 INSERT INTO `nhanvien_phongban` VALUES 

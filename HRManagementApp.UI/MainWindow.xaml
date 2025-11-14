@@ -137,6 +137,13 @@
                         </StackPanel>
                     </Button>
 
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="AccountBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="💰" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Account"/>
+                        </StackPanel>
+                    </Button>
+
                     <Button Style="{StaticResource SidebarButtonStyle}" Name="PayrollBtn">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="💰" FontSize="16" Margin="0,0,10,0"/>

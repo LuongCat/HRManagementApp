@@ -1,4 +1,4 @@
-<UserControl x:Class="HRManagementApp.Views.Account.AccountManagementView"
+<UserControl x:Class="HRManagementApp.UI.Views.AccountManagementView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -240,7 +240,7 @@
                                 <ComboBoxItem Content="Tất cả"/>
                                 <ComboBoxItem Content="Tên đăng nhập"/>
                                 <ComboBoxItem Content="Họ tên"/>
-                                <ComboBoxItem Content="Email"/>
+                                <ComboBoxItem Content="SDT"/>
                                 <ComboBoxItem Content="Vai trò"/>
                                 <ComboBoxItem Content="Phòng ban"/>
                             </ComboBox>
@@ -338,7 +338,7 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Tên đăng nhập" Binding="{Binding TenDangNhap}" Width="1.2*"/>
                             <DataGridTextColumn Header="Họ tên" Binding="{Binding Name}" Width="1.2*"/>
-                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="1.8*"/>
+                            <DataGridTextColumn Header="SDT" Binding="{Binding SDT}" Width="1.8*"/>
                             
                             <!-- Vai trò Column -->
                             <DataGridTemplateColumn Header="Vai trò" Width="*">
@@ -401,7 +401,10 @@
                                                         <DataTrigger Binding="{Binding TrangThai}" Value="Hoạt động">
                                                             <Setter Property="Background" Value="#1E293B"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding TrangThai}" Value="Khóa tài khoản">
+                                                        <DataTrigger Binding="{Binding TrangThai}" Value="Đã khóa">
+                                                            <Setter Property="Background" Value="#DC2626"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding TrangThai}" Value="Đã xóa">
                                                             <Setter Property="Background" Value="#DC2626"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -441,9 +444,13 @@
                                                                 <Setter Property="Content" Value="🔒"/>
                                                                 <Setter Property="ToolTip" Value="Khóa tài khoản"/>
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Khóa tài khoản">
+                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Đã khóa">
                                                                 <Setter Property="Content" Value="🔓"/>
                                                                 <Setter Property="ToolTip" Value="Mở khóa tài khoản"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Đã xóa">
+                                                                <Setter Property="Content" Value="🔄"/>
+                                                                <Setter Property="ToolTip" Value="Khôi phục tài khoản"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>

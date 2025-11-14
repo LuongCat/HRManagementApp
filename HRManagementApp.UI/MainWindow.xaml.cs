@@ -17,7 +17,6 @@ namespace HRManagementApp.UI
             SetActiveButton(DashboardBtn); // Set Dashboard as default active
             LoadSectionContent("dashboard");
         }
-
         private void InitializeEventHandlers()
         {
             // Navigation event handlers
@@ -25,6 +24,7 @@ namespace HRManagementApp.UI
             EmployeesBtn.Click += (s, e) => NavigateTo("Employees", s as Button);
             AttendanceBtn.Click += (s, e) => NavigateTo("Attendance", s as Button);
             PayrollBtn.Click += (s, e) => NavigateTo("Payroll", s as Button);
+            AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
             LeaveBtn.Click += (s, e) => NavigateTo("Leave Management", s as Button);
             ReportsBtn.Click += (s, e) => NavigateTo("Reports", s as Button);
             SettingsBtn.Click += (s, e) => NavigateTo("Settings", s as Button);
@@ -92,6 +92,9 @@ namespace HRManagementApp.UI
                 case "settings":
                     LoadSettingsSection();
                     break;
+                case "account":
+                    LoadAccountsSection();
+                    break;
             }
         }
         private void LoadDoashboardSection()
@@ -132,7 +135,11 @@ namespace HRManagementApp.UI
             // System settings
             // User management, company settings, system configuration
         }
+        private void LoadAccountsSection()
+        {
+            ContentArea.Content = new Views.AccountManagementView();
 
+        }
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to logout?",

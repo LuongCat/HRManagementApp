@@ -77,5 +77,14 @@ public static class Database
             return cmd.ExecuteNonQuery();
         }
     }
+    
+    public static object ExecuteScalar(string query)
+    {
+        using var conn = GetConnection();
+        using var cmd = new MySqlCommand(query, conn);
+        
+        conn.Open();
+        return cmd.ExecuteScalar();
+    }
 
 }

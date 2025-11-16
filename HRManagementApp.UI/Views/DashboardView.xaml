@@ -150,8 +150,8 @@
                                 <TextBlock Text="👥" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
                                 <StackPanel>
                                     <TextBlock Text="Total Employees" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock Text="247" FontSize="28" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="0,5,0,0"/>
-                                    <TextBlock Text="+12 this month" FontSize="10" Foreground="#27AE60" Margin="0,5,0,0"/>
+                                    <TextBlock Text="0" x:Name="TxtTotalEmployee" FontSize="28" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="0,5,0,0"/>
+                                    <TextBlock Text="0 joined this month" x:Name="TxtJoinedThisMonth" FontSize="10" Foreground="#27AE60" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -164,8 +164,8 @@
                                 <TextBlock Text="✅" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
                                 <StackPanel>
                                     <TextBlock Text="Present Today" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock Text="218" FontSize="28" FontWeight="Bold" Foreground="#27AE60" Margin="0,5,0,0"/>
-                                    <TextBlock Text="88.3% attendance" FontSize="10" Foreground="{StaticResource TextSecondary}" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtPresentToday" FontSize="28" FontWeight="Bold" Foreground="#27AE60" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtAttendanceRate" FontSize="10" Foreground="{StaticResource TextSecondary}" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>

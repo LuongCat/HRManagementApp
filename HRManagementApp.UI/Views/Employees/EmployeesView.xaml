@@ -10,15 +10,16 @@
         <converters:TextToVisibilityConverter x:Key="TextToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <Grid >
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>      <!-- Content -->
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        
         <!-- ✅ CONTENT CONTAINER -->
-        <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="25">
-            
+        <Border Grid.Row="0" Background="White" CornerRadius="12" Padding="25">
+            <Border.Effect>
+                <DropShadowEffect Color="#E0E0E0" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
+            </Border.Effect>
             
             <Grid>
                 <Grid.RowDefinitions>
@@ -50,6 +51,11 @@
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#374151"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
@@ -92,12 +98,13 @@
                 </Border>
 
                 <!-- DataGrid -->
-                <DataGrid Grid.Row="2" x:Name="EmployeesDataGrid"
+                <DataGrid Grid.Row="2" x:Name="EmployeesDataGrid" 
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
                           CanUserAddRows="False"
                           SelectionMode="Single"
-                          RowHeight="55"
+                          
+                          Margin="0,30,0,30"
                           FontSize="14"
                           GridLinesVisibility="None"
                           HeadersVisibility="Column"
@@ -144,6 +151,7 @@
                     </DataGrid.Resources>
 
                     <DataGrid.Columns>
+                        <!-- Mã NV -->
                         <DataGridTextColumn Header="Mã NV" Binding="{Binding MaNV}" Width="100">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -153,6 +161,7 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
+                        <!-- Họ tên -->
                         <DataGridTextColumn Header="Họ tên" Binding="{Binding HoTen}" Width="180">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -162,7 +171,8 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Ngày sinh" Binding="{Binding NgaySinh, StringFormat=dd/MM/yyyy}" Width="120">
+                        <!-- Ngày sinh -->
+                        <DataGridTextColumn Header="Ngày sinh" Binding="{Binding NgaySinh, StringFormat=dd/MM/yyyy}" Width="110">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground" Value="#6B7280"/>
@@ -170,7 +180,8 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Điện thoại" Binding="{Binding DienThoai}" Width="130">
+                        <!-- Điện thoại -->
+                        <DataGridTextColumn Header="Điện thoại" Binding="{Binding DienThoai}" Width="120">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground" Value="#6B7280"/>
@@ -178,41 +189,52 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Phòng ban" Binding="{Binding PhongBan.TenPB}" Width="140">
+                        <!-- Phòng ban -->
+                        <DataGridTextColumn Header="Phòng ban" Binding="{Binding PhongBanDisplay}" Width="140">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground" Value="#1F2937"/>
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                    <Setter Property="LineHeight" Value="18"/>
+                                    <Setter Property="Padding" Value="0,4"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Chức vụ" Binding="{Binding ChucVu.TenCV}" Width="140">
+                        <!-- Chức vụ -->
+                        <DataGridTextColumn Header="Chức vụ" Binding="{Binding ChucVuDisplay}" Width="140">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground" Value="#6B7280"/>
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                    <Setter Property="LineHeight" Value="18"/>
+                                    <Setter Property="Padding" Value="0,4"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTemplateColumn Header="Trạng thái" Width="120" >
+                        <!-- Trạng thái -->
+                        <DataGridTemplateColumn Header="Trạng thái" Width="120">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Border Background="{Binding TrangThai}" 
+                                    <Border Background="{Binding TrangThai, Converter={StaticResource StatusToBackgroundConverter}}" 
                                             CornerRadius="12" Padding="12,4" 
-                                            HorizontalAlignment="Center" >
+                                            HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding TrangThai}" 
-                                                   Foreground="{Binding TrangThai}" 
+                                                   Foreground="{Binding TrangThai, Converter={StaticResource StatusToColorConverter}}" 
                                                    FontSize="12" FontWeight="SemiBold"
-                                                   HorizontalAlignment="Center"  />
+                                                   HorizontalAlignment="Center"/>
                                     </Border>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn Header="Thao tác" Width="150">
+                        <!-- Thao tác -->
+                        <DataGridTemplateColumn Header="Thao tác" Width="180">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <!-- Xem chi tiết -->
                                         <Button Content="👁" 
                                                 Background="Transparent" 
                                                 BorderThickness="0"
@@ -239,13 +261,14 @@
                                                     </Setter>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#F3F4F6"/>
+                                                            <Setter Property="Background" Value="#E0E7FF"/>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Button.Style>
                                         </Button>
 
+                                        <!-- Chỉnh sửa -->
                                         <Button Content="✏️" 
                                                 Background="Transparent" 
                                                 BorderThickness="0"
@@ -272,13 +295,48 @@
                                                     </Setter>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#F3F4F6"/>
+                                                            <Setter Property="Background" Value="#DBEAFE"/>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Button.Style>
                                         </Button>
 
+                                        <!-- Chuyển trạng thái -->
+                                        <Button Content="🔄" 
+                                                Background="Transparent" 
+                                                BorderThickness="0"
+                                                FontSize="16"
+                                                Width="35" Height="35"
+                                                Cursor="Hand"
+                                                Margin="3,0"
+                                                ToolTip="Chuyển trạng thái"
+                                                Tag="{Binding MaNV}"
+                                                Click="BtnEditStatus_Click">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}" 
+                                                                        CornerRadius="6"
+                                                                        Width="{TemplateBinding Width}"
+                                                                        Height="{TemplateBinding Height}">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#FEF3C7"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
+                                        <!-- Xóa -->
                                         <Button Content="🗑️" 
                                                 Background="Transparent" 
                                                 BorderThickness="0"

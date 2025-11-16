@@ -6,11 +6,13 @@ using HRManagementApp.models;
 
 namespace HRManagementApp.UI.Views
 {
-    /// <summary>
+   
     /// Form thêm nhân viên mới
-    /// </summary>
+    
     public partial class AddEmployeeWindow : Window
     {
+        private PhongBan _phongBan = new PhongBan();
+        private ChucVu _chucVu = new ChucVu();
         private readonly NhanVienService _nhanVienService;
         private readonly PhongBanService _phongBanService;
         private readonly ChucVuService _chucVuService;
@@ -25,10 +27,9 @@ namespace HRManagementApp.UI.Views
             
             LoadComboBoxData();
         }
-
-        /// <summary>
+        
         /// Load dữ liệu cho các ComboBox
-        /// </summary>
+       
         private void LoadComboBoxData()
         {
             try
@@ -51,10 +52,9 @@ namespace HRManagementApp.UI.Views
                               "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-        /// <summary>
+        
         /// Lưu thông tin nhân viên
-        /// </summary>
+      
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             // Validate dữ liệu
@@ -65,21 +65,18 @@ namespace HRManagementApp.UI.Views
             {
                 // Lấy dữ liệu từ form
                 var nhanVien = GetEmployeeDataFromForm();
-
-                // Gọi service để lưu vào database
-                // TODO: Implement AddNhanVien trong service
                 
-                // bool success = _nhanVienService.AddNhanVien(nhanVien);
+                 bool success = _nhanVienService.AddNhanVien(nhanVien);
 
                 // Tạm thời chỉ hiển thị thông báo
                 MessageBox.Show(
                     $"Dữ liệu đã nhận:\n\n" +
                     $"Họ tên: {nhanVien.HoTen}\n" +
                     $"Ngày sinh: {nhanVien.NgaySinh:dd/MM/yyyy}\n" +
-                    $"Giới tính: {(nhanVien.GioiTinh ? "Nam" : "Nữ")}\n" +
+                    $"Giới tính: {(nhanVien.GioiTinh)}\n" +
                     $"CCCD: {nhanVien.SoCCCD}\n" +
                     $"Điện thoại: {nhanVien.DienThoai}\n" +
-                   
+                    
                     $"Ngày vào làm: {nhanVien.NgayVaoLam:dd/MM/yyyy}\n" +
                     $"Trạng thái: {nhanVien.TrangThai}",
                     "Thông tin nhận được", 
@@ -106,46 +103,50 @@ namespace HRManagementApp.UI.Views
                               "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-        /// <summary>
+        
         /// Lấy dữ liệu nhân viên từ form
-        /// </summary>
+       
         private NhanVien GetEmployeeDataFromForm()
         {
+            _phongBan = _phongBanService.GetPhongBanByID(GetSelectedPhongBanId());
+            _chucVu = _chucVuService.GetChucVuById(GetSelectedChucVuId());
+
+            List<PhongBan> phongBans = new List<PhongBan>();
+            phongBans.Add(_phongBan);
+            List<ChucVu> chucVus = new List<ChucVu>();
+            chucVus.Add(_chucVu);
             var nhanVien = new NhanVien
             {
-                // Thông tin cơ bản
+                
                 HoTen = TxtHoTen.Text.Trim(),
                 NgaySinh = DpNgaySinh.SelectedDate ?? DateTime.Now,
                 GioiTinh = GetGioiTinh(),
                 SoCCCD = TxtCCCD.Text.Trim(),
                 DienThoai = TxtDienThoai.Text.Trim(),
                 
-
-                // Thông tin công việc
+                PhongBan = phongBans,
+                ChucVu = chucVus,
+                
                 NgayVaoLam = DpNgayVaoLam.SelectedDate,
                 TrangThai = GetTrangThai()
             };
 
             return nhanVien;
         }
-
-        /// <summary>
+        
         /// Lấy giới tính từ ComboBox
-        /// </summary>
-        private bool GetGioiTinh()
+      
+        private string GetGioiTinh()
         {
             var selectedItem = CbGioiTinh.SelectedItem as ComboBoxItem;
             if (selectedItem == null)
-                return true; // Mặc định Nam
+                return "nam"; 
 
             string value = selectedItem.Content.ToString();
-            return value == "Nam";
+            return value ;
         }
-
-        /// <summary>
+        
         /// Lấy ID phòng ban được chọn
-        /// </summary>
         private int GetSelectedPhongBanId()
         {
             if (CbPhongBan.SelectedValue != null)
@@ -154,10 +155,8 @@ namespace HRManagementApp.UI.Views
             }
             return 0;
         }
-
-        /// <summary>
+        
         /// Lấy ID chức vụ được chọn
-        /// </summary>
         private int GetSelectedChucVuId()
         {
             if (CbChucVu.SelectedValue != null)
@@ -167,9 +166,9 @@ namespace HRManagementApp.UI.Views
             return 0;
         }
 
-        /// <summary>
+        
         /// Lấy trạng thái từ ComboBox
-        /// </summary>
+    
         private string GetTrangThai()
         {
             var selectedItem = CbTrangThai.SelectedItem as ComboBoxItem;
@@ -180,9 +179,9 @@ namespace HRManagementApp.UI.Views
             return "Đang làm"; // Mặc định
         }
 
-        /// <summary>
+        
         /// Validate dữ liệu đầu vào
-        /// </summary>
+       
         private bool ValidateInput()
         {
             // Validate Họ tên
@@ -289,13 +288,11 @@ namespace HRManagementApp.UI.Views
             return true;
         }
 
-        /// <summary>
+       
         /// Kiểm tra email hợp lệ
-        /// </summary>
-
-        /// <summary>
+        
+      
         /// Đóng form
-        /// </summary>
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

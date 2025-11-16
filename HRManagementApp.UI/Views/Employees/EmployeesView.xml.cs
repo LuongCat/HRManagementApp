@@ -103,11 +103,10 @@ namespace HRManagementApp.UI.Views
 
                 // Lấy danh sách phòng ban của nhân viên
                 var listPhongBan = "";
-                var phongBanList = _service.GetListPhongBanOfNhanVien(id);
 
-                if (phongBanList != null && phongBanList.Count > 0)
+                if (employee.PhongBan != null && employee.PhongBan.Count > 0)
                 {
-                    foreach (var pb in phongBanList)
+                    foreach (var pb in employee.PhongBan)
                     {
                         listPhongBan += pb.TenPB + ", ";
                     }
@@ -122,11 +121,10 @@ namespace HRManagementApp.UI.Views
                 
                 // lấy danh sách chức vụ của nhân viên
                 var listChucVu = "";
-                var ChucVuList = _service.GetListChucVuOfNhanVien(id);
 
-                if (ChucVuList != null && ChucVuList.Count > 0)
+                if (employee.ChucVu != null && employee.ChucVu.Count > 0)
                 {
-                    foreach (var chv in ChucVuList)
+                    foreach (var chv in employee.ChucVu)
                     {
                         listChucVu += chv.TenCV + ", ";
                     }
@@ -151,8 +149,10 @@ namespace HRManagementApp.UI.Views
                         new InfoItem("Chức vụ:", listChucVu, "#2563EB", true),
                         new InfoItem("Ngày vào làm:", employee.NgayVaoLam?.ToString("dd/MM/yyyy") ?? "Chưa có"),
                         new InfoItem("Trạng thái:", employee.TrangThai, "#10B981", true),
-                        new InfoItem("Lương cơ bản:", $"{employee.ChucVu?.LuongCB:N0} VNĐ", "#10B981", true),
-                        new InfoItem("Phụ cấp:", $"{employee.ChucVu?.PhuCap:N0} VNĐ", "#10B981", true)
+                       
+                        
+                        // new InfoItem("Lương cơ bản:", $"{employee.ChucVu?.LuongCB:N0} VNĐ", "#10B981", true),
+                       //new InfoItem("Phụ cấp:", $"{employee.ChucVu?.PhuCap:N0} VNĐ", "#10B981", true)
                     };
 
                     // Mở cửa sổ hiển thị
@@ -364,6 +364,45 @@ namespace HRManagementApp.UI.Views
                 MessageBox.Show("Không tìm thấy nhân viên hoặc xóa thất bại.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
+
+        
+        
+        
+        private void BtnEditStatus_Click(object sender, RoutedEventArgs e)
+        {
+            // Lấy Button và MaNV
+            if (sender is not Button button) return;
+            if (!int.TryParse(button.Tag?.ToString(), out int maNV)) return;
+
+            // Hiển thị MessageBox hỏi xác nhận
+            var result = MessageBox.Show(
+                "Bạn có chắc muốn thay đổi trạng thái nhân viên này không?",
+                "Xác nhận",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.Yes)
+                return; // nếu chọn No thì dừng
+
+            // Cập nhật trạng thái
+            bool ok = _service.UpdateSate(maNV); // hàm toggle trạng thái
+
+            if (ok)
+            {
+                MessageBox.Show("Cập nhật trạng thái thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Load lại DataGrid
+                LoadNhanVien();
+            }
+            else
+            {
+                MessageBox.Show("Cập nhật trạng thái thất bại!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        
+        
 
     }
 }

@@ -8,11 +8,34 @@ public class NhanVien
     public string? SoCCCD { get; set; }
     public string? DienThoai { get; set; }
     
-    public bool GioiTinh { get; set; }
+    public string GioiTinh { get; set; }
     public DateTime? NgayVaoLam { get; set; }
-    
-    public PhongBan PhongBan { get; set; }
-    public ChucVu ChucVu { get; set; }
+
+    public List<PhongBan> PhongBan { get; set; } = new();
+    public List<ChucVu> ChucVu { get; set; } = new();
     
     public String TrangThai { get; set; }
+    
+    public string PhongBanDisplay
+    {
+        get
+        {
+            if (PhongBan == null || PhongBan.Count == 0)
+                return "";
+
+            return string.Join(", ", PhongBan.Select(p => p.TenPB));
+        }
+    }
+
+    public string ChucVuDisplay
+    {
+        get
+        {
+            if (ChucVu == null || ChucVu.Count == 0)
+                return "";
+
+            return string.Join(", ", ChucVu.Select(c => c.TenCV));
+        }
+    }
+
 }

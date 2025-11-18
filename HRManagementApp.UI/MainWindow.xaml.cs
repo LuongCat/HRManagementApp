@@ -96,7 +96,18 @@ namespace HRManagementApp.UI
         }
         private void LoadDoashboardSection()
         {
-            ContentArea.Content = new Views.DashboardView();
+            var view = new Views.DashboardView();
+            ContentArea.Content = view;
+
+            view.AddNewEmployeeRequested += () =>
+            {
+                SetActiveButton(EmployeesBtn);
+                var employeeView = new Views.EmployeesView();
+                ContentArea.Content = employeeView;
+                employeeView.BtnThemNV.RaiseEvent(
+                    new RoutedEventArgs(Button.ClickEvent)
+                );
+            };
         }
         private void LoadEmployeeSection()
         {

@@ -1,10 +1,16 @@
 using System.Windows.Controls;
+using System.Windows;
 using HRManagementApp.BLL.statistics;
 
 namespace HRManagementApp.UI.Views
 {
     public partial class DashboardView : UserControl
     {
+        private readonly DashboardStatisticService statisticService = new DashboardStatisticService();
+
+        // Quick Action Events
+        public event Action? AddNewEmployeeRequested;
+
         public DashboardView()
         {
             InitializeComponent();
@@ -13,7 +19,7 @@ namespace HRManagementApp.UI.Views
 
         public void LoadOverviewStatistics()
         {
-            var statisticService = new DashboardStatisticService();
+            TxtToday.Text = "Today: " + DateTime.Now.ToString("MMMM dd, yyyy");
 
             // Total Employee Card 
             int totalEmployees = statisticService.GetTotalEmployee();
@@ -56,6 +62,11 @@ namespace HRManagementApp.UI.Views
                             ? "Due today"
                             : "Due in " + DaysToDueDate + (DaysToDueDate == 1 ? " day" : " days");
             }
+        }
+
+        public void GoToAddNewEmployee(object sender, RoutedEventArgs e)
+        {
+            AddNewEmployeeRequested?.Invoke();
         }
     }
 }

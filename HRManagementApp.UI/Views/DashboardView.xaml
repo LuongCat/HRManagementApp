@@ -115,14 +115,12 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="+ Add Employee"
-                            Style="{StaticResource ActionButtonStyle}"
-                            Margin="0,0,10,0"/>
                     <TextBlock Text="🔔"
                                FontSize="20"
                                VerticalAlignment="Center"
                                Margin="10,0"/>
-                    <TextBlock Text="Today: September 19, 2025"
+                    <TextBlock x:Name="TxtToday"
+                               Text="Today: September 19, 2025"
                                VerticalAlignment="Center"
                                Foreground="{StaticResource TextSecondary}"
                                FontSize="12"/>
@@ -278,7 +276,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <TextBlock Text="Quick Actions" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
 
-                            <Button Content="Add New Employee" Click="goToAddNewEmployee" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10"/>
+                            <Button Content="Add New Employee" Click="GoToAddNewEmployee" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10"/>
                             <Button Content="Process Payroll" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10" Background="{StaticResource AccentColor}"/>
                             <Button Content="Approve Leave Requests" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10" Background="{StaticResource SecondaryColor}"/>
                             <Button Content="Generate Reports" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,20" Background="#27AE60"/>

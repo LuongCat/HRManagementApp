@@ -14,6 +14,9 @@ public class NhanVien
     public List<PhongBan> PhongBan { get; set; } = new();
     public List<ChucVu> ChucVu { get; set; } = new();
     
+    public List<VaiTroNhanVien> DanhSachChucVu { get; set; } = new();
+
+    
     public String TrangThai { get; set; }
     
     public string PhongBanDisplay
@@ -37,5 +40,7 @@ public class NhanVien
             return string.Join(", ", ChucVu.Select(c => c.TenCV));
         }
     }
+    
+    public bool IsSelected { get; set; } = false;
 
 }

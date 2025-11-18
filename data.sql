@@ -24,6 +24,7 @@ CREATE TABLE `chucvu` (
                           `TenCV` varchar(100) NOT NULL,
                           `PhuCap` decimal(18,2) DEFAULT 0,
                           `LuongCB` decimal(18,2) DEFAULT 0,
+                          `TienPhuCapKiemNhiem` DECIMAL(18,2) DEFAULT 0,
                           PRIMARY KEY (`MaCV`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -172,39 +173,21 @@ CREATE TABLE `nhanvien_chucvu` (
                                    `MaNV` INT NOT NULL,
                                    `MaCV` INT NOT NULL,
                                    `MaPB` INT NOT NULL,
-
                                    `HeSoPhuCapKiemNhiem` DECIMAL(6,4) DEFAULT 0,
-                                   `TienPhuCapKiemNhiem` DECIMAL(18,2) DEFAULT 0,
                                    `LoaiChucVu` ENUM('Chính thức', 'Kiêm nhiệm') DEFAULT 'Chính thức',
                                    `GhiChu` VARCHAR(200) DEFAULT NULL,
 
                                    PRIMARY KEY (`MaNV`, `MaCV`, `MaPB`),
-
                                    KEY `nv_cv_fk_cv` (`MaCV`),
                                    KEY `nv_cv_fk_pb` (`MaPB`),
 
-                                   CONSTRAINT `nv_cv_fk_nv` FOREIGN KEY (`MaNV`)
-                                       REFERENCES `nhanvien` (`MaNV`)
-                                       ON DELETE CASCADE ON UPDATE CASCADE,
-
-                                   CONSTRAINT `nv_cv_fk_cv` FOREIGN KEY (`MaCV`)
-                                       REFERENCES `chucvu` (`MaCV`)
-                                       ON DELETE CASCADE ON UPDATE CASCADE,
-
-                                   CONSTRAINT `nv_cv_fk_pb` FOREIGN KEY (`MaPB`)
-                                       REFERENCES `phongban` (`MaPB`)
-                                       ON DELETE CASCADE ON UPDATE CASCADE
+                                   CONSTRAINT `nv_cv_fk_nv` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                   CONSTRAINT `nv_cv_fk_cv` FOREIGN KEY (`MaCV`) REFERENCES `chucvu` (`MaCV`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                   CONSTRAINT `nv_cv_fk_pb` FOREIGN KEY (`MaPB`) REFERENCES `phongban` (`MaPB`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-CREATE TABLE `nhanvien_phongban` (
-                                     `MaNV` int NOT NULL,
-                                     `MaPB` int NOT NULL,
-                                     PRIMARY KEY (`MaNV`,`MaPB`),
-                                     KEY `nv_pb_fk_pb` (`MaPB`),
-                                     CONSTRAINT `nv_pb_fk_nv` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                     CONSTRAINT `nv_pb_fk_pb` FOREIGN KEY (`MaPB`) REFERENCES `phongban` (`MaPB`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 CREATE TABLE `chamcong_lienketdon` (
                                        `MaCC` int NOT NULL,
@@ -220,10 +203,10 @@ CREATE TABLE `chamcong_lienketdon` (
 -- ============================================
 
 INSERT INTO `chucvu` VALUES
-                         (1,'Nhân viên',1000000.00,8000000.00),
-                         (2,'Tổ trưởng',1500000.00,10000000.00),
-                         (3,'Trưởng phòng',3000000.00,15000000.00),
-                         (4,'Giám đốc',5000000.00,25000000.00);
+                         (1,'Nhân viên',1000000.00,8000000.00,0),
+                         (2,'Tổ trưởng',1500000.00,10000000.00,10000),
+                         (3,'Trưởng phòng',3000000.00,15000000.00,10000),
+                         (4,'Giám đốc',5000000.00,25000000.00,20000);
 
 INSERT INTO `nhanvien` VALUES
                            (1,'Nguyễn Văn Ann','1990-05-15','012345678901','0901123456','Nghỉ việc','2020-01-10','Nam'),
@@ -269,16 +252,12 @@ INSERT INTO `luong` VALUES
                         (4,4,9,2024,25,10500000.00,'Đã trả');
 
 INSERT INTO `nhanvien_chucvu`
-(MaNV, MaCV, MaPB, HeSoPhuCapKiemNhiem, TienPhuCapKiemNhiem, LoaiChucVu, GhiChu)
+(MaNV, MaCV, MaPB, HeSoPhuCapKiemNhiem, LoaiChucVu, GhiChu)
 VALUES
-    (1, 2, 1, 0, 0, 'Chính thức', ''),
-    (1, 3, 1, 0, 0, 'Chính thức', ''),
-    (2, 3, 2, 0.1500, 1500000.00, 'Kiêm nhiệm', '');
+    (1, 2, 1, 0,  'Chính thức', ''),
+    (1, 3, 1, 0,  'Chính thức', ''),
+    (2, 3, 2, 0.1500, 'Kiêm nhiệm', '');
 
-
-INSERT INTO `nhanvien_phongban` VALUES
-                                    (1,1),
-                                    (1,2);
 
 INSERT INTO `vaitro` VALUES
                          (1,'Admin','Quản trị hệ thống'),

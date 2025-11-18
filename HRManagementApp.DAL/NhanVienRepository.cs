@@ -8,6 +8,8 @@ namespace HRManagementApp.DAL
 {
     public class NhanVienRepository
     {
+
+        public VaiTroNhanVienReponsitory vaiTroNhanVien { get; set; } 
         // =====================================================
         // LẤY DANH SÁCH NHÂN VIÊN
         // =====================================================
@@ -38,7 +40,8 @@ namespace HRManagementApp.DAL
                     NgayVaoLam = row["NgayVaoLam"] as DateTime?,
 
                     PhongBan = AllPhongBanOfNhanVien(id),
-                    ChucVu = AllChucVuOfNhanVien(id)
+                    ChucVu = AllChucVuOfNhanVien(id),
+                    DanhSachChucVu = vaiTroNhanVien.GetVaiTroNhanVien(id)
                 });
             }
 
@@ -51,7 +54,7 @@ namespace HRManagementApp.DAL
         public List<PhongBan> AllPhongBanOfNhanVien(int maNV)
         {
             string query = @"
-                SELECT pb.MaPB, pb.TenPB, pb.MoTa
+                SELECT pb.MaPB, pb.TenPB, pb.MoTa,pb.MaTruongPhong
                 FROM NhanVien nv
                 LEFT JOIN NhanVien_ChucVu nvcv ON nvcv.MaNV = nv.MaNV
                 LEFT JOIN PhongBan pb ON pb.MaPB = nvcv.MaPB
@@ -71,7 +74,8 @@ namespace HRManagementApp.DAL
                 {
                     MaPB = (int)row["MaPB"],
                     TenPB = row["TenPB"]?.ToString(),
-                    MoTa = row["MoTa"]?.ToString()
+                    MoTa = row["MoTa"]?.ToString(),
+                    MaTruongPhong = Convert.ToInt32(row["MaTruongPhong"])
                 });
             }
 
@@ -84,7 +88,7 @@ namespace HRManagementApp.DAL
         public List<ChucVu> AllChucVuOfNhanVien(int maNV)
         {
             string query = @"
-                SELECT cv.MaCV, cv.TenCV, cv.LuongCB, cv.PhuCap
+                SELECT cv.MaCV, cv.TenCV, cv.LuongCB, cv.PhuCap,cv.TienPhuCapKiemNhiem
                 FROM NhanVien nv
                 LEFT JOIN NhanVien_ChucVu nvcv ON nvcv.MaNV = nv.MaNV
                 LEFT JOIN ChucVu cv ON cv.MaCV = nvcv.MaCV
@@ -105,7 +109,8 @@ namespace HRManagementApp.DAL
                     MaCV = (int)row["MaCV"],
                     TenCV = row["TenCV"]?.ToString(),
                     LuongCB = row["LuongCB"] != DBNull.Value ? (decimal)row["LuongCB"] : 0,
-                    PhuCap = row["PhuCap"] != DBNull.Value ? (decimal)row["PhuCap"] : 0
+                    PhuCap = row["PhuCap"] != DBNull.Value ? (decimal)row["PhuCap"] : 0,
+                    TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString())
                 });
             }
 
@@ -138,14 +143,15 @@ namespace HRManagementApp.DAL
                 NgayVaoLam = row["NgayVaoLam"] as DateTime?,
 
                 PhongBan = AllPhongBanOfNhanVien(id),
-                ChucVu = AllChucVuOfNhanVien(id)
+                ChucVu = AllChucVuOfNhanVien(id),
+                DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>()
             };
         }
 
         // =====================================================
         // UPDATE NHÂN VIÊN
         // =====================================================
-        public bool UpdateNhanVien(NhanVien nv)
+        public bool UpdateBasicNhanVien(NhanVien nv)
         {
             string query = @"
                 UPDATE NhanVien SET
@@ -261,9 +267,9 @@ namespace HRManagementApp.DAL
                     {
                         string insertMap = @"
                             INSERT INTO NhanVien_ChucVu
-                            (MaNV, MaCV, MaPB, HeSoPhuCapKiemNhiem, TienPhuCapKiemNhiem, LoaiChucVu, GhiChu)
+                            (MaNV, MaCV, MaPB, HeSoPhuCapKiemNhiem, LoaiChucVu, GhiChu)
                             VALUES
-                            (@MaNV, @MaCV, @MaPB, @HeSo, @TienPC, @Loai, @GhiChu)
+                            (@MaNV, @MaCV, @MaPB, @HeSo, @Loai, @GhiChu)
                         ";
 
                         var paramMap = new Dictionary<string, object>
@@ -272,7 +278,6 @@ namespace HRManagementApp.DAL
                             { "@MaCV", cv.MaCV },
                             { "@MaPB", pb.MaPB },
                             { "@HeSo", 0 },
-                            { "@TienPC", 0 },
                             { "@Loai", "Chính thức" },
                             { "@GhiChu", "" }
                         };
@@ -335,27 +340,5 @@ namespace HRManagementApp.DAL
         }
         
         
-        
-        
-        
-        
-        
-        public int CountEmployees()
-        {
-            string query = "SELECT COUNT(*) as TotalEmployee FROM NhanVien";
-            object result = Database.ExecuteScalar(query);
-            
-            return  Convert.ToInt32(result);
-        }
-
-        public int CountJoinedThisMonth()
-        {
-            string query = "SELECT COUNT(*) as TotalEmployee FROM NhanVien " +
-                           "WHERE NgayVaoLam >= DATE_FORMAT(CURDATE(), '%Y-%m-01') " +
-                           "AND NgayVaoLam < DATE_ADD(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH)";
-            
-            object result = Database.ExecuteScalar(query);
-            return Convert.ToInt32(result);
-        }
     }
 }

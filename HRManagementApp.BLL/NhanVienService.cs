@@ -9,10 +9,15 @@ namespace HRManagementApp.BLL
     public class NhanVienService
     {
         private readonly NhanVienRepository _repository;
+        private readonly VaiTroNhanVienReponsitory _vaiTroRepo;
 
         public NhanVienService()
         {
             _repository = new NhanVienRepository();
+            
+            _vaiTroRepo = new VaiTroNhanVienReponsitory(_repository);
+            
+            _repository.vaiTroNhanVien = _vaiTroRepo;
         }
 
         // =====================================================
@@ -60,7 +65,7 @@ namespace HRManagementApp.BLL
                 old.NgayVaoLam = nv.NgayVaoLam;
                 old.TrangThai = nv.TrangThai;
 
-                return _repository.UpdateNhanVien(old);
+                return _repository.UpdateBasicNhanVien(old);
             }
             catch (Exception ex)
             {
@@ -107,7 +112,7 @@ namespace HRManagementApp.BLL
                 old.NgayVaoLam = nv.NgayVaoLam;
                 old.TrangThai = nv.TrangThai;
 
-                bool ok = _repository.UpdateNhanVien(old);
+                bool ok = _repository.UpdateBasicNhanVien(old);
                 return ok
                     ? (true, "Cập nhật thành công")
                     : (false, "Không thể cập nhật nhân viên");

@@ -16,7 +16,8 @@ public class ChucVuRepository
                 MaCV = int.Parse(row["MaCV"].ToString()),
                 TenCV = row["TenCV"].ToString(),
                 PhuCap = decimal.Parse(row["PhuCap"].ToString()),
-                LuongCB = decimal.Parse(row["LuongCB"].ToString())
+                LuongCB = decimal.Parse(row["LuongCB"].ToString()),
+                TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString())
             });
         }
 
@@ -26,7 +27,7 @@ public class ChucVuRepository
     public ChucVu? GetChucVuByName(string tenCV)
     {
         string query = @"
-        SELECT MaCV, TenCV, PhuCap, LuongCB
+        SELECT *
         FROM chucvu
         WHERE TenCV = @TenCV
         LIMIT 1
@@ -49,7 +50,8 @@ public class ChucVuRepository
             MaCV = Convert.ToInt32(row["MaCV"]),
             TenCV = row["TenCV"]?.ToString() ?? "",
             PhuCap = row["PhuCap"] == DBNull.Value ? null : Convert.ToDecimal(row["PhuCap"]),
-            LuongCB = row["LuongCB"] == DBNull.Value ? null : Convert.ToDecimal(row["LuongCB"])
+            LuongCB = row["LuongCB"] == DBNull.Value ? null : Convert.ToDecimal(row["LuongCB"]),
+            TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString())
         };
     }
 
@@ -57,7 +59,7 @@ public class ChucVuRepository
     public ChucVu? GetChucVuById(int id)
     {
         string query = @"
-        SELECT MaCV, TenCV, PhuCap, LuongCB
+        SELECT *
         FROM chucvu
         WHERE MaCV = @MaCV
         LIMIT 1
@@ -80,7 +82,8 @@ public class ChucVuRepository
             MaCV = Convert.ToInt32(row["MaCV"]),
             TenCV = row["TenCV"]?.ToString() ?? "",
             PhuCap = row["PhuCap"] == DBNull.Value ? null : Convert.ToDecimal(row["PhuCap"]),
-            LuongCB = row["LuongCB"] == DBNull.Value ? null : Convert.ToDecimal(row["LuongCB"])
+            LuongCB = row["LuongCB"] == DBNull.Value ? null : Convert.ToDecimal(row["LuongCB"]),
+            TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString())
         };
     }
 

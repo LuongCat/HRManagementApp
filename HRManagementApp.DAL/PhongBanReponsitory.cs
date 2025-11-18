@@ -1,6 +1,8 @@
 namespace HRManagementApp.DAL;
+
 using HRManagementApp.models;
 using System.Data;
+
 public class PhongBanReponsitory
 {
     public List<PhongBan> GetAllPhongBan()
@@ -10,18 +12,18 @@ public class PhongBanReponsitory
 
         var list = new List<PhongBan>();
 
-        foreach (DataRow row in data.Rows) 
+        foreach (DataRow row in data.Rows)
         {
             list.Add(new PhongBan
             {
                 MaPB = row["MaPB"] != DBNull.Value ? Convert.ToInt32(row["MaPB"]) : 0,
                 TenPB = row["TenPB"] != DBNull.Value ? row["TenPB"].ToString()! : string.Empty,
-                MoTa  = row["MoTa"]  != DBNull.Value ? row["MoTa"].ToString() : null,
+                MoTa = row["MoTa"] != DBNull.Value ? row["MoTa"].ToString() : null,
                 MaTruongPhong = row["MaTruongPhong"] != DBNull.Value ? Convert.ToInt32(row["MaTruongPhong"]) : 0
             });
         }
 
-        return list; 
+        return list;
     }
 
     public PhongBan? GetPhongBanByName(string tenPB)
@@ -49,7 +51,7 @@ public class PhongBanReponsitory
         {
             MaPB = Convert.ToInt32(row["MaPB"]),
             TenPB = row["TenPB"].ToString()!,
-            MoTa  = row["MoTa"]  != DBNull.Value ? row["MoTa"].ToString() : null,
+            MoTa = row["MoTa"] != DBNull.Value ? row["MoTa"].ToString() : null,
             MaTruongPhong = row["MaTruongPhong"] != DBNull.Value ? Convert.ToInt32(row["MaTruongPhong"]) : 0
         };
     }
@@ -79,10 +81,10 @@ public class PhongBanReponsitory
         {
             MaPB = Convert.ToInt32(row["MaPB"]),
             TenPB = row["TenPB"]?.ToString() ?? "",
-            MoTa  = row["MoTa"]  != DBNull.Value ? row["MoTa"].ToString() : null,
+            MoTa = row["MoTa"] != DBNull.Value ? row["MoTa"].ToString() : null,
             MaTruongPhong = row["MaTruongPhong"] != DBNull.Value ? Convert.ToInt32(row["MaTruongPhong"]) : 0
         };
     }
 
-
+    
 }

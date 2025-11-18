@@ -85,6 +85,7 @@ namespace HRManagementApp.UI.Views
             // Mở form thêm nhân viên
             var window = new AddEmployeeWindow();
             window.ShowDialog();
+            LoadNhanVien();
         }
 
         

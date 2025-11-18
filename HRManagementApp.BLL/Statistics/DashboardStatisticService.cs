@@ -23,9 +23,6 @@
 
         public double CalcAttendanceRate(double present, double total)
         {
-            Console.WriteLine(present);
-            Console.WriteLine(total);
-
             if (total == 0) return 0;
 
             double rate = present / total * 100;

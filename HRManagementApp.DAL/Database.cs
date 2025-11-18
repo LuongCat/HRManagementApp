@@ -14,7 +14,6 @@ public static class Database
         return connection;
     }
     
-    
     public static DataTable ExecuteQuery(string query, Dictionary<string, object>? parameters = null)
     {
         DataTable data = new DataTable();
@@ -42,7 +41,6 @@ public static class Database
         return data;
     }
     
-    
     public static int ExecuteNonQuery(string query, Dictionary<string, object>? parameters = null)
     {
         using (var conn = GetConnection())
@@ -60,6 +58,21 @@ public static class Database
 
                 return cmd.ExecuteNonQuery();
             }
+        }
+    }
+
+    public static int ExecuteNonQueryTransaction(string query, Dictionary<string, object>? parameters, MySqlConnection conn, MySqlTransaction transaction)
+    {
+        using (var cmd = new MySqlCommand(query, conn, transaction))
+        {
+            if (parameters != null)
+            {
+                foreach (var param in parameters)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value);
+                }
+            }
+            return cmd.ExecuteNonQuery();
         }
     }
 

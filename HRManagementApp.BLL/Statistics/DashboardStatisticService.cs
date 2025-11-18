@@ -8,6 +8,7 @@
 
         // Overview
         // Total Employee Card
+
         public int GetTotalEmployee()
         {
             return _statisticRepository.CountEmployees();

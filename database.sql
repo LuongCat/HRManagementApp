@@ -2,10 +2,6 @@ DROP DATABASE IF EXISTS `hrmanagement`;
 CREATE DATABASE `hrmanagement`;
 USE `hrmanagement`;
 
--- ============================================
--- 1. BẢNG KHÔNG PHỤ THUỘC				
--- ============================================
-
 CREATE TABLE `nhanvien` (
   `MaNV` int NOT NULL AUTO_INCREMENT,
   `HoTen` varchar(100) NOT NULL,
@@ -65,10 +61,6 @@ CREATE TABLE `vaitro` (
   `MoTa` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`MaVaiTro`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================
--- 2. BẢNG PHỤ THUỘC 1 LỚP
--- ============================================
 
 CREATE TABLE `phongban` (
   `MaPB` int NOT NULL AUTO_INCREMENT,
@@ -147,10 +139,6 @@ CREATE TABLE `luong` (
   CONSTRAINT `luong_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ============================================
--- 3. BẢNG LIÊN KẾT N-N
--- ============================================
-
 CREATE TABLE `vaitro_quyenhan` (
   `MaVaiTro` int NOT NULL,
   `MaQuyenHan` int NOT NULL,
@@ -199,7 +187,7 @@ CREATE TABLE `chamcong_lienketdon` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================
--- 4. DỮ LIỆU MẪU
+--  DỮ LIỆU MẪU
 -- ============================================
 
 INSERT INTO `chucvu` VALUES 

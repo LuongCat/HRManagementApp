@@ -7,6 +7,7 @@ namespace HRManagementApp.DAL
     {
         // Dashboard - Overview 
         // Total Employee Card
+
         public int CountEmployees()
         {
             string query = "SELECT COUNT(*) as TotalEmployee FROM NhanVien";

@@ -6,4 +6,6 @@ public class ChucVu
     public string TenCV { get; set; }
     public decimal? PhuCap { get; set; }
     public decimal? LuongCB { get; set; }
+    
+    public decimal? TienPhuCapKiemNhiem { get; set; }
 }

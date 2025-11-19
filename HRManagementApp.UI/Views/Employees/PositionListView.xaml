@@ -145,6 +145,16 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     
+                    <!-- Trạng thái -->
+                    <DataGridTextColumn Header="Trạng thái" Binding="{Binding IsActive}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#6B7280"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
                     <!-- Thao tác -->
                     <DataGridTemplateColumn Header="Thao tác" Width="120">
                         <DataGridTemplateColumn.CellTemplate>
@@ -185,7 +195,7 @@
                                     </Button>
 
                                     <!-- Nút Xóa -->
-                                    <Button Content="🗑️" 
+                                    <Button Content="🔄" 
                                             Background="Transparent" 
                                             BorderThickness="0"
                                             FontSize="16"
@@ -194,7 +204,7 @@
                                             Margin="3,0"
                                             ToolTip="Xóa"
                                             Tag="{Binding MaChucVu}"
-                                            Click="BtnDelete_Click">
+                                            Click="BtnChangeStatus_Click">
                                         <Button.Style>
                                             <Style TargetType="Button">
                                                 <Setter Property="Template">

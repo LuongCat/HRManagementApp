@@ -35,8 +35,8 @@ namespace HRManagementApp.UI.Views
                 if (chucVus == null || chucVus.Count == 0)
                 {
                     PositionDataGrid.ItemsSource = null;
-                    MessageBox.Show("Không có dữ liệu chức vụ!", "Thông báo", 
-                                  MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Không có dữ liệu chức vụ!", "Thông báo",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
@@ -44,11 +44,12 @@ namespace HRManagementApp.UI.Views
                 _positions = new ObservableCollection<ChucVuViewModel>(
                     chucVus.Select(cv => new ChucVuViewModel
                     {
-                        MaChucVu = $"POS{cv.MaCV:000}",
+                        MaChucVu = cv.MaCV,
                         TenChucVu = cv.TenCV,
                         PhuCapDisplay = FormatCurrency(cv.PhuCap),
-                        TienPhuCapKiemNhiem =cv.TienPhuCapKiemNhiem,
-                       LuongCB = cv.LuongCB,
+                        TienPhuCapKiemNhiem = cv.TienPhuCapKiemNhiem,
+                        LuongCB = cv.LuongCB,
+                        IsActive = cv.IsActive,
                     })
                 );
 
@@ -56,11 +57,11 @@ namespace HRManagementApp.UI.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải danh sách chức vụ: {ex.Message}", 
-                              "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Lỗi khi tải danh sách chức vụ: {ex.Message}",
+                    "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        
+
         /// <summary>
         /// Format tiền tệ
         /// </summary>
@@ -71,7 +72,7 @@ namespace HRManagementApp.UI.Views
 
             return amount.Value.ToString("N0");
         }
-        
+
 
         /// <summary>
         /// Thêm chức vụ mới
@@ -81,8 +82,8 @@ namespace HRManagementApp.UI.Views
             // TODO: Mở window/dialog thêm chức vụ mới
             var window = new AddPositionWindow();
             window.ShowDialog();
-            
-            // Sau khi thêm thành công, gọi LoadPositions() để refresh
+
+            LoadPositions();
         }
 
         /// <summary>
@@ -92,10 +93,10 @@ namespace HRManagementApp.UI.Views
         {
             var button = sender as Button;
             string maChucVu = button?.Tag?.ToString();
-            
+
             if (!string.IsNullOrEmpty(maChucVu))
             {
-                var position = _positions.FirstOrDefault(p => p.MaChucVu == maChucVu);
+                var position = _positions.FirstOrDefault(p => p.MaChucVu == int.Parse(maChucVu));
                 if (position != null)
                 {
                     // TODO: Mở window/dialog chỉnh sửa chức vụ
@@ -103,10 +104,10 @@ namespace HRManagementApp.UI.Views
                         $"Chỉnh sửa chức vụ: {position.TenChucVu}\n\n" +
                         $"Mã chức vụ: {position.MaChucVu}\n" +
                         $"Phụ cấp: {position.PhuCapDisplay} VNĐ",
-                        "Chỉnh sửa", 
-                        MessageBoxButton.OK, 
+                        "Chỉnh sửa",
+                        MessageBoxButton.OK,
                         MessageBoxImage.Information);
-                    
+
                     // Sau khi sửa thành công, gọi LoadPositions() để refresh
                 }
             }
@@ -115,46 +116,46 @@ namespace HRManagementApp.UI.Views
         /// <summary>
         /// Xóa chức vụ
         /// </summary>
-        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        private void BtnChangeStatus_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             string maChucVu = button?.Tag?.ToString();
-            
+
             if (!string.IsNullOrEmpty(maChucVu))
             {
-                var position = _positions.FirstOrDefault(p => p.MaChucVu == maChucVu);
+                var position = _positions.FirstOrDefault(p => p.MaChucVu == int.Parse(maChucVu));
                 if (position == null)
                 {
-                    MessageBox.Show("Không tìm thấy chức vụ!", "Lỗi", 
-                                  MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Không tìm thấy chức vụ!", "Lỗi",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 var result = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn xóa chức vụ?\n\n" +
+                    $"Bạn có chắc chắn muốn thay đổi trạng thái chức vụ?\n\n" +
                     $"Mã chức vụ: {position.MaChucVu}\n" +
-                    $"Tên chức vụ: {position.TenChucVu}\n\n" +
-                    $"⚠️ Cảnh báo: Xóa chức vụ có thể ảnh hưởng đến dữ liệu nhân viên!",
-                    "Xác nhận xóa",
+                    $"Tên chức vụ: {position.TenChucVu}\n\n",
+                    "Xác nhận thay đổi",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning);
-                
+
                 if (result == MessageBoxResult.Yes)
                 {
                     try
                     {
-                        // TODO: Implement DeleteChucVu trong service
-                        // bool success = _chucVuService.DeleteChucVu(maCV);
-                        
-                        // Tạm thời chỉ xóa khỏi collection
-                        _positions.Remove(position);
-                        MessageBox.Show("Xóa chức vụ thành công!", "Thông báo", 
-                                      MessageBoxButton.OK, MessageBoxImage.Information);
+                        bool success = _chucVuService.ChangeStatus(int.Parse(maChucVu), position.IsActive);
+
+                        if (success)
+                        {
+                            MessageBox.Show("Thay đổi trạng thái chức vụ thành công!", "Thông báo",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
+                            LoadPositions();
+                        }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Lỗi khi xóa chức vụ: {ex.Message}", "Lỗi", 
-                                      MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Lỗi khi thay đổi trạng thái chức vụ: {ex.Message}", "Lỗi",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
@@ -166,11 +167,12 @@ namespace HRManagementApp.UI.Views
     /// </summary>
     public class ChucVuViewModel
     {
-        public string MaChucVu { get; set; }
+        public int MaChucVu { get; set; }
         public string TenChucVu { get; set; }
         public string PhuCapDisplay { get; set; }
         public string MoTa { get; set; }
         public decimal? TienPhuCapKiemNhiem { get; set; }
         public decimal? LuongCB { get; set; }
+        public string IsActive { get; set; }
     }
 }

@@ -2,11 +2,15 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using HRManagementApp.BLL;
+using HRManagementApp.models;
 
 namespace HRManagementApp.UI.Views
 {
     public partial class AddPositionWindow : Window
     {
+        
+        public ChucVuService _chucVuService = new ChucVuService();
         public bool IsSaved { get; private set; } = false;
 
         // Properties để lấy dữ liệu từ form
@@ -116,7 +120,16 @@ namespace HRManagementApp.UI.Views
 
             if (result == MessageBoxResult.Yes)
             {
-                IsSaved = true;
+                
+                ChucVu chucVu = new ChucVu
+                {
+                    TenCV = TenChucVu,
+                    PhuCap = PhuCap,
+                    LuongCB = LuongCoBan,
+                    TienPhuCapKiemNhiem = PhuCapKiemNhiem
+                };
+                
+                IsSaved = _chucVuService.InsertChucVu(chucVu);
                 DialogResult = true;
                 Close();
             }

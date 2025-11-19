@@ -117,9 +117,9 @@ namespace HRManagementApp.DAL
         {
             string query = @"
         INSERT INTO nhanvien_chucvu 
-        (MaNV, MaCV, MaPB, LoaiChucVu, TienPhuCapKiemNhiem, GhiChu)
+        (MaNV, MaCV, MaPB, LoaiChucVu, HeSoPhuCapKiemNhiem, GhiChu)
         VALUES
-        (@MaNV, @MaCV, @MaPB, @LoaiChucVu, @TienPhuCapKiemNhiem, @GhiChu);
+        (@MaNV, @MaCV, @MaPB, @LoaiChucVu, @HeSoPhuCapKiemNhiem, @GhiChu);
     ";
 
             var parameters = new Dictionary<string, object>
@@ -128,7 +128,7 @@ namespace HRManagementApp.DAL
                 { "@MaCV", vtnv.MaCV },
                 { "@MaPB", vtnv.MaPB },
                 { "@LoaiChucVu", vtnv.LoaiChucVu },
-                { "@TienPhuCapKiemNhiem", vtnv.HeSoPhuCapKiemNhiem ?? 0 },
+                { "@HeSoPhuCapKiemNhiem", vtnv.HeSoPhuCapKiemNhiem ?? 0 },
                 { "@GhiChu", string.IsNullOrEmpty(vtnv.GhiChu) ? DBNull.Value : vtnv.GhiChu }
             };
 
@@ -154,6 +154,27 @@ namespace HRManagementApp.DAL
             return affected > 0;
         }
 
+        public bool RemoveEmployeeFromDepartment(int MaNV, int MaPB)
+        {
+            // Xóa tất cả các vai trò của nhân viên trong phòng ban này
+            string query = @"
+        DELETE FROM nhanvien_chucvu
+        WHERE MaNV = @MaNV AND MaPB = @MaPB;
+    ";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "@MaNV", MaNV },
+                { "@MaPB", MaPB }
+            };
+
+            int affected = Database.ExecuteNonQuery(query, parameters);
+
+            // Trả về true nếu có ít nhất 1 bản ghi bị xóa
+            return affected > 0;
+        }
+
+
 
         public List<NhanVien> GetNhanVienOfPhongBan(int MaPB)
         {
@@ -176,7 +197,7 @@ namespace HRManagementApp.DAL
             {
                 int maNV = Convert.ToInt32(row["MaNV"]);
                 
-                var nv = _nhanVienRepository.GetById(maNV);
+                var nv = _nhanVienRepository.GetEmployeeById(maNV);
 
                 if (nv != null)
                     nhanViens.Add(nv);
@@ -211,13 +232,16 @@ namespace HRManagementApp.DAL
             foreach (DataRow row in dt.Rows)
             {
                 int maNV = Convert.ToInt32(row["MaNV"]);
-                var nv = _nhanVienRepository.GetById(maNV);
+                var nv = _nhanVienRepository.GetEmployeeById(maNV);
                 if (nv != null)
                     nhanViens.Add(nv);
             }
 
             return nhanViens;
         }
+        
+        
+        
 
 
     }

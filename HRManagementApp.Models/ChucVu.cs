@@ -8,4 +8,9 @@ public class ChucVu
     public decimal? LuongCB { get; set; }
     
     public decimal? TienPhuCapKiemNhiem { get; set; }
+
+    public override string ToString()
+    {
+        return TenCV;
+    }
 }

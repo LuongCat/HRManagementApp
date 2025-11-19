@@ -120,7 +120,7 @@ namespace HRManagementApp.DAL
         // =====================================================
         // LẤY NHÂN VIÊN THEO ID
         // =====================================================
-        public NhanVien GetById(int id)
+        public NhanVien GetEmployeeById(int id)
         {
             string query = "SELECT * FROM NhanVien WHERE MaNV = @MaNV";
             var param = new Dictionary<string, object> { { "@MaNV", id } };
@@ -134,6 +134,35 @@ namespace HRManagementApp.DAL
             {
                 MaNV = id,
                 HoTen = row["HoTen"]?.ToString(),
+                NgaySinh = row["NgaySinh"] as DateTime?,
+                SoCCCD = row["SoCCCD"]?.ToString(),
+                DienThoai = row["DienThoai"]?.ToString(),
+
+                TrangThai = row["TrangThai"]?.ToString(),
+                GioiTinh = row["GioiTinh"]?.ToString(),
+                NgayVaoLam = row["NgayVaoLam"] as DateTime?,
+
+                PhongBan = AllPhongBanOfNhanVien(id),
+                ChucVu = AllChucVuOfNhanVien(id),
+                DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>()
+            };
+        }
+        
+        public NhanVien GetEmployeeByName(string name)
+        {
+            string query = "SELECT * FROM NhanVien WHERE HoTen = @TenNV";
+            var param = new Dictionary<string, object> { { "@TenNV", name } };
+
+            DataTable dt = Database.ExecuteQuery(query, param);
+            if (dt.Rows.Count == 0) return null;
+
+            DataRow row = dt.Rows[0];
+            int id = Convert.ToInt32(row["MaNV"]);
+
+            return new NhanVien
+            {
+                MaNV = id,
+                HoTen = name,
                 NgaySinh = row["NgaySinh"] as DateTime?,
                 SoCCCD = row["SoCCCD"]?.ToString(),
                 DienThoai = row["DienThoai"]?.ToString(),

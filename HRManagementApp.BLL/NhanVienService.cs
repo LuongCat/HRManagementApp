@@ -28,6 +28,11 @@ namespace HRManagementApp.BLL
             return _repository.GetListNhanVien();
         }
 
+        public NhanVien GetEmployeeByName(string name)
+        {
+            return _repository.GetEmployeeByName(name);
+        }
+
         public List<PhongBan> GetListPhongBanOfNhanVien(int maNV)
         {
             return _repository.AllPhongBanOfNhanVien(maNV);
@@ -38,6 +43,12 @@ namespace HRManagementApp.BLL
             return _repository.AllChucVuOfNhanVien(maNV);
         }
 
+
+
+        public NhanVien GetEmployeeById(int id)
+        {
+            return _repository.GetEmployeeById(id);
+        }
         // =====================================================
         // THÊM NHÂN VIÊN
         // =====================================================
@@ -53,7 +64,7 @@ namespace HRManagementApp.BLL
         {
             try
             {
-                var old = _repository.GetById(nv.MaNV);
+                var old = _repository.GetEmployeeById(nv.MaNV);
                 if (old == null) return false;
 
                 old.HoTen = nv.HoTen;
@@ -99,7 +110,7 @@ namespace HRManagementApp.BLL
                 }
 
                 // ===== 2. LẤY DỮ LIỆU GỐC =====
-                var old = _repository.GetById(nv.MaNV);
+                var old = _repository.GetEmployeeById(nv.MaNV);
                 if (old == null) return (false, "Không tìm thấy nhân viên");
 
                 // ===== 3. CẬP NHẬT =====

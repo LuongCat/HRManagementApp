@@ -1,6 +1,6 @@
 namespace HRManagementApp.models;
-
-public class NhanVien
+using System.ComponentModel;
+public class NhanVien 
 {
     public int MaNV { get; set; }
     public string HoTen { get; set; }
@@ -40,7 +40,13 @@ public class NhanVien
             return string.Join(", ", ChucVu.Select(c => c.TenCV));
         }
     }
-    
+    // hai cái này đang dùng cho thêm nhân viên vào 1 phòng ban
     public bool IsSelected { get; set; } = false;
+    public int MaChucVuMoi {get; set;}
+    
+    public decimal HeSoKiemNhiem { get; set; } = 1;
+
+    
+
 
 }

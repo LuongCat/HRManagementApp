@@ -25,9 +25,19 @@ public class VaiTroNhanVienService
         return _vaiTroNhanVienReponsitory.UpdateVaiTroNhanVien(vtnv);
     }
 
+    public bool InsertVaiTroNhanVien(VaiTroNhanVien vtnv)
+    {
+        return _vaiTroNhanVienReponsitory.InsertVaiTroNhanVien(vtnv);
+    }
+
     public List<NhanVien> GetEmployeesNotInDepartment(int maPB)
     {
         return _vaiTroNhanVienReponsitory.GetEmployeesNotInDepartment(maPB);
+    }
+
+    public bool RemoveEmployeeFromDepartment(int MaNV, int MaPB)
+    {
+        return _vaiTroNhanVienReponsitory.RemoveEmployeeFromDepartment(MaNV, MaPB);
     }
 }
 

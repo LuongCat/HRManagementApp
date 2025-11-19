@@ -10,6 +10,6 @@ public class VaiTroNhanVien
     public decimal? HeSoPhuCapKiemNhiem { get; set; }
     public string? GhiChu { get; set; }
 
-    public ChucVu ChucVu { get; set; }
-    public PhongBan PhongBan { get; set; }
+    public ChucVu ChucVu { get; set; } = new();
+    public PhongBan PhongBan { get; set; } = new();
 }

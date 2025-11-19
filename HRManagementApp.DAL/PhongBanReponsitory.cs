@@ -86,5 +86,95 @@ public class PhongBanReponsitory
         };
     }
 
-    
+    public bool UpdateDeparment(PhongBan phongBan)
+    {
+        if (phongBan == null) return false;
+
+        string query = @"
+        UPDATE PhongBan
+        SET TenPB = @TenPB,
+            MoTa = @MoTa,
+            MaTruongPhong = @MaTruongPhong
+        WHERE MaPB = @MaPB
+    ";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@TenPB", phongBan.TenPB },
+            { "@MoTa", (object?)phongBan.MoTa ?? DBNull.Value },
+            { "@MaTruongPhong", phongBan.MaTruongPhong },
+            { "@MaPB", phongBan.MaPB }
+        };
+
+        try
+        {
+            int rowsAffected = Database.ExecuteNonQuery(query, parameters);
+            return rowsAffected > 0;
+        }
+        catch (Exception ex)
+        {
+            // Có thể log lỗi tại đây nếu cần
+            Console.WriteLine("Lỗi khi cập nhật phòng ban: " + ex.Message);
+            return false;
+        }
+    }
+
+
+    /// <summary>
+    /// Thêm phòng ban mới
+    /// </summary>
+    public bool InsertDepartment(PhongBan phongBan)
+    {
+        if (phongBan == null) return false;
+
+        string query = @"
+            INSERT INTO PhongBan (TenPB, MoTa, MaTruongPhong)
+            VALUES (@TenPB, @MoTa, @MaTruongPhong)
+        ";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@TenPB", phongBan.TenPB },
+            { "@MoTa", (object?)phongBan.MoTa ?? DBNull.Value },
+            { "@MaTruongPhong", phongBan.MaTruongPhong }
+        };
+
+        try
+        {
+            int rowsAffected = Database.ExecuteNonQuery(query, parameters);
+            return rowsAffected > 0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Lỗi khi thêm phòng ban: " + ex.Message);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Xóa phòng ban theo ID
+    /// </summary>
+    public bool DeleteDepartment(int maPB)
+    {
+        string query = @"
+            DELETE FROM PhongBan
+            WHERE MaPB = @MaPB
+        ";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaPB", maPB }
+        };
+
+        try
+        {
+            int rowsAffected = Database.ExecuteNonQuery(query, parameters);
+            return rowsAffected > 0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Lỗi khi xóa phòng ban: " + ex.Message);
+            return false;
+        }
+    }
 }

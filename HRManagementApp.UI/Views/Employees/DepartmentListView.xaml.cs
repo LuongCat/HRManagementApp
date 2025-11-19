@@ -127,7 +127,7 @@ namespace HRManagementApp.UI.Views
                 // Lấy nhân viên thuộc phòng ban
                 var departmentEmployees = _vaiTroNhanVienService.GetNhanVienOfPhongBan(maPB);
         
-                // Mở window
+                // Mở window (window này trong file Department)
                 var window = new EditDepartmentWindow();
                 window.LoadDepartmentInfo(phongBan, departmentEmployees);
         

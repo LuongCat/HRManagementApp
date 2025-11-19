@@ -46,9 +46,9 @@ namespace HRManagementApp.UI.Views
                     {
                         MaChucVu = $"POS{cv.MaCV:000}",
                         TenChucVu = cv.TenCV,
-                        HeSoLuong = CalculateHeSoLuong(cv.LuongCB),
                         PhuCapDisplay = FormatCurrency(cv.PhuCap),
-                        MoTa = GetMoTa(cv.TenCV)
+                        TienPhuCapKiemNhiem =cv.TienPhuCapKiemNhiem,
+                       LuongCB = cv.LuongCB,
                     })
                 );
 
@@ -131,7 +131,6 @@ namespace HRManagementApp.UI.Views
                     MessageBox.Show(
                         $"Chỉnh sửa chức vụ: {position.TenChucVu}\n\n" +
                         $"Mã chức vụ: {position.MaChucVu}\n" +
-                        $"Hệ số lương: {position.HeSoLuong}\n" +
                         $"Phụ cấp: {position.PhuCapDisplay} VNĐ",
                         "Chỉnh sửa", 
                         MessageBoxButton.OK, 
@@ -198,8 +197,9 @@ namespace HRManagementApp.UI.Views
     {
         public string MaChucVu { get; set; }
         public string TenChucVu { get; set; }
-        public decimal HeSoLuong { get; set; }
         public string PhuCapDisplay { get; set; }
         public string MoTa { get; set; }
+        public decimal? TienPhuCapKiemNhiem { get; set; }
+        public decimal? LuongCB { get; set; }
     }
 }

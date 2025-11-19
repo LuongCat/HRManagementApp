@@ -8,8 +8,10 @@ public class VaiTroNhanVien
 
     public string LoaiChucVu { get; set; }   // Chính thức / Kiêm nhiệm
     public decimal? HeSoPhuCapKiemNhiem { get; set; }
+    
+    public decimal? HeSoLuongCoBan {get; set;}
     public string? GhiChu { get; set; }
-
+    
     public ChucVu ChucVu { get; set; } = new();
     public PhongBan PhongBan { get; set; } = new();
 }

@@ -24,6 +24,7 @@ namespace HRManagementApp.DAL
                     nvcv.LoaiChucVu,
                     nvcv.HeSoPhuCapKiemNhiem,
                     nvcv.GhiChu,
+                    nvcv.HeSoLuongCoBan,
 
                     cv.MaCV AS CV_MaCV,
                     cv.TenCV AS CV_TenCV,
@@ -60,6 +61,7 @@ namespace HRManagementApp.DAL
                     LoaiChucVu = row["LoaiChucVu"].ToString(),
                     HeSoPhuCapKiemNhiem = Convert.ToDecimal(row["HeSoPhuCapKiemNhiem"]),
                     GhiChu = row["GhiChu"] == DBNull.Value ? "" : row["GhiChu"].ToString(),
+                    HeSoLuongCoBan = Convert.ToDecimal(row["HeSoLuongCoBan"]),
 
                     ChucVu = new ChucVu
                     {
@@ -93,6 +95,7 @@ namespace HRManagementApp.DAL
         SET 
             LoaiChucVu = @LoaiChucVu,
             TienPhuCapKiemNhiem = @TienPhuCapKiemNhiem,
+            HeSoLuongCoBan = @HeSoLuongCoBan,
             GhiChu = @GhiChu
         WHERE MaNV = @MaNV AND MaCV = @MaCV AND MaPB = @MaPB;
     ";
@@ -105,6 +108,7 @@ namespace HRManagementApp.DAL
 
                 { "@LoaiChucVu", vtnv.LoaiChucVu },
                 { "@TienPhuCapKiemNhiem", vtnv.HeSoPhuCapKiemNhiem ?? 0 },
+                {"@HeSoLuongCoBan", vtnv.HeSoLuongCoBan ?? 1 },
                 { "@GhiChu", string.IsNullOrEmpty(vtnv.GhiChu) ? DBNull.Value : vtnv.GhiChu }
             };
 

@@ -17,7 +17,8 @@ public class ChucVuRepository
                 TenCV = row["TenCV"].ToString(),
                 PhuCap = decimal.Parse(row["PhuCap"].ToString()),
                 LuongCB = decimal.Parse(row["LuongCB"].ToString()),
-                TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString())
+                TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString()),
+                IsActive = row["HoatDong"].ToString()
             });
         }
 
@@ -51,7 +52,8 @@ public class ChucVuRepository
             TenCV = row["TenCV"]?.ToString() ?? "",
             PhuCap = row["PhuCap"] == DBNull.Value ? null : Convert.ToDecimal(row["PhuCap"]),
             LuongCB = row["LuongCB"] == DBNull.Value ? null : Convert.ToDecimal(row["LuongCB"]),
-            TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString())
+            TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString()),
+            IsActive = row["HoatDong"].ToString()
         };
     }
 
@@ -83,9 +85,74 @@ public class ChucVuRepository
             TenCV = row["TenCV"]?.ToString() ?? "",
             PhuCap = row["PhuCap"] == DBNull.Value ? null : Convert.ToDecimal(row["PhuCap"]),
             LuongCB = row["LuongCB"] == DBNull.Value ? null : Convert.ToDecimal(row["LuongCB"]),
-            TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString())
+            TienPhuCapKiemNhiem = decimal.Parse(row["TienPhuCapKiemNhiem"].ToString()),
+            IsActive = row["HoatDong"].ToString()
         };
     }
+    
+    public bool InsertChucVu(ChucVu chucVu)
+    {
+        string query = @"
+        INSERT INTO chucvu (TenCV, PhuCap, LuongCB, TienPhuCapKiemNhiem)
+        VALUES (@TenCV, @PhuCap, @LuongCB, @TienPhuCapKiemNhiem);
+    ";
 
+        var parameters = new Dictionary<string, object>
+        {
+            { "@TenCV", chucVu.TenCV },
+            { "@PhuCap", chucVu.PhuCap ?? 0 },
+            { "@LuongCB", chucVu.LuongCB ?? 0 },
+            { "@TienPhuCapKiemNhiem", chucVu.TienPhuCapKiemNhiem }
+        };
+
+        int affected = Database.ExecuteNonQuery(query, parameters);
+        return affected > 0;
+    }
+
+    public bool UpdateChucVu(ChucVu chucVu)
+    {
+        string query = @"
+        UPDATE chucvu
+        SET TenCV = @TenCV,
+            PhuCap = @PhuCap,
+            LuongCB = @LuongCB,
+            TienPhuCapKiemNhiem = @TienPhuCapKiemNhiem
+        WHERE MaCV = @MaCV;
+    ";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaCV", chucVu.MaCV },
+            { "@TenCV", chucVu.TenCV },
+            { "@PhuCap", chucVu.PhuCap ?? 0 },
+            { "@LuongCB", chucVu.LuongCB ?? 0 },
+            { "@TienPhuCapKiemNhiem", chucVu.TienPhuCapKiemNhiem }
+        };
+
+        int affected = Database.ExecuteNonQuery(query, parameters);
+        return affected > 0;
+    }
+
+    public bool ChangeStatus(int maCV, string currentStatus)
+    {
+        string query = @"
+        UPDATE chucvu
+        SET HoatDong = @HoatDong
+        WHERE MaCV = @MaCV;
+    ";
+
+        // Toggle lại trạng thái
+        string newStatus = currentStatus == "Active" ? "inactive" : "Active";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaCV", maCV },
+            { "@HoatDong" , newStatus }
+        };
+
+        int affected = Database.ExecuteNonQuery(query, parameters);
+        return affected > 0;
+    }
+    
     
 }

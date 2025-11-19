@@ -60,20 +60,7 @@ namespace HRManagementApp.UI.Views
                               "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-        /// <summary>
-        /// Tính hệ số lương từ lương cơ bản
-        /// </summary>
-        private decimal CalculateHeSoLuong(decimal? luongCB)
-        {
-            if (!luongCB.HasValue || luongCB.Value == 0)
-                return 1.0m;
-
-            // Giả sử lương cơ bản chuẩn là 10,000,000 VNĐ
-            decimal luongChuan = 10000000m;
-            return Math.Round(luongCB.Value / luongChuan, 1);
-        }
-
+        
         /// <summary>
         /// Format tiền tệ
         /// </summary>
@@ -84,23 +71,7 @@ namespace HRManagementApp.UI.Views
 
             return amount.Value.ToString("N0");
         }
-
-        /// <summary>
-        /// Lấy mô tả cho chức vụ
-        /// </summary>
-        private string GetMoTa(string tenCV)
-        {
-            // Map mô tả theo tên chức vụ
-            var moTaDict = new System.Collections.Generic.Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "Giám đốc", "Điều hành toàn bộ công ty" },
-                { "Trưởng phòng", "Quản lý phòng ban" },
-                { "Phó phòng", "Hỗ trợ trưởng phòng" },
-                { "Nhân viên", "Thực hiện công việc được giao" }
-            };
-
-            return moTaDict.ContainsKey(tenCV) ? moTaDict[tenCV] : "Chưa có mô tả";
-        }
+        
 
         /// <summary>
         /// Thêm chức vụ mới
@@ -108,8 +79,8 @@ namespace HRManagementApp.UI.Views
         private void BtnThemCV_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Mở window/dialog thêm chức vụ mới
-            MessageBox.Show("Mở form thêm chức vụ mới", "Thông báo", 
-                          MessageBoxButton.OK, MessageBoxImage.Information);
+            var window = new AddPositionWindow();
+            window.ShowDialog();
             
             // Sau khi thêm thành công, gọi LoadPositions() để refresh
         }

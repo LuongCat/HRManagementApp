@@ -142,6 +142,7 @@ CREATE TABLE `luong` (
                          `Thang` int NOT NULL,
                          `Nam` int NOT NULL,
                          `TongNgayCong` int DEFAULT 0,
+                         `TienLuong` decimal(18,2) DEFAULT 0,
                          `LuongThucNhan` decimal(18,2) DEFAULT 0,
                          `TrangThai` ENUM('Chưa trả', 'Đã trả') DEFAULT 'Chưa trả',
                          PRIMARY KEY (`MaLuong`),
@@ -298,10 +299,10 @@ INSERT INTO `chamcong` VALUES
                            (76,4,'2024-09-04','08:00:00',3);
 
 INSERT INTO `luong` VALUES
-                        (1,1,9,2024,26,18000000.00,'Đã trả'),
-                        (2,2,9,2024,24,11000000.00,'Đã trả'),
-                        (3,3,9,2024,27,14500000.00,'Đã trả'),
-                        (4,4,9,2024,25,10500000.00,'Đã trả');
+                        (1,1,9,2024,26,100,90,'Đã trả'),
+                        (2,2,9,2024,24,100,90,'Đã trả'),
+                        (3,3,9,2024,27,100,90,'Đã trả'),
+                        (4,4,9,2024,25,100,90,'Đã trả');
 
 INSERT INTO `nhanvien_chucvu`
 (MaNV, MaCV, MaPB, HeSoPhuCapKiemNhiem, LoaiChucVu, GhiChu)

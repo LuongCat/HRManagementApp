@@ -22,8 +22,7 @@ public class NhanVien
     
     public List<Thue> Thues  { get; set; } = new();
 
-    public Luong Luong { get; set; } = new();
-    
+    public List<Luong> Luongs { get; set; } = new();
     
     public String TrangThai { get; set; }
     
@@ -53,8 +52,6 @@ public class NhanVien
     public int MaChucVuMoi {get; set;}
     
     public decimal HeSoKiemNhiem { get; set; } = 1;
-
-    
 
 
 }

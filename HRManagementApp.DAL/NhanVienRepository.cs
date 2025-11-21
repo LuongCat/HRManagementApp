@@ -9,7 +9,12 @@ namespace HRManagementApp.DAL
     public class NhanVienRepository
     {
 
-        public VaiTroNhanVienReponsitory vaiTroNhanVien { get; set; } 
+        public VaiTroNhanVienReponsitory vaiTroNhanVien { get; set; }
+        public ThueRepository thueRepository { get; set; } = new();
+        public KhauTruRepository khauTruRepository { get; set; } = new();
+        public PhuCapNhanVienRepository  PhuCapNhanVienRepository { get; set; } = new();
+        
+        public LuongRepository luongRepository { get; set; } = new();
         // =====================================================
         // LẤY DANH SÁCH NHÂN VIÊN
         // =====================================================
@@ -41,7 +46,12 @@ namespace HRManagementApp.DAL
 
                     PhongBan = AllPhongBanOfNhanVien(id),
                     ChucVu = AllChucVuOfNhanVien(id),
-                    DanhSachChucVu = vaiTroNhanVien.GetVaiTroNhanVien(id)
+                    DanhSachChucVu = vaiTroNhanVien.GetVaiTroNhanVien(id),
+                    
+                    Luongs = luongRepository.GetSalaryByMaNV(id),
+                    PhuCaps = PhuCapNhanVienRepository.GetPhuCapByMaNV(id),
+                    Thues = thueRepository.GetTaxByMaNV(id),
+                    KhauTrus = khauTruRepository.GetDeductionByMaNV(id)
                 });
             }
 
@@ -144,7 +154,11 @@ namespace HRManagementApp.DAL
 
                 PhongBan = AllPhongBanOfNhanVien(id),
                 ChucVu = AllChucVuOfNhanVien(id),
-                DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>()
+                DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>(),
+                
+                PhuCaps = PhuCapNhanVienRepository.GetPhuCapByMaNV(id),
+                Thues = thueRepository.GetTaxByMaNV(id),
+                KhauTrus = khauTruRepository.GetDeductionByMaNV(id)
             };
         }
         
@@ -173,7 +187,12 @@ namespace HRManagementApp.DAL
 
                 PhongBan = AllPhongBanOfNhanVien(id),
                 ChucVu = AllChucVuOfNhanVien(id),
-                DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>()
+                DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>(),
+                
+                
+                PhuCaps = PhuCapNhanVienRepository.GetPhuCapByMaNV(id),
+                Thues = thueRepository.GetTaxByMaNV(id),
+                KhauTrus = khauTruRepository.GetDeductionByMaNV(id)
             };
         }
 
@@ -326,7 +345,28 @@ namespace HRManagementApp.DAL
             }
         }
 
-        
+        public bool addEmployeeBasic(NhanVien nv)
+        {
+            string insertNV = @"
+                    INSERT INTO NhanVien
+                    (HoTen, NgaySinh, SoCCCD, DienThoai, GioiTinh, NgayVaoLam, TrangThai)
+                    VALUES
+                    (@HoTen, @NgaySinh, @SoCCCD, @DienThoai, @GioiTinh, @NgayVaoLam, @TrangThai);
+                ";
+
+            var paramNV = new Dictionary<string, object>
+            {
+                { "@HoTen", nv.HoTen },
+                { "@NgaySinh", (object?)nv.NgaySinh ?? DBNull.Value },
+                { "@SoCCCD", (object?)nv.SoCCCD ?? DBNull.Value },
+                { "@DienThoai", (object?)nv.DienThoai ?? DBNull.Value },
+                { "@GioiTinh", nv.GioiTinh },
+                { "@NgayVaoLam", (object?)nv.NgayVaoLam ?? DBNull.Value },
+                { "@TrangThai", nv.TrangThai }
+            };
+
+            return Database.ExecuteNonQuery(insertNV, paramNV) > 0;
+        }
         
         // =====================================================
         // CHỈNH TRẠNG THÁI CỦA NHÂN VIÊN

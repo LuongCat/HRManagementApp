@@ -156,6 +156,7 @@ namespace HRManagementApp.DAL
                 ChucVu = AllChucVuOfNhanVien(id),
                 DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>(),
                 
+                Luongs = luongRepository.GetSalaryByMaNV(id),
                 PhuCaps = PhuCapNhanVienRepository.GetPhuCapByMaNV(id),
                 Thues = thueRepository.GetTaxByMaNV(id),
                 KhauTrus = khauTruRepository.GetDeductionByMaNV(id)
@@ -189,7 +190,7 @@ namespace HRManagementApp.DAL
                 ChucVu = AllChucVuOfNhanVien(id),
                 DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>(),
                 
-                
+                Luongs = luongRepository.GetSalaryByMaNV(id),
                 PhuCaps = PhuCapNhanVienRepository.GetPhuCapByMaNV(id),
                 Thues = thueRepository.GetTaxByMaNV(id),
                 KhauTrus = khauTruRepository.GetDeductionByMaNV(id)
@@ -273,7 +274,7 @@ namespace HRManagementApp.DAL
         // =====================================================
         // THÊM NHÂN VIÊN
         // =====================================================
-        public bool AddNhanVien(NhanVien nv)
+        public bool AddEmployeeHavingDeparmentAndRole(NhanVien nv)
         {
             using var conn = Database.GetConnection();
             conn.Open();

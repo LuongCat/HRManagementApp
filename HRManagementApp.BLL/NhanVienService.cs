@@ -54,7 +54,7 @@ namespace HRManagementApp.BLL
         // =====================================================
         public bool AddNhanVien(NhanVien nv)
         {
-            return _repository.AddNhanVien(nv);
+            return _repository.AddEmployeeHavingDeparmentAndRole(nv);
         }
 
         // =====================================================

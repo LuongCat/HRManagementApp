@@ -174,9 +174,6 @@ CREATE TABLE `nhanvien_chucvu` (
   CONSTRAINT `nv_cv_fk_pb` FOREIGN KEY (`MaPB`) REFERENCES `phongban` (`MaPB`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
-
-
 CREATE TABLE `chamcong_lienketdon` (
   `MaCC` int NOT NULL,
   `MaDon` int NOT NULL,

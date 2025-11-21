@@ -1,0 +1,132 @@
+<UserControl x:Class="HRManagementApp.UI.Views.Report.EmployeeReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="1000"
+        d:DesignHeight="600">
+
+    <Grid Background="#FFFFFF"
+            Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- TITLE -->
+        <StackPanel Grid.Row="0"
+                Margin="0 0 0 15">
+            <TextBlock Text="Employee Report"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       Foreground="#2C3E50"/>
+
+            <TextBlock Text="Danh sách nhân viên hiện có trong hệ thống"
+                       FontSize="14"
+                       Foreground="#7F8C8D"/>
+        </StackPanel>
+
+
+        <!-- FILTER BAR -->
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    Margin="0 0 0 15">
+
+            <!-- Search -->
+            <TextBox Width="240"
+                     Height="32"
+                     Padding="8"
+                     BorderBrush="#D0D4DA"
+                     BorderThickness="1"
+                     Text="Nhập tên nhân viên..."
+                     PreviewMouseLeftButtonDown="SearchBox_PreviewMouseLeftButtonDown"
+                     />
+
+            <!-- Department filter -->
+            <ComboBox x:Name="DepartmentFilter"
+                      Width="200"
+                      Height="32"
+                      VerticalContentAlignment="Center"
+                      BorderBrush="#D0D4DA"
+                      BorderThickness="1"
+                      SelectedIndex="0">
+                <ComboBoxItem Content="All Departments"/>
+            </ComboBox>
+
+            <!-- Status filter -->
+            <ComboBox x:Name="StatusFilter"
+                      Width="150"
+                      Height="32"
+                      VerticalContentAlignment="Center"
+                      BorderBrush="#D0D4DA"
+                      BorderThickness="1"
+                      SelectedIndex="0">
+                <ComboBoxItem Content="All Status"/>
+            </ComboBox>
+
+            <!-- Export Button -->
+            <Button Content="📄 Export"
+                    Width="120"
+                    Height="32"
+                    Background="#2E86AB"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Cursor="Hand"/>
+        </StackPanel>
+
+
+        <!-- TABLE -->
+        <Border Grid.Row="2"
+                BorderBrush="#E5E5E5"
+                BorderThickness="1"
+                CornerRadius="6"
+                Background="White">
+
+            <DataGrid x:Name="EmployeeTable"
+                      AutoGenerateColumns="False"
+                      HeadersVisibility="Column"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      IsReadOnly="True"
+                      GridLinesVisibility="None"
+                      RowHeight="36"
+                      AlternatingRowBackground="#FAFAFA"
+                      BorderThickness="0">
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="ID"
+                                        Binding="{Binding Id}"
+                                        Width="80"/>
+
+                    <DataGridTextColumn Header="Name"
+                                        Binding="{Binding Name}"
+                                        Width="200"/>
+
+                    <DataGridTextColumn Header="Department"
+                                        Binding="{Binding Department}"
+                                        Width="150"/>
+
+                    <DataGridTextColumn Header="Position"
+                                        Binding="{Binding Position}"
+                                        Width="160"/>
+
+                    <DataGridTextColumn Header="Status"
+                                        Binding="{Binding Status}"
+                                        Width="120"/>
+
+                    <DataGridTextColumn Header="Start Date"
+                                        Binding="{Binding StartDate}"
+                                        Width="150"/>
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </Border>
+
+    </Grid>
+</UserControl>

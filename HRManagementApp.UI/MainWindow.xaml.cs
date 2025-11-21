@@ -136,6 +136,7 @@ namespace HRManagementApp.UI
         {
             // Reports and analytics
             // Generate various HR reports, charts, export functionality
+            ContentArea.Content = new Views.ReportView();
         }
 
         private void LoadSettingsSection()

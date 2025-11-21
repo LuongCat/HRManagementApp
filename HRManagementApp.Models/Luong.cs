@@ -8,4 +8,6 @@ public class Luong
     public int Nam { get; set; }
     public int? TongNgayCong { get; set; }
     public decimal? LuongThucNhan { get; set; }
+    
+    public string TrangThai { get; set; } // Enum: "Chưa trả", "Đã trả"
 }

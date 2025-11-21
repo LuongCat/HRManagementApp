@@ -1,10 +1,10 @@
 DROP DATABASE IF EXISTS `hrmanagement`;
-CREATE DATABASE `hrmanagement`;
-USE `hrmanagement`;
+	CREATE DATABASE `hrmanagement`;
+	USE `hrmanagement`;
 
--- ============================================
--- 1. BẢNG KHÔNG PHỤ THUỘC				
--- ============================================
+	-- ============================================
+	-- 1. BẢNG KHÔNG PHỤ THUỘC				
+	-- ============================================
 
 CREATE TABLE `nhanvien` (
                             `MaNV` int NOT NULL AUTO_INCREMENT,
@@ -25,6 +25,7 @@ CREATE TABLE `chucvu` (
                           `PhuCap` decimal(18,2) DEFAULT 0,
                           `LuongCB` decimal(18,2) DEFAULT 0,
                           `TienPhuCapKiemNhiem` DECIMAL(18,2) DEFAULT 0,
+                          `HoatDong` ENUM('Active', 'inActive') DEFAULT "Active",
                           PRIMARY KEY (`MaCV`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -96,12 +97,13 @@ CREATE TABLE `calamviec` (
                              `MaLich` int NOT NULL AUTO_INCREMENT,
                              `MaNV` int NOT NULL,
                              `MaDD` int DEFAULT NULL,
-                             `CaLam` varchar(50) DEFAULT NULL,
+                             `MaCaLam` int DEFAULT NULL,
                              PRIMARY KEY (`MaLich`),
                              KEY `clv_MaNV` (`MaNV`),
                              KEY `clv_MaDD` (`MaDD`),
                              CONSTRAINT `calamviec_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE,
-                             CONSTRAINT `calamviec_ibfk_2` FOREIGN KEY (`MaDD`) REFERENCES `diadiemlamviec` (`MaDD`) ON DELETE SET NULL ON UPDATE CASCADE
+                             CONSTRAINT `calamviec_ibfk_2` FOREIGN KEY (`MaDD`) REFERENCES `diadiemlamviec` (`MaDD`) ON DELETE SET NULL ON UPDATE CASCADE,
+                             CONSTRAINT `calamviec_ibfk_3` FOREIGN KEY (`MaCaLam`) REFERENCES `calam` (`MaCa`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `chamcong` (
@@ -173,6 +175,7 @@ CREATE TABLE `nhanvien_chucvu` (
                                    `MaNV` INT NOT NULL,
                                    `MaCV` INT NOT NULL,
                                    `MaPB` INT NOT NULL,
+                                   `HeSoLuongCoban` DECIMAL(6,4) DEFAULT 1.0,
                                    `HeSoPhuCapKiemNhiem` DECIMAL(6,4) DEFAULT 0,
                                    `LoaiChucVu` ENUM('Chính thức', 'Kiêm nhiệm') DEFAULT 'Chính thức',
                                    `GhiChu` VARCHAR(200) DEFAULT NULL,
@@ -189,6 +192,7 @@ CREATE TABLE `nhanvien_chucvu` (
 
 
 
+
 CREATE TABLE `chamcong_lienketdon` (
                                        `MaCC` int NOT NULL,
                                        `MaDon` int NOT NULL,
@@ -199,14 +203,62 @@ CREATE TABLE `chamcong_lienketdon` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================
+-- them
+-- ============================================
+
+-- Bảng phụ cấp cho nhân viên
+CREATE TABLE `phucap_nhanvien` (
+                                   `ID` int NOT NULL AUTO_INCREMENT,
+                                   `MaNV` int NOT NULL,
+                                   `TenPhuCap` varchar(100) NOT NULL,
+                                   `SoTien` decimal(18,2) NOT NULL DEFAULT 0,
+                                   `ApDungTuNgay` date NOT NULL,
+                                   `ApDungDenNgay` date DEFAULT NULL,
+                                   PRIMARY KEY (`ID`),
+                                   KEY `fk_phucap_nv` (`MaNV`),
+                                   CONSTRAINT `fk_phucap_nv` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien`(`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Bảng khấu trừ cho nhân viên
+CREATE TABLE `khautru` (
+                           `MaKT` int NOT NULL AUTO_INCREMENT,
+                           `MaNV` int NOT NULL,
+                           `TenKhoanTru` varchar(100) NOT NULL,
+                           `SoTien` decimal(18,2) NOT NULL DEFAULT 0,
+                           `Ngay` date NOT NULL DEFAULT (CURRENT_DATE),
+                           `GhiChu` varchar(200) DEFAULT NULL,
+                           PRIMARY KEY (`MaKT`),
+                           KEY `fk_khautru_nv` (`MaNV`),
+                           CONSTRAINT `fk_khautru_nv` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien`(`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Bảng thuế thu nhập cá nhân
+CREATE TABLE `thue` (
+                        `MaThue` int NOT NULL AUTO_INCREMENT,
+                        `MaNV` int NOT NULL,
+                        `TenThue` varchar(100) NOT NULL,
+                        `SoTien` decimal(18,2) NOT NULL DEFAULT 0,
+                        `ApDungTuNgay` date NOT NULL,
+                        `ApDungDenNgay` date DEFAULT NULL,
+                        PRIMARY KEY (`MaThue`),
+                        KEY `fk_thue_nv` (`MaNV`),
+                        CONSTRAINT `fk_thue_nv` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien`(`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+
+
+
+-- ============================================
 -- 4. DỮ LIỆU MẪU
 -- ============================================
 
-INSERT INTO `chucvu` VALUES
-                         (1,'Nhân viên',1000000.00,8000000.00,0),
-                         (2,'Tổ trưởng',1500000.00,10000000.00,10000),
-                         (3,'Trưởng phòng',3000000.00,15000000.00,10000),
-                         (4,'Giám đốc',5000000.00,25000000.00,20000);
+INSERT INTO chucvu (MaCV, TenCV, PhuCap, LuongCB, TienPhuCapKiemNhiem) VALUES
+                                                                           (1,'Nhân viên',1000000.00,8000000.00,0),
+                                                                           (2,'Tổ trưởng',1500000.00,10000000.00,10000),
+                                                                           (3,'Trưởng phòng',3000000.00,15000000.00,10000),
+                                                                           (4,'Giám đốc',5000000.00,25000000.00,20000);
 
 INSERT INTO `nhanvien` VALUES
                            (1,'Nguyễn Văn Ann','1990-05-15','012345678901','0901123456','Nghỉ việc','2020-01-10','Nam'),
@@ -273,3 +325,35 @@ INSERT INTO `vaitro_quyenhan` VALUES
                                   (1,1),(1,2),(1,3),
                                   (2,1),(2,2),
                                   (3,2);
+
+-- ============================================
+-- Dữ liệu mẫu cho phucap_nhanvien
+-- ============================================
+
+INSERT INTO `phucap_nhanvien` (`MaNV`, `TenPhuCap`, `SoTien`, `ApDungTuNgay`, `ApDungDenNgay`) VALUES
+                                                                                                   (1, 'Phụ cấp thâm niên', 500000, '2024-01-01', NULL),
+                                                                                                   (1, 'Phụ cấp trách nhiệm', 300000, '2024-06-01', '2024-12-31'),
+                                                                                                   (2, 'Phụ cấp trách nhiệm', 200000, '2024-01-01', NULL),
+                                                                                                   (3, 'Phụ cấp ca đêm', 150000, '2024-03-01', NULL),
+                                                                                                   (4, 'Phụ cấp trách nhiệm', 250000, '2024-05-01', NULL);
+
+-- ============================================
+-- Dữ liệu mẫu cho khautru
+-- ============================================
+
+INSERT INTO `khautru` (`MaNV`, `TenKhoanTru`, `SoTien`, `Ngay`, `GhiChu`) VALUES
+                                                                              (1, 'Bảo hiểm xã hội', 800000, '2024-09-30', 'Khấu trừ tháng 9'),
+                                                                              (1, 'Bảo hiểm y tế', 200000, '2024-09-30', NULL),
+                                                                              (2, 'Bảo hiểm xã hội', 750000, '2024-09-30', NULL),
+                                                                              (3, 'Bảo hiểm xã hội', 700000, '2024-09-30', NULL),
+                                                                              (4, 'Bảo hiểm xã hội', 650000, '2024-09-30', NULL);
+
+-- ============================================
+-- Dữ liệu mẫu cho thue
+-- ============================================
+
+INSERT INTO `thue` (`MaNV`, `TenThue`, `SoTien`, `ApDungTuNgay`, `ApDungDenNgay`) VALUES
+                                                                                      (1, 'Thuế thu nhập cá nhân', 1200000, '2024-09-01', '2024-09-30'),
+                                                                                      (2, 'Thuế thu nhập cá nhân', 800000, '2024-09-01', '2024-09-30'),
+                                                                                      (3, 'Thuế thu nhập cá nhân', 1000000, '2024-09-01', '2024-09-30'),
+                                                                                      (4, 'Thuế thu nhập cá nhân', 750000, '2024-09-01', '2024-09-30');

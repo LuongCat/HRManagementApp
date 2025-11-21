@@ -1,0 +1,171 @@
+<UserControl x:Class="HRManagementApp.UI.Views.PayrollTag"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F5F7FA">
+   <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- Dashboard Cards -->
+            <RowDefinition Height="Auto"/>   <!-- Tabs -->
+            <RowDefinition Height="*"/>      <!-- DataGrid -->
+        </Grid.RowDefinitions>
+
+        <!-- ✅ DASHBOARD CARDS -->
+        <Grid Grid.Row="0" Margin="0,0,0,30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Card 1: Tổng lương tháng -->
+            <Border Grid.Column="0" Background="White" CornerRadius="12" Margin="0,0,15,0" Padding="20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Tổng lương tháng" FontSize="14" Foreground="#6B7280" Margin="0,0,0,8"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock x:Name="TotalSalary" Text="66.400.000 đ" FontSize="24" FontWeight="Bold" Foreground="#2563EB"/>
+                        <Border Width="40" Height="40" Background="#DBEAFE" CornerRadius="8" Margin="10,0,0,0">
+                            <TextBlock Text="💰" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Card 2: Đã trả -->
+            <Border Grid.Column="1" Background="White" CornerRadius="12" Margin="0,0,15,0" Padding="20">
+                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Đã trả" FontSize="14" Foreground="#6B7280" Margin="0,0,0,8"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock x:Name="PaidSalary" Text="38.500.000 đ" FontSize="24" FontWeight="Bold" Foreground="#10B981"/>
+                        <Border Width="40" Height="40" Background="#D1FAE5" CornerRadius="8" Margin="10,0,0,0">
+                            <TextBlock Text="💵" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Card 3: Chưa trả -->
+            <Border Grid.Column="2" Background="White" CornerRadius="12" Margin="0,0,15,0" Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect Color="#E0E0E0" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Chưa trả" FontSize="14" Foreground="#6B7280" Margin="0,0,0,8"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock x:Name="UnpaidSalary" Text="27.900.000 đ" FontSize="24" FontWeight="Bold" Foreground="#F59E0B"/>
+                        <Border Width="40" Height="40" Background="#FEF3C7" CornerRadius="8" Margin="10,0,0,0">
+                            <TextBlock Text="📈" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Card 4: Số nhân viên -->
+            <Border Grid.Column="3" Background="White" CornerRadius="12" Padding="20">
+                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Số nhân viên" FontSize="14" Foreground="#6B7280" Margin="0,0,0,8"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock x:Name="TotalEmployees" Text="4" FontSize="24" FontWeight="Bold" Foreground="#8B5CF6"/>
+                        <Border Width="40" Height="40" Background="#EDE9FE" CornerRadius="8" Margin="10,0,0,0">
+                            <TextBlock Text="📋" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ✅ TABS -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+            
+            <Border Background="White" CornerRadius="8" Padding="2">
+                <StackPanel Orientation="Horizontal">
+                    
+                    
+                    <Button x:Name="BtnBangLuong" Content="Bảng lương" 
+                            Background="#1F2937" Foreground="White"
+                            BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
+                            Cursor="Hand" Click="BtnBangLuong_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
+                    
+                    <Button x:Name="BtnByDeparment" Content="Theo phòng ban" Background="Transparent" Foreground="#6B7280"
+                            BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
+                            Cursor="Hand" Click="BtnByDeparemnt_click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
+                    
+                    <Button  x:Name="BtnSetting" Content="Cài đặt" Background="Transparent" Foreground="#6B7280"
+                             BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
+                             Cursor="Hand" Click="BtnSetting_click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
+                    
+                </StackPanel>
+               
+            </Border>
+        </StackPanel>
+        
+        
+        <ContentControl x:Name="MainContent" Grid.Row="2"/>
+        </Grid>
+</UserControl>

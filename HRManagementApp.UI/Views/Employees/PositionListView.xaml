@@ -194,7 +194,7 @@
                                         </Button.Style>
                                     </Button>
 
-                                    <!-- Nút Xóa -->
+                                    <!-- Nút thay đổi trạng thái -->
                                     <Button Content="🔄" 
                                             Background="Transparent" 
                                             BorderThickness="0"
@@ -202,7 +202,7 @@
                                             Width="35" Height="35"
                                             Cursor="Hand"
                                             Margin="3,0"
-                                            ToolTip="Xóa"
+                                            ToolTip="Thay đổi trạng thái "
                                             Tag="{Binding MaChucVu}"
                                             Click="BtnChangeStatus_Click">
                                         <Button.Style>

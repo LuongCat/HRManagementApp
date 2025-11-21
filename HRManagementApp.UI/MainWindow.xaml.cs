@@ -24,7 +24,7 @@ namespace HRManagementApp.UI
             DashboardBtn.Click += (s, e) => NavigateTo("Dashboard", s as Button);
             EmployeesBtn.Click += (s, e) => NavigateTo("Employees", s as Button);
             AttendanceBtn.Click += (s, e) => NavigateTo("Attendance", s as Button);
-            PayrollBtn.Click += (s, e) => NavigateTo("Payroll", s as Button);
+            PayrollBtn.Click += (s, e) => NavigateTo("PayrollTag", s as Button);
             LeaveBtn.Click += (s, e) => NavigateTo("Leave Management", s as Button);
             ReportsBtn.Click += (s, e) => NavigateTo("Reports", s as Button);
             SettingsBtn.Click += (s, e) => NavigateTo("Settings", s as Button);
@@ -80,7 +80,7 @@ namespace HRManagementApp.UI
                 case "attendance":
                     LoadAttendanceSection();
                     break;
-                case "payroll":
+                case "payrolltag":
                     LoadPayrollSection();
                     break;
                 case "leave management":
@@ -111,7 +111,7 @@ namespace HRManagementApp.UI
 
         private void LoadPayrollSection()
         {
-            ContentArea.Content = new Views.PayrollView();
+            ContentArea.Content = new Views.PayrollTag();
             // Salary calculations, pay slips, tax deductions, etc.
         }
 

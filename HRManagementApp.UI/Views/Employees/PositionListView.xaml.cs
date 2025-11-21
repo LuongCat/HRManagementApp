@@ -8,9 +8,8 @@ using HRManagementApp.models;
 
 namespace HRManagementApp.UI.Views
 {
-    /// <summary>
+
     /// View hiển thị danh sách chức vụ
-    /// </summary>
     public partial class PositionListView : UserControl
     {
         private readonly ChucVuService _chucVuService;
@@ -23,9 +22,8 @@ namespace HRManagementApp.UI.Views
             LoadPositions();
         }
 
-        /// <summary>
+  
         /// Load danh sách chức vụ từ database
-        /// </summary>
         private void LoadPositions()
         {
             try
@@ -62,7 +60,7 @@ namespace HRManagementApp.UI.Views
             }
         }
 
-        /// <summary>
+    
         /// Format tiền tệ
         /// </summary>
         private string FormatCurrency(decimal? amount)
@@ -71,19 +69,6 @@ namespace HRManagementApp.UI.Views
                 return "0";
 
             return amount.Value.ToString("N0");
-        }
-
-
-        /// <summary>
-        /// Thêm chức vụ mới
-        /// </summary>
-        private void BtnThemCV_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO: Mở window/dialog thêm chức vụ mới
-            var window = new AddPositionWindow();
-            window.ShowDialog();
-
-            LoadPositions();
         }
 
         /// <summary>
@@ -99,23 +84,107 @@ namespace HRManagementApp.UI.Views
                 var position = _positions.FirstOrDefault(p => p.MaChucVu == int.Parse(maChucVu));
                 if (position != null)
                 {
-                    // TODO: Mở window/dialog chỉnh sửa chức vụ
-                    MessageBox.Show(
-                        $"Chỉnh sửa chức vụ: {position.TenChucVu}\n\n" +
-                        $"Mã chức vụ: {position.MaChucVu}\n" +
-                        $"Phụ cấp: {position.PhuCapDisplay} VNĐ",
-                        "Chỉnh sửa",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    // Mở window chỉnh sửa chức vụ
+                    var editWindow = new EditPositionWindow();
 
-                    // Sau khi sửa thành công, gọi LoadPositions() để refresh
+                    // Load dữ liệu chức vụ vào form
+                    editWindow.LoadPositionData(
+                        maChucVu: position.MaChucVu,
+                        tenChucVu: position.TenChucVu,
+                        luongCB: position.LuongCB ?? 0,
+                        phuCap: decimal.TryParse(position.PhuCapDisplay.Replace(",", ""), out decimal pc) ? pc : 0,
+                        phuCapKN: position.TienPhuCapKiemNhiem,
+                        trangThai: position.IsActive
+                    );
+
+                    // Hiển thị dialog và xử lý kết quả
+                    if (editWindow.ShowDialog() == true && editWindow.IsSaved)
+                    {
+                        try
+                        {
+                            // Tạo đối tượng ChucVu để update
+                            var chucVuUpdate = new ChucVu
+                            {
+                                MaCV = editWindow.MaChucVu,
+                                TenCV = editWindow.TenChucVu,
+                                LuongCB = editWindow.LuongCoBan,
+                                PhuCap = editWindow.PhuCap,
+                                TienPhuCapKiemNhiem = editWindow.PhuCapKiemNhiem,
+                            };
+
+                            // Gọi service để update
+                            bool success = _chucVuService.UpdateChucVu(chucVuUpdate);
+
+                            if (success)
+                            {
+                                MessageBox.Show("Cập nhật chức vụ thành công!", "Thông báo",
+                                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                                // Refresh danh sách
+                                LoadPositions();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Cập nhật chức vụ thất bại!", "Lỗi",
+                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Lỗi khi cập nhật chức vụ: {ex.Message}", "Lỗi",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+            }
+        }
+        
+        /// Thêm chức vụ mới (Cập nhật)
+        private void BtnThemCV_Click(object sender, RoutedEventArgs e)
+        {
+            var addWindow = new AddPositionWindow();
+
+            if (addWindow.ShowDialog() == true && addWindow.IsSaved)
+            {
+                try
+                {
+                    // Tạo đối tượng ChucVu mới
+                    var newChucVu = new ChucVu
+                    {
+                        TenCV = addWindow.TenChucVu,
+                        LuongCB = addWindow.LuongCoBan,
+                        PhuCap = addWindow.PhuCap,
+                        TienPhuCapKiemNhiem = addWindow.PhuCapKiemNhiem,
+                        IsActive = addWindow.TrangThai
+                    };
+
+                    // Gọi service để thêm mới
+                    bool success = _chucVuService.InsertChucVu(newChucVu);
+
+                    if (success)
+                    {
+                        MessageBox.Show("Thêm chức vụ mới thành công!", "Thông báo",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        // Refresh danh sách
+                        LoadPositions();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Thêm chức vụ thất bại!", "Lỗi",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi thêm chức vụ: {ex.Message}", "Lỗi",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
-        /// <summary>
-        /// Xóa chức vụ
-        /// </summary>
+
+        /// Thay đổi trạng thái chức vụ
         private void BtnChangeStatus_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -161,10 +230,8 @@ namespace HRManagementApp.UI.Views
             }
         }
     }
-
-    /// <summary>
+    
     /// ViewModel cho hiển thị chức vụ
-    /// </summary>
     public class ChucVuViewModel
     {
         public int MaChucVu { get; set; }

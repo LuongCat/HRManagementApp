@@ -16,6 +16,14 @@ public class NhanVien
     
     public List<VaiTroNhanVien> DanhSachChucVu { get; set; } = new();
 
+    public List<PhuCapNhanVien> PhuCaps  { get; set; } = new();
+
+    public List<KhauTru> KhauTrus  { get; set; } = new() ;
+    
+    public List<Thue> Thues  { get; set; } = new();
+
+    public Luong Luong { get; set; } = new();
+    
     
     public String TrangThai { get; set; }
     

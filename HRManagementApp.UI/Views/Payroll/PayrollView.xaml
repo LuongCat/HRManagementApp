@@ -3,12 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="#F5F7FA">
 
-    <Grid Margin="0">
+    <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>   <!-- Header -->
-            <RowDefinition Height="*"/>      <!-- DataGrid -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
+        <!-- Header -->
         <Grid Grid.Row="0" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -16,22 +17,22 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0"
+            <TextBlock x:Name="HeaderTitle"
+                       Grid.Column="0"
                        Text="Bảng lương tháng 09/2025"
                        FontSize="20"
                        FontWeight="SemiBold"
                        Foreground="#1F2937"
                        VerticalAlignment="Center"/>
 
-            <ComboBox Grid.Column="1"
+            <ComboBox x:Name="MonthYearComboBox"
+                      Grid.Column="1"
                       Width="160" Height="40"
                       Margin="0,0,15,0"
                       FontSize="14"
-                      VerticalContentAlignment="Center">
-                <ComboBoxItem Content="Tháng 09/2025" IsSelected="True"/>
-                <ComboBoxItem Content="Tháng 08/2025"/>
-                <ComboBoxItem Content="Tháng 07/2025"/>
-            </ComboBox>
+                      DisplayMemberPath="Display"
+                      VerticalContentAlignment="Center"
+                      SelectionChanged="MonthYearComboBox_SelectionChanged"/>
 
             <Button Grid.Column="2"
                     Content="⬇ Xuất Excel"
@@ -42,7 +43,8 @@
                     Height="40"
                     Cursor="Hand"
                     FontSize="14"
-                    FontWeight="SemiBold">
+                    FontWeight="SemiBold"
+                    Click="ExportExcel_Click">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="Template">
@@ -62,9 +64,7 @@
             </Button>
         </Grid>
 
-        <!-- =====================================================
-             📌 DATAGRID CHÍNH
-             ===================================================== -->
+        <!-- DataGrid -->
         <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="25">
             <DataGrid x:Name="PayrollDataGrid"
                       AutoGenerateColumns="False"
@@ -78,10 +78,7 @@
                       BorderThickness="0"
                       Background="White">
 
-                <!-- ======= HEADER & ROW STYLE ======= -->
                 <DataGrid.Resources>
-
-                    <!-- Header -->
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="Foreground" Value="#6B7280"/>
@@ -93,7 +90,6 @@
                         <Setter Property="BorderBrush" Value="#E5E7EB"/>
                     </Style>
 
-                    <!-- Dòng -->
                     <Style TargetType="DataGridRow">
                         <Setter Property="Background" Value="White"/>
                         <Setter Property="BorderThickness" Value="0,0,0,1"/>
@@ -105,7 +101,6 @@
                         </Style.Triggers>
                     </Style>
 
-                    <!-- Ô -->
                     <Style TargetType="DataGridCell">
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="Padding" Value="10,0"/>
@@ -120,13 +115,11 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-
                 </DataGrid.Resources>
 
-                <!-- ======= CÁC CỘT ======= -->
+                <!-- Binding theo PayrollResult -->
                 <DataGrid.Columns>
-
-                    <DataGridTextColumn Header="Mã NV" Binding="{Binding MaNV}" Width="100">
+                    <DataGridTextColumn Header="Mã NV" Binding="{Binding maNV}" Width="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="FontWeight" Value="SemiBold"/>
@@ -135,16 +128,15 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Họ tên" Binding="{Binding HoTen}" Width="200">
+                    <DataGridTextColumn Header="Họ tên" Binding="{Binding TenNV}" Width="180">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="#1F2937"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    
 
-                    <DataGridTextColumn Header="Lương CB" Binding="{Binding LuongCoBan, StringFormat=N0}" Width="130">
+                    <DataGridTextColumn Header="Lương CB" Binding="{Binding LuongCoBan, StringFormat=N0}" Width="120">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="TextAlignment" Value="Right"/>
@@ -152,7 +144,7 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Ngày công" Binding="{Binding NgayCong}" Width="100">
+                    <DataGridTextColumn Header="Hệ số" Binding="{Binding HeSoLuongCB, StringFormat=N2}" Width="80">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="TextAlignment" Value="Center"/>
@@ -160,23 +152,15 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Phụ cấp" Binding="{Binding PhuCap, StringFormat=N0}" Width="120">
+                    <DataGridTextColumn Header="Ngày công" Binding="{Binding TongNgayCong}" Width="90">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextAlignment" Value="Right"/>
+                                <Setter Property="TextAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Tăng ca" Binding="{Binding TangCa, StringFormat=N0}" Width="120">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="TextAlignment" Value="Right"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
-                    <DataGridTextColumn Header="Thưởng" Binding="{Binding Thuong, StringFormat=N0}" Width="120">
+                    <DataGridTextColumn Header="Phụ cấp" Binding="{Binding TongPhuCap, StringFormat=N0}" Width="110">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="#10B981"/>
@@ -185,7 +169,25 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="Khấu trừ" Binding="{Binding KhauTru, StringFormat=N0}" Width="100">
+                    <DataGridTextColumn Header="Kiêm nhiệm" Binding="{Binding TongTienKiemNhiem, StringFormat=N0}" Width="110">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#3B82F6"/>
+                                <Setter Property="TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn Header="Thuế" Binding="{Binding TongThue, StringFormat=N0}" Width="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#F59E0B"/>
+                                <Setter Property="TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn Header="Khấu trừ" Binding="{Binding TongKhauTru, StringFormat=N0}" Width="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="#EF4444"/>
@@ -194,14 +196,31 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn Header="BHX" Binding="{Binding BHX, StringFormat=N2}" Width="80">
+                    <DataGridTextColumn Header="Thực nhận" Binding="{Binding LuongThucNhan, StringFormat=N0}" Width="130">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Foreground" Value="#1F2937"/>
+                                <Setter Property="TextAlignment" Value="Right"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
+                    <!-- Nút xem chi tiết -->
+                    <DataGridTemplateColumn Header="" Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Chi tiết"
+                                        Click="ViewDetail_Click"
+                                        Background="Transparent"
+                                        Foreground="#3B82F6"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

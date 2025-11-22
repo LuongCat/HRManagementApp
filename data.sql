@@ -29,14 +29,7 @@ CREATE TABLE `chucvu` (
                           PRIMARY KEY (`MaCV`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `calam` (
-                         `MaCa` int NOT NULL AUTO_INCREMENT,
-                         `TenCa` varchar(50) DEFAULT NULL,
-                         `GioVao` time DEFAULT '00:00:00',
-                         `GioRa` time DEFAULT '00:00:00',
-                         `HeSoLuongCaLam` decimal(4,2) DEFAULT 0,
-                         PRIMARY KEY (`MaCa`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 CREATE TABLE `loaidon` (
                            `MaLoaiDon` int NOT NULL AUTO_INCREMENT,
@@ -45,13 +38,7 @@ CREATE TABLE `loaidon` (
                            PRIMARY KEY (`MaLoaiDon`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `diadiemlamviec` (
-                                  `MaDD` int NOT NULL AUTO_INCREMENT,
-                                  `TenDiaDiem` varchar(100) DEFAULT NULL,
-                                  `DiaChi` varchar(200) DEFAULT NULL,
-                                  `BanKinh` int DEFAULT 0,
-                                  PRIMARY KEY (`MaDD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 CREATE TABLE `quyenhan` (
                             `MaQuyen` int NOT NULL AUTO_INCREMENT,
@@ -93,30 +80,17 @@ CREATE TABLE `taikhoan` (
                             CONSTRAINT `taikhoan_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `calamviec` (
-                             `MaLich` int NOT NULL AUTO_INCREMENT,
-                             `MaNV` int NOT NULL,
-                             `MaDD` int DEFAULT NULL,
-                             `MaCaLam` int DEFAULT NULL,
-                             PRIMARY KEY (`MaLich`),
-                             KEY `clv_MaNV` (`MaNV`),
-                             KEY `clv_MaDD` (`MaDD`),
-                             CONSTRAINT `calamviec_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE,
-                             CONSTRAINT `calamviec_ibfk_2` FOREIGN KEY (`MaDD`) REFERENCES `diadiemlamviec` (`MaDD`) ON DELETE SET NULL ON UPDATE CASCADE,
-                             CONSTRAINT `calamviec_ibfk_3` FOREIGN KEY (`MaCaLam`) REFERENCES `calam` (`MaCa`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 CREATE TABLE `chamcong` (
                             `MaCC` int NOT NULL AUTO_INCREMENT,
                             `MaNV` int NOT NULL,
                             `Ngay` date NOT NULL DEFAULT (CURRENT_DATE),
                             `GioCC` time DEFAULT (CURRENT_TIME),
-                            `MaDD` int DEFAULT NULL,
+
                             PRIMARY KEY (`MaCC`),
                             KEY `MaNV` (`MaNV`),
-                            KEY `MaDD` (`MaDD`),
-                            CONSTRAINT `chamcong_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE,
-                            CONSTRAINT `chamcong_ibfk_2` FOREIGN KEY (`MaDD`) REFERENCES `diadiemlamviec` (`MaDD`) ON DELETE SET NULL ON UPDATE CASCADE
+                            CONSTRAINT `chamcong_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dontu` (
@@ -273,30 +247,25 @@ INSERT INTO `phongban` VALUES
                            (3,'Phòng Kinh Doanh','Tư vấn và bán hàng',3),
                            (4,'Phòng Kế Toán','Quản lý tài chính và thu chi',4);
 
-INSERT INTO `diadiemlamviec` VALUES
-                                 (1,'Văn phòng chính','123 Nguyễn Huệ, Quận 1, TP.HCM',50),
-                                 (2,'Chi nhánh Hà Nội','45 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội',60),
-                                 (3,'Nhà máy Bình Dương','KCN VSIP 1, Thuận An, Bình Dương',80),
-                                 (4,'Kho miền Tây','Số 12, Trần Hưng Đạo, Cần Thơ',70),
-                                 (5,'Trung tâm R&D','200 Hoàng Quốc Việt, Cầu Giấy, Hà Nội',55);
 
-INSERT INTO `chamcong` VALUES
-                           (61,1,'2024-09-01','08:00:00',1),
-                           (62,1,'2024-09-02','08:05:00',1),
-                           (63,1,'2024-09-03','08:10:00',2),
-                           (64,1,'2024-09-04','08:00:00',1),
-                           (65,2,'2024-09-01','08:15:00',1),
-                           (66,2,'2024-09-02','08:00:00',2),
-                           (67,2,'2024-09-03','08:05:00',1),
-                           (68,2,'2024-09-04','08:00:00',1),
-                           (69,3,'2024-09-01','07:55:00',2),
-                           (70,3,'2024-09-02','08:00:00',2),
-                           (71,3,'2024-09-03','08:10:00',3),
-                           (72,3,'2024-09-04','08:00:00',2),
-                           (73,4,'2024-09-01','08:20:00',3),
-                           (74,4,'2024-09-02','08:05:00',1),
-                           (75,4,'2024-09-03','08:00:00',1),
-                           (76,4,'2024-09-04','08:00:00',3);
+INSERT INTO chamcong (MaNV, Ngay, GioCC) VALUES
+                                             (1,'2024-09-01','08:00:00'),
+                                             (1,'2024-09-02','08:05:00'),
+                                             (1,'2024-09-03','08:10:00'),
+                                             (1,'2024-09-04','08:00:00'),
+                                             (2,'2024-09-01','08:15:00'),
+                                             (2,'2024-09-02','08:00:00'),
+                                             (2,'2024-09-03','08:05:00'),
+                                             (2,'2024-09-04','08:00:00'),
+                                             (3,'2024-09-01','07:55:00'),
+                                             (3,'2024-09-02','08:00:00'),
+                                             (3,'2024-09-03','08:10:00'),
+                                             (3,'2024-09-04','08:00:00'),
+                                             (4,'2024-09-01','08:20:00'),
+                                             (4,'2024-09-02','08:05:00'),
+                                             (4,'2024-09-03','08:00:00'),
+                                             (4,'2024-09-04','08:00:00');
+
 
 INSERT INTO `luong` VALUES
                         (1,1,9,2024,26,100,90,'Đã trả'),
@@ -363,12 +332,6 @@ INSERT INTO `thue` (`MaNV`, `TenThue`, `SoTien`, `ApDungTuNgay`, `ApDungDenNgay`
 -- ============================================
 -- 1. DỮ LIỆU MẪU CHO BẢNG CA LÀM VIỆC (calam)
 -- ============================================
-INSERT INTO `calam` (`TenCa`, `GioVao`, `GioRa`, `HeSoLuongCaLam`) VALUES
-                                                                       ('Ca Hành Chính', '08:00:00', '17:00:00', 1.00),
-                                                                       ('Ca Sáng', '06:00:00', '14:00:00', 1.00),
-                                                                       ('Ca Chiều', '14:00:00', '22:00:00', 1.00),
-                                                                       ('Ca Đêm', '22:00:00', '06:00:00', 1.50),
-                                                                       ('Ca Gãy', '10:00:00', '14:00:00', 1.20);
 
 -- ============================================
 -- 2. DỮ LIỆU MẪU CHO BẢNG LOẠI ĐƠN (loaidon)
@@ -405,12 +368,6 @@ INSERT INTO `taikhoan_vaitro` (`MaTK`, `MaVaiTro`) VALUES
 -- ============================================
 -- 5. DỮ LIỆU MẪU CHO BẢNG LỊCH LÀM VIỆC (calamviec)
 -- ============================================
-INSERT INTO `calamviec` (`MaNV`, `MaDD`, `MaCaLam`) VALUES
-                                                        (1, 1, 1), -- NV 1 làm HC ở VP chính
-                                                        (2, 1, 1), -- NV 2 làm HC ở VP chính
-                                                        (3, 2, 2), -- NV 3 làm Ca Sáng ở CN Hà Nội
-                                                        (4, 3, 3), -- NV 4 làm Ca Chiều ở Bình Dương
-                                                        (1, 1, 4); -- NV 1 tăng ca Ca Đêm ở VP chính
 
 -- ============================================
 -- 6. DỮ LIỆU MẪU CHO BẢNG ĐƠN TỪ (dontu)
@@ -425,13 +382,8 @@ INSERT INTO `dontu` (`MaNV`, `MaLoaiDon`, `NgayBatDau`, `NgayKetThuc`, `LyDo`, `
 -- ============================================
 -- 7. DỮ LIỆU MẪU CHO BẢNG CHẤM CÔNG - LIÊN KẾT ĐƠN (chamcong_lienketdon)
 -- ============================================
--- Giả định MaCC từ 61-76 đã có sẵn, MaDon 1-5 vừa tạo ở trên
-INSERT INTO `chamcong_lienketdon` (`MaCC`, `MaDon`) VALUES
-                                                        (61, 1), -- Chấm công ngày 61 liên kết với Đơn nghỉ phép số 1
-                                                        (65, 2), -- Chấm công ngày 65 liên kết với Đơn nghỉ ốm số 2
-                                                        (69, 3), -- Chấm công ngày 69 liên kết với Đơn công tác số 3
-                                                        (73, 4), -- Chấm công ngày 73 liên kết với Đơn xin nghỉ số 4
-                                                        (62, 5); -- Chấm công ngày 62 liên kết với Đơn số 5
+
+
 
 
 

@@ -13,7 +13,6 @@ namespace HRManagementApp.DAL
         public ThueRepository thueRepository { get; set; } = new();
         public KhauTruRepository khauTruRepository { get; set; } = new();
         public PhuCapNhanVienRepository  PhuCapNhanVienRepository { get; set; } = new();
-        
         public LuongRepository luongRepository { get; set; } = new();
         // =====================================================
         // LẤY DANH SÁCH NHÂN VIÊN
@@ -380,7 +379,7 @@ namespace HRManagementApp.DAL
             DataTable dt = Database.ExecuteQuery(query, param);
 
             if (dt.Rows.Count == 0)
-                return null; // hoặc "" tùy logic
+                return null; 
 
             return dt.Rows[0]["TrangThai"].ToString();
         }
@@ -408,7 +407,6 @@ namespace HRManagementApp.DAL
             return  Database.ExecuteNonQuery(query, param) > 0;
             
         }
-        
         
     }
 }

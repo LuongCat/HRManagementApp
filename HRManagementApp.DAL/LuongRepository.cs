@@ -52,6 +52,42 @@ public class LuongRepository
         return list;
     }
 
+    public Luong GetSalaryByMonthYear(int maNV, int thang, int nam)
+    {
+        string query = @"
+        SELECT * FROM Luong
+        WHERE MaNV = @MaNV AND Thang = @Thang AND Nam = @Nam
+    ";
+
+        Dictionary<string, object> parameters = new Dictionary<string, object>()
+        {
+            { "@MaNV", maNV },
+            { "@Thang", thang },
+            { "@Nam", nam }
+        };
+
+        DataTable dt = Database.ExecuteQuery(query, parameters);
+
+        if (dt.Rows.Count == 0)
+            return null;
+
+        DataRow row = dt.Rows[0];
+
+        return new Luong
+        {
+            MaLuong = int.Parse(row["MaLuong"].ToString()),
+            MaNV = int.Parse(row["MaNV"].ToString()),
+            Thang = int.Parse(row["Thang"].ToString()),
+            Nam = int.Parse(row["Nam"].ToString()),
+            TongNgayCong = int.Parse(row["TongNgayCong"].ToString()),
+
+            // Nếu một số cột có thể NULL trong DB, dùng TryParse để tránh lỗi
+            TienLuong = row["LuongCoBan"] != DBNull.Value ? decimal.Parse(row["LuongCoBan"].ToString()) : 0,
+            LuongThucNhan = row["LuongThucNhan"] != DBNull.Value ? decimal.Parse(row["LuongThucNhan"].ToString()) : 0
+        };
+    }
+
+    
     // Thêm mới
     public bool AddSalary(Luong luong)
     {

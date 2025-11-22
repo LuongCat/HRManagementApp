@@ -358,3 +358,80 @@ INSERT INTO `thue` (`MaNV`, `TenThue`, `SoTien`, `ApDungTuNgay`, `ApDungDenNgay`
                                                                                       (2, 'Thuế thu nhập cá nhân', 800000, '2024-09-01', '2024-09-30'),
                                                                                       (3, 'Thuế thu nhập cá nhân', 1000000, '2024-09-01', '2024-09-30'),
                                                                                       (4, 'Thuế thu nhập cá nhân', 750000, '2024-09-01', '2024-09-30');
+
+
+-- ============================================
+-- 1. DỮ LIỆU MẪU CHO BẢNG CA LÀM VIỆC (calam)
+-- ============================================
+INSERT INTO `calam` (`TenCa`, `GioVao`, `GioRa`, `HeSoLuongCaLam`) VALUES
+                                                                       ('Ca Hành Chính', '08:00:00', '17:00:00', 1.00),
+                                                                       ('Ca Sáng', '06:00:00', '14:00:00', 1.00),
+                                                                       ('Ca Chiều', '14:00:00', '22:00:00', 1.00),
+                                                                       ('Ca Đêm', '22:00:00', '06:00:00', 1.50),
+                                                                       ('Ca Gãy', '10:00:00', '14:00:00', 1.20);
+
+-- ============================================
+-- 2. DỮ LIỆU MẪU CHO BẢNG LOẠI ĐƠN (loaidon)
+-- ============================================
+INSERT INTO `loaidon` (`TenLoaiDon`, `MoTa`) VALUES
+                                                 ('Nghỉ phép năm', 'Nghỉ hưởng lương theo quy định năm'),
+                                                 ('Nghỉ ốm', 'Nghỉ có giấy xác nhận của bác sĩ'),
+                                                 ('Nghỉ thai sản', 'Nghỉ sinh con theo chế độ BHXH'),
+                                                 ('Nghỉ không lương', 'Nghỉ việc riêng tự nguyện không hưởng lương'),
+                                                 ('Công tác', 'Đi công tác bên ngoài công ty');
+
+-- ============================================
+-- 3. DỮ LIỆU MẪU CHO BẢNG TÀI KHOẢN (taikhoan)
+-- ============================================
+-- Lưu ý: Mật khẩu ở đây là demo dạng text, thực tế nên mã hóa
+INSERT INTO `taikhoan` (`MaNV`, `TenDangNhap`, `MatKhau`, `VaiTro`, `TrangThai`) VALUES
+                                                                                     (1, 'nguyenann', '123456', 'NhanVien', 'Hoạt động'),
+                                                                                     (2, 'tranthibanh', 'password123', 'QuanLy', 'Hoạt động'),
+                                                                                     (3, 'levanc', 'admin123', 'Admin', 'Hoạt động'),
+                                                                                     (4, 'phamthid', 'pass456', 'NhanVien', 'Đã khóa'),
+                                                                                     (NULL, 'superadmin', 'rootpass', 'Admin', 'Hoạt động');
+
+-- ============================================
+-- 4. DỮ LIỆU MẪU CHO BẢNG TÀI KHOẢN - VAI TRÒ (taikhoan_vaitro)
+-- ============================================
+-- Giả định MaTK 1-5 vừa tạo ở trên, MaVaiTro 1(Admin), 2(QuanLy), 3(NhanVien) có sẵn
+INSERT INTO `taikhoan_vaitro` (`MaTK`, `MaVaiTro`) VALUES
+                                                       (1, 3), -- TK 1 là Nhân viên
+                                                       (2, 2), -- TK 2 là Quản lý
+                                                       (3, 1), -- TK 3 là Admin
+                                                       (4, 3), -- TK 4 là Nhân viên
+                                                       (5, 1); -- TK 5 là Admin
+
+-- ============================================
+-- 5. DỮ LIỆU MẪU CHO BẢNG LỊCH LÀM VIỆC (calamviec)
+-- ============================================
+INSERT INTO `calamviec` (`MaNV`, `MaDD`, `MaCaLam`) VALUES
+                                                        (1, 1, 1), -- NV 1 làm HC ở VP chính
+                                                        (2, 1, 1), -- NV 2 làm HC ở VP chính
+                                                        (3, 2, 2), -- NV 3 làm Ca Sáng ở CN Hà Nội
+                                                        (4, 3, 3), -- NV 4 làm Ca Chiều ở Bình Dương
+                                                        (1, 1, 4); -- NV 1 tăng ca Ca Đêm ở VP chính
+
+-- ============================================
+-- 6. DỮ LIỆU MẪU CHO BẢNG ĐƠN TỪ (dontu)
+-- ============================================
+INSERT INTO `dontu` (`MaNV`, `MaLoaiDon`, `NgayBatDau`, `NgayKetThuc`, `LyDo`, `TrangThai`, `NguoiDuyet`) VALUES
+                                                                                                              (1, 1, '2024-10-01 08:00:00', '2024-10-02 17:00:00', 'Về quê thăm gia đình', 'Đã duyệt', 'Trần Thị Bánh'),
+                                                                                                              (2, 2, '2024-10-05 08:00:00', '2024-10-05 17:00:00', 'Sốt cao', 'Chưa duyệt', NULL),
+                                                                                                              (3, 5, '2024-10-10 08:00:00', '2024-10-12 17:00:00', 'Gặp khách hàng miền Bắc', 'Đã duyệt', 'Giám đốc'),
+                                                                                                              (4, 4, '2024-10-15 08:00:00', '2024-10-15 12:00:00', 'Đi họp phụ huynh', 'Từ chối', 'Trần Thị Bánh'),
+                                                                                                              (1, 2, '2024-10-20 08:00:00', '2024-10-20 17:00:00', 'Đau bụng', 'Chưa duyệt', NULL);
+
+-- ============================================
+-- 7. DỮ LIỆU MẪU CHO BẢNG CHẤM CÔNG - LIÊN KẾT ĐƠN (chamcong_lienketdon)
+-- ============================================
+-- Giả định MaCC từ 61-76 đã có sẵn, MaDon 1-5 vừa tạo ở trên
+INSERT INTO `chamcong_lienketdon` (`MaCC`, `MaDon`) VALUES
+                                                        (61, 1), -- Chấm công ngày 61 liên kết với Đơn nghỉ phép số 1
+                                                        (65, 2), -- Chấm công ngày 65 liên kết với Đơn nghỉ ốm số 2
+                                                        (69, 3), -- Chấm công ngày 69 liên kết với Đơn công tác số 3
+                                                        (73, 4), -- Chấm công ngày 73 liên kết với Đơn xin nghỉ số 4
+                                                        (62, 5); -- Chấm công ngày 62 liên kết với Đơn số 5
+
+
+

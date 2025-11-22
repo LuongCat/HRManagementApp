@@ -24,28 +24,11 @@ CREATE TABLE `chucvu` (
   PRIMARY KEY (`MaCV`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `calam` (
-  `MaCa` int NOT NULL AUTO_INCREMENT,
-  `TenCa` varchar(50) DEFAULT NULL,
-  `GioVao` time DEFAULT '00:00:00',
-  `GioRa` time DEFAULT '00:00:00',
-  `HeSoLuongCaLam` decimal(4,2) DEFAULT 0,
-  PRIMARY KEY (`MaCa`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE `loaidon` (
   `MaLoaiDon` int NOT NULL AUTO_INCREMENT,
   `TenLoaiDon` varchar(100) NOT NULL,
   `MoTa` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`MaLoaiDon`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE `diadiemlamviec` (
-  `MaDD` int NOT NULL AUTO_INCREMENT,
-  `TenDiaDiem` varchar(100) DEFAULT NULL,
-  `DiaChi` varchar(200) DEFAULT NULL,
-  `BanKinh` int DEFAULT 0,
-  PRIMARY KEY (`MaDD`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `quyenhan` (
@@ -84,29 +67,15 @@ CREATE TABLE `taikhoan` (
   CONSTRAINT `taikhoan_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `calamviec` (
-  `MaLich` int NOT NULL AUTO_INCREMENT,
-  `MaNV` int NOT NULL,
-  `MaDD` int DEFAULT NULL,
-  `CaLam` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`MaLich`),
-  KEY `clv_MaNV` (`MaNV`),
-  KEY `clv_MaDD` (`MaDD`),
-  CONSTRAINT `calamviec_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `calamviec_ibfk_2` FOREIGN KEY (`MaDD`) REFERENCES `diadiemlamviec` (`MaDD`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE `chamcong` (
   `MaCC` int NOT NULL AUTO_INCREMENT,
   `MaNV` int NOT NULL,
   `Ngay` date NOT NULL DEFAULT (CURRENT_DATE),
-  `GioCC` time DEFAULT (CURRENT_TIME),
-  `MaDD` int DEFAULT NULL,
+  `GioVao` time DEFAULT (CURRENT_TIME),
+  `GioRa` time DEFAULT NULL,
   PRIMARY KEY (`MaCC`),
   KEY `MaNV` (`MaNV`),
-  KEY `MaDD` (`MaDD`),
-  CONSTRAINT `chamcong_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `chamcong_ibfk_2` FOREIGN KEY (`MaDD`) REFERENCES `diadiemlamviec` (`MaDD`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `chamcong_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dontu` (
@@ -174,15 +143,6 @@ CREATE TABLE `nhanvien_chucvu` (
   CONSTRAINT `nv_cv_fk_pb` FOREIGN KEY (`MaPB`) REFERENCES `phongban` (`MaPB`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `chamcong_lienketdon` (
-  `MaCC` int NOT NULL,
-  `MaDon` int NOT NULL,
-  PRIMARY KEY (`MaCC`,`MaDon`),
-  KEY `cclkd_ibfk_2` (`MaDon`),
-  CONSTRAINT `cclkd_ibfk_1` FOREIGN KEY (`MaCC`) REFERENCES `chamcong` (`MaCC`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `cclkd_ibfk_2` FOREIGN KEY (`MaDon`) REFERENCES `dontu` (`MaDon`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 -- ============================================
 --  DỮ LIỆU MẪU
 -- ============================================
@@ -205,30 +165,23 @@ INSERT INTO `phongban` VALUES
 (3,'Phòng Kinh Doanh','Tư vấn và bán hàng',3),
 (4,'Phòng Kế Toán','Quản lý tài chính và thu chi',4);
 
-INSERT INTO `diadiemlamviec` VALUES 
-(1,'Văn phòng chính','123 Nguyễn Huệ, Quận 1, TP.HCM',50),
-(2,'Chi nhánh Hà Nội','45 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội',60),
-(3,'Nhà máy Bình Dương','KCN VSIP 1, Thuận An, Bình Dương',80),
-(4,'Kho miền Tây','Số 12, Trần Hưng Đạo, Cần Thơ',70),
-(5,'Trung tâm R&D','200 Hoàng Quốc Việt, Cầu Giấy, Hà Nội',55);
-
 INSERT INTO `chamcong` VALUES 
-(61,1,'2024-09-01','08:00:00',1),
-(62,1,'2024-09-02','08:05:00',1),
-(63,1,'2024-09-03','08:10:00',2),
-(64,1,'2024-09-04','08:00:00',1),
-(65,2,'2024-09-01','08:15:00',1),
-(66,2,'2024-09-02','08:00:00',2),
-(67,2,'2024-09-03','08:05:00',1),
-(68,2,'2024-09-04','08:00:00',1),
-(69,3,'2024-09-01','07:55:00',2),
-(70,3,'2024-09-02','08:00:00',2),
-(71,3,'2024-09-03','08:10:00',3),
-(72,3,'2024-09-04','08:00:00',2),
-(73,4,'2024-09-01','08:20:00',3),
-(74,4,'2024-09-02','08:05:00',1),
-(75,4,'2024-09-03','08:00:00',1),
-(76,4,'2024-09-04','08:00:00',3);
+(61,1,'2024-09-01','08:00:00','16:00:00'),
+(62,1,'2024-09-02','08:05:00','16:00:00'),
+(63,1,'2024-09-03','08:10:00','16:00:00'),
+(64,1,'2024-09-04','08:00:00','16:00:00'),
+(65,2,'2024-09-01','08:15:00','16:00:00'),
+(66,2,'2024-09-02','08:00:00','16:00:00'),
+(67,2,'2024-09-03','08:05:00','16:00:00'),
+(68,2,'2024-09-04','08:00:00','16:00:00'),
+(69,3,'2024-09-01','07:55:00','16:00:00'),
+(70,3,'2024-09-02','08:00:00','16:00:00'),
+(71,3,'2024-09-03','08:10:00','16:00:00'),
+(72,3,'2024-09-04','08:00:00','16:00:00'),
+(73,4,'2024-09-01','08:20:00','16:00:00'),
+(74,4,'2024-09-02','08:05:00','16:00:00'),
+(75,4,'2024-09-03','08:00:00','16:00:00'),
+(76,4,'2024-09-04','08:00:00','16:00:00');
 
 INSERT INTO `luong` VALUES 
 (1,1,9,2024,26,18000000.00,'Đã trả'),

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using HRManagementApp.UI.Views.Leave;
 
 namespace HRManagementApp.UI
 {
@@ -128,8 +129,8 @@ namespace HRManagementApp.UI
 
         private void LoadLeaveSection()
         {
-            // Leave management logic
-            // Leave applications, approval workflow, leave balance, etc.
+            // Khởi tạo và hiển thị View quản lý đơn từ
+            ContentArea.Content = new LeaveManagementView(); 
         }
 
         private void LoadReportsSection()

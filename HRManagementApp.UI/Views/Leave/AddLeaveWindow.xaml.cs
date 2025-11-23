@@ -9,96 +9,102 @@ namespace HRManagementApp.UI.Views.Leave
     {
         private readonly DonTuService _donTuService;
         private readonly NhanVienService _nhanVienService;
+        private readonly int? _currentEmployeeId; // Biến lưu ID nhân viên đăng nhập (nếu có)
 
+        // Constructor mặc định (Dành cho Admin)
         public AddLeaveWindow()
         {
             InitializeComponent();
             _donTuService = new DonTuService();
             _nhanVienService = new NhanVienService();
-            
-            // Gọi hàm load dữ liệu ngay khi khởi tạo
+            _currentEmployeeId = null;
             LoadFormData();
+        }
+
+        // Constructor dành cho Nhân viên (Truyền vào ID của họ)
+        public AddLeaveWindow(int employeeId) : this()
+        {
+            _currentEmployeeId = employeeId;
+            
+            // Cài đặt giao diện cho chế độ Nhân viên
+            SetupEmployeeMode();
         }
 
         private void LoadFormData()
         {
             try 
             {
-                // Load danh sách nhân viên vào ComboBox
                 CbNhanVien.ItemsSource = _nhanVienService.GetListNhanVien();
-                
-                // Load danh sách loại đơn vào ComboBox
                 CbLoaiDon.ItemsSource = _donTuService.GetLoaiDonList();
-
-                // Set ngày mặc định là hôm nay
                 DpTuNgay.SelectedDate = DateTime.Today;
                 DpDenNgay.SelectedDate = DateTime.Today;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi tải dữ liệu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Lỗi tải dữ liệu: {ex.Message}", "Lỗi");
+            }
+        }
+
+        // Thiết lập giao diện khi là Nhân viên
+        private void SetupEmployeeMode()
+        {
+            if (_currentEmployeeId.HasValue)
+            {
+                // Tự động chọn nhân viên đang đăng nhập
+                CbNhanVien.SelectedValue = _currentEmployeeId.Value;
+                
+                // Khóa ComboBox để họ không chọn người khác được
+                CbNhanVien.IsEnabled = false; 
+                
+                // (Optional) Đổi màu nền để báo hiệu read-only
+                CbNhanVien.Opacity = 0.7;
             }
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            // 1. Validate dữ liệu đầu vào
+            // Validate
             if (CbNhanVien.SelectedValue == null)
             {
-                MessageBox.Show("Vui lòng chọn nhân viên!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Lỗi: Không xác định được nhân viên.");
                 return;
             }
             if (CbLoaiDon.SelectedValue == null)
             {
-                MessageBox.Show("Vui lòng chọn loại đơn!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Vui lòng chọn loại đơn!");
                 return;
             }
             if (!DpTuNgay.SelectedDate.HasValue || !DpDenNgay.SelectedDate.HasValue)
             {
-                MessageBox.Show("Vui lòng chọn ngày nghỉ!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(TxtLyDo.Text))
-            {
-                MessageBox.Show("Vui lòng nhập lý do nghỉ!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                TxtLyDo.Focus();
+                MessageBox.Show("Vui lòng chọn ngày!");
                 return;
             }
 
-            // 2. Tạo đối tượng DonTu
             var don = new DonTu
             {
-                MaNV = (int)CbNhanVien.SelectedValue,
+                MaNV = (int)CbNhanVien.SelectedValue, // Lấy giá trị đã chọn (hoặc đã fix sẵn)
                 MaLoaiDon = (int)CbLoaiDon.SelectedValue,
                 NgayBatDau = DpTuNgay.SelectedDate.Value,
                 NgayKetThuc = DpDenNgay.SelectedDate.Value,
-                LyDo = TxtLyDo.Text.Trim()
+                LyDo = TxtLyDo.Text
             };
 
-            // 3. Gọi Service để lưu xuống DB
             try 
             {
-                bool result = _donTuService.AddLeaveRequest(don);
-                if (result)
-                {
-                    MessageBox.Show("Gửi đơn thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                    this.DialogResult = true; // Trả về true để cửa sổ cha (LeaveManagementView) biết mà reload lại danh sách
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Gửi đơn thất bại. Vui lòng thử lại.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                _donTuService.AddLeaveRequest(don);
+                MessageBox.Show("Nộp đơn thành công! Vui lòng chờ duyệt.", "Thông báo");
+                DialogResult = true;
+                Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Có lỗi xảy ra: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi");
             }
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

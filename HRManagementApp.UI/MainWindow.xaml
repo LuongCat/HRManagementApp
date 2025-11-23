@@ -158,12 +158,7 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="SettingsBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="⚙️" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="Settings"/>
-                        </StackPanel>
-                    </Button>
+                    
                 </StackPanel>
 
                 <!-- Logout Button -->

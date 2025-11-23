@@ -28,7 +28,6 @@ namespace HRManagementApp.UI
             PayrollBtn.Click += (s, e) => NavigateTo("Payroll", s as Button);
             LeaveBtn.Click += (s, e) => NavigateTo("Leave Management", s as Button);
             ReportsBtn.Click += (s, e) => NavigateTo("Reports", s as Button);
-            SettingsBtn.Click += (s, e) => NavigateTo("Settings", s as Button);
             LogoutBtn.Click += LogoutBtn_Click; 
         }
 
@@ -90,9 +89,6 @@ namespace HRManagementApp.UI
                 case "reports":
                     LoadReportsSection();
                     break;
-                case "settings":
-                    LoadSettingsSection();
-                    break;
             }
         }
         private void LoadDoashboardSection()
@@ -130,19 +126,16 @@ namespace HRManagementApp.UI
         private void LoadLeaveSection()
         {
             // Khởi tạo và hiển thị View quản lý đơn từ
-            ContentArea.Content = new LeaveManagementView(); 
+            ContentArea.Content = new LeaveManagementView();
+            //Phần ở dưới dùng để test phần nộp đơn xin nghỉ dành cho nhân viên (bỏ // ra nhé chú em) <==== Test role nhân viên phần Leave
+            // int currentLoggedInUserId = 1; 
+            // ContentArea.Content = new MyLeaveView(currentLoggedInUserId);
         }
 
         private void LoadReportsSection()
         {
             // Reports and analytics
             // Generate various HR reports, charts, export functionality
-        }
-
-        private void LoadSettingsSection()
-        {
-            // System settings
-            // User management, company settings, system configuration
         }
 
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)

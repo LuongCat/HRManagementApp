@@ -6,7 +6,7 @@ using System.Data;
 public static class Database
 {
     private static readonly string connectionString = 
-        "Server=localhost;Port=3306;Database=hrmanagement;Uid=root;Pwd=123456789;Charset=utf8;";
+        "Server=localhost;Port=3306;Database=hrmanagement;Uid=root;Pwd=son.kt123;Charset=utf8;";
 
     public static MySqlConnection GetConnection()
     {

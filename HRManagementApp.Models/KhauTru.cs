@@ -2,6 +2,7 @@ namespace HRManagementApp.models;
 
 public class KhauTru
 {
+    //bảng khấu trừ
     public int MaKT { get; set; }
     public int MaNV { get; set; }
     public string TenKhoanTru { get; set; }

@@ -30,11 +30,7 @@ namespace HRManagementApp.UI.Views
             LoadDepartmentView();
         }
 
-        private void BtnSetting_click(object sender, RoutedEventArgs e)
-        {
-            SetActiveTab(BtnSetting);
-            LoadPositionView();
-        }
+        
 
         // ================================
         //  Load các view tương ứng
@@ -50,7 +46,7 @@ namespace HRManagementApp.UI.Views
             
         }
 
-        private void LoadPositionView()
+        private void LoadEditSalaryView()
         {
            // MainContent.Content = new PayrollSettingView(); // <-- tạo UC này
         }
@@ -62,7 +58,7 @@ namespace HRManagementApp.UI.Views
         {
             ResetTabButton(BtnBangLuong);
             ResetTabButton(BtnByDeparment);
-            ResetTabButton(BtnSetting);
+           // ResetTabButton(BtnSetting);
 
             activeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F2937"));
             activeButton.Foreground = Brushes.White;

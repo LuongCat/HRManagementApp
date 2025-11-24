@@ -140,24 +140,7 @@
                     </Button>
                     
                     
-                    <Button  x:Name="BtnSetting" Content="Cài đặt" Background="Transparent" Foreground="#6B7280"
-                             BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
-                             Cursor="Hand" Click="BtnSetting_click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}" 
-                                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                    
                     
                     
                 </StackPanel>

@@ -36,6 +36,7 @@ namespace HRManagementApp.DAL
                     TenLoaiDon = row["TenLoaiDon"].ToString()
                 });
             }
+
             return list;
         }
 
@@ -54,6 +55,7 @@ namespace HRManagementApp.DAL
                     CoLuong = row["MoTa"] != DBNull.Value ? row["CoLuong"].ToString() : ""
                 });
             }
+
             return list;
         }
 
@@ -69,7 +71,7 @@ namespace HRManagementApp.DAL
 
             var parameters = new Dictionary<string, object> { { "@MaNV", maNV } };
             DataTable dt = Database.ExecuteQuery(query, parameters);
-            
+
             List<DonTu> list = new List<DonTu>();
             foreach (DataRow row in dt.Rows)
             {
@@ -88,6 +90,7 @@ namespace HRManagementApp.DAL
                     TenLoaiDon = row["TenLoaiDon"].ToString()
                 });
             }
+
             return list;
         }
 
@@ -131,7 +134,8 @@ namespace HRManagementApp.DAL
 
         public bool UpdateLoaiDon(LoaiDon loai)
         {
-            string query = "UPDATE loaidon SET TenLoaiDon = @Ten, MoTa = @MoTa , CoLuong = @CoLuong WHERE MaLoaiDon = @Ma";
+            string query =
+                "UPDATE loaidon SET TenLoaiDon = @Ten, MoTa = @MoTa , CoLuong = @CoLuong WHERE MaLoaiDon = @Ma";
             var parameters = new Dictionary<string, object>
             {
                 { "@Ma", loai.MaLoaiDon },
@@ -157,6 +161,79 @@ namespace HRManagementApp.DAL
             string query = "DELETE FROM dontu WHERE MaDon = @MaDon";
             var parameters = new Dictionary<string, object> { { "@MaDon", maDon } };
             return Database.ExecuteNonQuery(query, parameters) > 0;
+        }
+
+
+        public KetQuaNghi GetSoNgayNghi(int maNV, int thang, int nam)
+        {
+            var ketQua = new KetQuaNghi();
+            
+            DateTime dauThang = new DateTime(nam, thang, 1);
+            DateTime cuoiThang = dauThang.AddMonths(1).AddDays(-1);
+
+            string query = @"
+        SELECT d.NgayBatDau, d.NgayKetThuc, l.CoLuong
+        FROM dontu d
+        JOIN loaidon l ON d.MaLoaiDon = l.MaLoaiDon
+        WHERE d.MaNV = @MaNV
+          AND d.TrangThai = 'Đã duyệt'
+          AND d.NgayBatDau <= @CuoiThang
+          AND d.NgayKetThuc >= @DauThang;";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "@MaNV", maNV },
+                { "@DauThang", dauThang },
+                { "@CuoiThang", cuoiThang }
+            };
+
+            DataTable data = Database.ExecuteQuery(query, parameters);
+
+            // 2. Duyệt từng đơn để tính toán
+            if (data != null && data.Rows.Count > 0)
+            {
+                foreach (DataRow row in data.Rows)
+                {
+                    DateTime ngayBatDauDon = Convert.ToDateTime(row["NgayBatDau"]);
+                    DateTime ngayKetThucDon = Convert.ToDateTime(row["NgayKetThuc"]);
+                    string coLuong = row["CoLuong"].ToString(); // Giá trị là "Yes" hoặc "No"
+
+                    // 3. TÍNH GIAO THOA (Intersection)
+                    // Chỉ tính những ngày nằm trong tháng hiện tại
+                    DateTime startCount = ngayBatDauDon < dauThang ? dauThang : ngayBatDauDon;
+
+                    // Min(Cuối đơn, Cuối tháng)
+                    DateTime endCount = ngayKetThucDon > cuoiThang ? cuoiThang : ngayKetThucDon;
+
+                    // 4. Đếm số ngày (Trừ chủ nhật)
+                    int soNgay = CountWorkingDays(startCount, endCount);
+
+                    // 5. Cộng vào biến tương ứng
+                    if (coLuong == "Yes")
+                    {
+                        ketQua.NghiCoLuong += soNgay;
+                    }
+                    else // CoLuong == "No"
+                    {
+                        ketQua.NghiKhongLuong += soNgay;
+                    }
+                }
+            }
+
+            return ketQua;
+        }
+        private int CountWorkingDays(DateTime start, DateTime end)
+        {
+            int count = 0;
+            for (DateTime date = start.Date; date <= end.Date; date = date.AddDays(1))
+            {
+                // Nếu công ty nghỉ cả thứ 7 thì thêm điều kiện: && date.DayOfWeek != DayOfWeek.Saturday
+                if (date.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
     }
 }

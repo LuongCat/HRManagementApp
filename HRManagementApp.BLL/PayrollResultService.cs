@@ -9,10 +9,11 @@ public class PayrollResultService
 {
     
     public ChamCongService _chamCongService;
-
+    public DonTuService _donTuService;
     public PayrollResultService()
     {
         _chamCongService = new ChamCongService();
+        _donTuService = new DonTuService();
     }
 
     public PayrollResult GetPayrollResultForEmployee(NhanVien nhanVien, int Month, int Year)
@@ -101,19 +102,22 @@ public class PayrollResultService
         //  TÍNH TỔNG NGÀY CÔNG 
         // ============================
         
-        KetQuaChamCong ketQua = new KetQuaChamCong();
-        ketQua = _chamCongService.GetChamCongStatistics(nhanVien.MaNV,Month,Year);
+        KetQuaChamCong ketQuachamcong = new KetQuaChamCong();
+        ketQuachamcong = _chamCongService.GetChamCongStatistics(nhanVien.MaNV,Month,Year);
 
-        result.TongNgayCong = ketQua.SoNgayDiLam;
+        KetQuaNghi ketQuaNghi = new KetQuaNghi();
+        ketQuaNghi = _donTuService.GetSoNgayNghi(nhanVien.MaNV, Month, Year);
+
+        ketQuachamcong.SoNgayDiLam += ketQuaNghi.NghiCoLuong;
+        result.TongNgayCong = ketQuachamcong.SoNgayDiLam;
         
         // ============================
         // 6. TÍNH LƯƠNG CUỐI
         // ============================
         decimal? luongChinh = luongCoBan * heSoLuongCoBan + tongTienKiemNhiem;
-        luongChinh = luongChinh / 26 * ketQua.SoNgayDiLam - luongChinh / 26 * ketQua.DiemDiTre; 
+        luongChinh = luongChinh / 26 * ketQuachamcong.SoNgayDiLam - luongChinh / 26 * 1/3*ketQuachamcong.DiemDiTre; 
         
-       
-        
+        //viết hàm lưu các hệ số cần thiết vào bảng lương ở đây 
         result.LuongThucNhan =
             luongChinh
             + tongPhuCap

@@ -69,5 +69,10 @@ namespace HRManagementApp.BLL
         {
             return _repo.DeleteDonTu(maDon);
         }
+
+        public KetQuaNghi GetSoNgayNghi(int maNV, int thang, int nam)
+        {
+            return _repo.GetSoNgayNghi(maNV, thang, nam);
+        }
     }
 }

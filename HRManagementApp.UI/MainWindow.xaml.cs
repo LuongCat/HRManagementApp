@@ -28,6 +28,7 @@ namespace HRManagementApp.UI
             LeaveBtn.Click += (s, e) => NavigateTo("Leave Management", s as Button);
             ReportsBtn.Click += (s, e) => NavigateTo("Reports", s as Button);
             SettingsBtn.Click += (s, e) => NavigateTo("Settings", s as Button);
+            EditPayrollBtn.Click += (s, e) => NavigateTo("EditPayroll", s as Button);
             LogoutBtn.Click += LogoutBtn_Click; 
         }
 
@@ -92,8 +93,18 @@ namespace HRManagementApp.UI
                 case "settings":
                     LoadSettingsSection();
                     break;
+                case "editpayroll":
+                    LoadEditPayrollSection();
+                    break;
             }
         }
+
+        private void LoadEditPayrollSection()
+        {
+            ContentArea.Content = new Views.EditPayroll();
+        }
+        
+        
         private void LoadDoashboardSection()
         {
             ContentArea.Content = new Views.DashboardView();

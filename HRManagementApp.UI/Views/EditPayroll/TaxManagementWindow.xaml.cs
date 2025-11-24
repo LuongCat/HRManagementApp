@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using HRManagementApp.BLL;
 
 namespace HRManagementApp.UI.Views
 {
@@ -12,13 +13,13 @@ namespace HRManagementApp.UI.Views
         private NhanVien _targetEmployee;
         
         // TODO: Inject TaxService
-        // private ThueService _thueService;
+         private ThueService _thueService;
 
         public TaxManagementWindow(NhanVien employee)
         {
             InitializeComponent();
             _targetEmployee = employee;
-            
+            _thueService = new ThueService();
             // Header Info
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
 
@@ -31,7 +32,7 @@ namespace HRManagementApp.UI.Views
         private void LoadData()
         {
             // TODO: Load data from Service
-            // var list = _thueService.GetByEmployee(_targetEmployee.MaNV);
+             var list = _thueService.GetTaxByMaNV(_targetEmployee.MaNV);
 
             // Giả lập
             if (_targetEmployee.Thues == null) 
@@ -90,7 +91,8 @@ namespace HRManagementApp.UI.Views
                 ApDungDenNgay = DpDenNgay.SelectedDate
             };
 
-            // TODO: Service Call -> _thueService.Add(newItem);
+            // TODO: Service Call ->
+            _thueService.AddTax(newItem);
             
             // Giả lập
             _targetEmployee.Thues.Add(newItem);
@@ -111,7 +113,8 @@ namespace HRManagementApp.UI.Views
             selected.ApDungTuNgay = DpTuNgay.SelectedDate.Value;
             selected.ApDungDenNgay = DpDenNgay.SelectedDate;
 
-            // TODO: Service Call -> _thueService.Update(selected);
+            // TODO: Service Call ->
+            _thueService.UpdateTax(selected);
 
             MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             LoadData(); // Reload Grid
@@ -124,7 +127,8 @@ namespace HRManagementApp.UI.Views
 
             if (MessageBox.Show($"Bạn có chắc muốn xóa khoản thuế '{selected.TenThue}'?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                // TODO: Service Call -> _thueService.Delete(selected.MaThue);
+                // TODO: Service Call ->
+                _thueService.Delete(selected.MaThue);
 
                 // Giả lập
                 _targetEmployee.Thues.Remove(selected);

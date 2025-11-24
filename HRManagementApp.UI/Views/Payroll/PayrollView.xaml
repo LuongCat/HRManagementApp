@@ -295,15 +295,57 @@
                                 <Button Content="Chi tiết"
                                         Click="ViewDetail_Click"
                                         Background="Transparent"
-                                        Foreground="#3B82F6"
+                                        Foreground="#059669"
                                         BorderThickness="0"
                                         Cursor="Hand"
                                         FontSize="13"
                                         FontWeight="SemiBold"
                                         HorizontalAlignment="Center"/>
+                                
+                                
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    
+                    
+                    <DataGridTemplateColumn Header="" Width="75">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="🔄"
+                                        Click="ViewDetail_Click"
+                                        Background="Transparent"
+                                        Foreground="#D97706"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        HorizontalAlignment="Center"/>
+                                
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <DataGridTemplateColumn Header="" Width="75">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Chốt Lương"
+                                        Click="ViewDetail_Click"
+                                        Background="Transparent"
+                                        Foreground="#EF4444"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        HorizontalAlignment="Center"/>
+                                
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    
+                    
+                    
+                    
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

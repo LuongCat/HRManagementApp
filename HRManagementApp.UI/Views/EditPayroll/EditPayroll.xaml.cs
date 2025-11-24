@@ -136,6 +136,7 @@ namespace HRManagementApp.UI.Views
         // ===========================
         // XEM TỔNG HỢP
         // ===========================
+       
         private void ViewSummary_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -143,38 +144,9 @@ namespace HRManagementApp.UI.Views
 
             if (employee != null)
             {
-                // Tính toán tổng hợp
-                var roles = string.Join(", ", employee.DanhSachChucVu.Select(cv => cv.ChucVu.TenCV));
-                
-                var totalAllowance = employee.PhuCaps
-                    .Where(p => p.ApDungDenNgay == null || p.ApDungDenNgay >= System.DateTime.Now)
-                    .Sum(p => p.SoTien);
-
-                var totalTax = employee.Thues
-                    .Where(t => t.ApDungDenNgay == null || t.ApDungDenNgay >= System.DateTime.Now)
-                    .Sum(t => t.SoTien);
-
-                var currentMonth = System.DateTime.Now;
-                var monthlyDeduction = employee.KhauTrus
-                    .Where(k => k.Ngay.Month == currentMonth.Month && k.Ngay.Year == currentMonth.Year)
-                    .Sum(k => k.SoTien);
-
-                MessageBox.Show(
-                    $"TỔNG HỢP THÔNG TIN LƯƠNG\n" +
-                    $"══════════════════════════════\n\n" +
-                    $"Nhân viên: {employee.HoTen}\n" +
-                    $"Mã NV: {employee.MaNV}\n\n" +
-                    $"📋 Vai trò: {(string.IsNullOrEmpty(roles) ? "Chưa có" : roles)}\n" +
-                    $"💰 Phụ cấp: {totalAllowance:N0} VNĐ\n" +
-                    $"📊 Thuế: {totalTax:N0} VNĐ\n" +
-                    $"📉 Khấu trừ (tháng này): {monthlyDeduction:N0} VNĐ\n",
-                    "Tổng hợp thông tin",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
-                // Để mở form chi tiết:
-                // var summaryDialog = new EmployeeSummaryDialog(employee);
-                // summaryDialog.ShowDialog();
+                // Mở cửa sổ tổng hợp
+                var summaryWindow = new EmployeeSummaryWindow(employee);
+                summaryWindow.ShowDialog();
             }
         }
     }

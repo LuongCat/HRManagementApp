@@ -10,10 +10,12 @@ public class PayrollResultService
     
     public ChamCongService _chamCongService;
     public DonTuService _donTuService;
+    private LuongService _luongService;
     public PayrollResultService()
     {
         _chamCongService = new ChamCongService();
         _donTuService = new DonTuService();
+        _luongService = new LuongService();
     }
 
     public PayrollResult GetPayrollResultForEmployee(NhanVien nhanVien, int Month, int Year)
@@ -90,13 +92,15 @@ public class PayrollResultService
         var luongRecord = nhanVien.Luongs?
             .FirstOrDefault(l => l.Thang == Month && l.Nam == Year);
 
+        int maLuong = 0;
         if (luongRecord != null)
         {
+             maLuong = luongRecord.MaLuong;
             result.TrangThai = luongRecord.TrangThai; 
         }
         else
         {
-            result.TrangThai = "Chưa thanh toán";
+            result.TrangThai = "Chưa trả";
         }
         // ============================
         //  TÍNH TỔNG NGÀY CÔNG 
@@ -117,6 +121,8 @@ public class PayrollResultService
         decimal? luongChinh = luongCoBan * heSoLuongCoBan + tongTienKiemNhiem;
         luongChinh = luongChinh / 26 * ketQuachamcong.SoNgayDiLam - luongChinh / 26 * 1/3*ketQuachamcong.DiemDiTre; 
         
+        
+        
         //viết hàm lưu các hệ số cần thiết vào bảng lương ở đây 
         result.LuongThucNhan =
             luongChinh
@@ -124,6 +130,27 @@ public class PayrollResultService
             - tongKhauTru
             - tongThue;
 
+        
+        Luong luong = new Luong
+        {
+            MaLuong = result.maLuong,
+            MaNV = result.maNV,
+            TrangThai = result.TrangThai,
+            Thang = Month,
+            Nam = Year,
+            TongNgayCong = result.TongNgayCong,
+            TienLuong = luongChinh,
+            LuongThucNhan = result.LuongThucNhan,
+        };
+
+        if (maLuong != 0)
+        {
+            _luongService.UpdateSalary(luong);
+        }else
+        {
+            _luongService.AddSalary(luong);
+        }
+        
         return result;
     }
 }

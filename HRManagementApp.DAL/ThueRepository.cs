@@ -92,4 +92,15 @@ public class ThueRepository
         };
         return Database.ExecuteNonQuery(query, parameters) > 0;
     }
+    
+    public bool Delete(int maThue)
+    {
+        string query = "DELETE FROM thue WHERE MaThue=@MaThue ";
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaThue", maThue },
+           
+        };
+        return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
 }

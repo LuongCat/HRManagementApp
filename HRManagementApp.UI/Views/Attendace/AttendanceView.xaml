@@ -1,0 +1,199 @@
+<UserControl x:Class="HRManagementApp.UI.Views.AttendanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.Resources>
+                <Style TargetType="Border" x:Key="CardStyle">
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="CornerRadius" Value="12"/>
+                    <Setter Property="Padding" Value="20"/>
+                    <Setter Property="Height" Value="100"/>
+                </Style>
+                <Style TargetType="TextBlock" x:Key="CardLabel">
+                    <Setter Property="Foreground" Value="#6B7280"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="Margin" Value="0,0,0,5"/>
+                </Style>
+                <Style TargetType="TextBlock" x:Key="CardValue">
+                    <Setter Property="FontSize" Value="24"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </Grid.Resources>
+
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Tổng số" Style="{StaticResource CardLabel}"/>
+                        <TextBlock Text="248" Style="{StaticResource CardValue}" Foreground="#3B82F6"/>
+                    </StackPanel>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="40" CornerRadius="10" Background="#EFF6FF">
+                        <TextBlock Text="🕒" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#3B82F6" FontSize="18"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Đi làm" Style="{StaticResource CardLabel}"/>
+                        <TextBlock Text="235" Style="{StaticResource CardValue}" Foreground="#10B981"/>
+                    </StackPanel>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="40" CornerRadius="10" Background="#ECFDF5">
+                        <TextBlock Text="✔" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#10B981" FontSize="18"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="4" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Vắng mặt" Style="{StaticResource CardLabel}"/>
+                        <TextBlock Text="8" Style="{StaticResource CardValue}" Foreground="#EF4444"/>
+                    </StackPanel>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="40" CornerRadius="10" Background="#FEF2F2">
+                        <TextBlock Text="✖" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#EF4444" FontSize="16"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="6" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Đi muộn" Style="{StaticResource CardLabel}"/>
+                        <TextBlock Text="5" Style="{StaticResource CardValue}" Foreground="#F97316"/>
+                    </StackPanel>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="40" CornerRadius="10" Background="#FFF7ED">
+                        <TextBlock Text="!" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#F97316" FontSize="18" FontWeight="Bold"/>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Danh sách chấm công hôm nay" FontSize="16" Foreground="#374151" Margin="0,0,0,15"/>
+
+                <DataGrid x:Name="dgAttendance" Grid.Row="1"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          RowHeight="50"
+                          FontSize="14"
+                          GridLinesVisibility="None"
+                          HeadersVisibility="Column"
+                          BorderThickness="0"
+                          Background="White">
+                    
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="#6B7280"/>
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Height" Value="40"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                            
+                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                        </Style>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="10,0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.Resources>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Mã NV" Binding="{Binding MaNV}" Width="80"/>
+                        <DataGridTextColumn Header="Họ tên" Binding="{Binding HoTen}" Width="150"/>
+                        <DataGridTextColumn Header="Phòng ban" Binding="{Binding PhongBan}" Width="120"/>
+                        <DataGridTextColumn Header="Giờ vào" Binding="{Binding GioVao}" Width="80"/>
+                        <DataGridTextColumn Header="Giờ ra" Binding="{Binding GioRa}" Width="80"/>
+                        
+
+                        <DataGridTextColumn Header="Số giờ" Binding="{Binding SoGio}" Width="70"/>
+
+                        <DataGridTemplateColumn Header="Trạng thái" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border x:Name="BadgeBorder" CornerRadius="12" Padding="12,4" HorizontalAlignment="Left">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock x:Name="IconText" Text="✔" Margin="0,0,5,0" FontSize="10" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="StatusText" Text="{Binding TrangThai}" FontSize="12" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Border>
+                                    
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding TrangThai}" Value="Đúng giờ">
+                                            <Setter TargetName="BadgeBorder" Property="Background" Value="#1F2937"/>
+                                            <Setter TargetName="StatusText" Property="Foreground" Value="White"/>
+                                            <Setter TargetName="IconText" Property="Foreground" Value="White"/>
+                                            <Setter TargetName="IconText" Property="Text" Value="✔"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding TrangThai}" Value="Đi muộn">
+                                            <Setter TargetName="BadgeBorder" Property="Background" Value="#F3F4F6"/>
+                                            <Setter TargetName="StatusText" Property="Foreground" Value="#1F2937"/>
+                                            <Setter TargetName="IconText" Property="Foreground" Value="#1F2937"/>
+                                            <Setter TargetName="IconText" Property="Text" Value="🕐"/>
+                                        </DataTrigger>
+                                        
+                                        <DataTrigger Binding="{Binding TrangThai}" Value="Đang làm">
+                                            <Setter TargetName="BadgeBorder" Property="Background" Value="White"/>
+                                            <Setter TargetName="BadgeBorder" Property="BorderThickness" Value="1"/>
+                                            <Setter TargetName="BadgeBorder" Property="BorderBrush" Value="#E5E7EB"/>
+                                            <Setter TargetName="StatusText" Property="Foreground" Value="#374151"/>
+                                            <Setter TargetName="IconText" Property="Text" Value="⏳"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding TrangThai}" Value="Vắng">
+                                            <Setter TargetName="BadgeBorder" Property="Background" Value="#DC2626"/>
+                                            <Setter TargetName="StatusText" Property="Foreground" Value="White"/>
+                                            <Setter TargetName="IconText" Property="Text" Value="✖"/>
+                                            <Setter TargetName="IconText" Property="Foreground" Value="White"/>
+                                        </DataTrigger>
+                                        
+                                         <DataTrigger Binding="{Binding TrangThai}" Value="Nửa ngày">
+                                            <Setter TargetName="BadgeBorder" Property="Background" Value="#E5E7EB"/>
+                                            <Setter TargetName="StatusText" Property="Foreground" Value="#1F2937"/>
+                                            <Setter TargetName="IconText" Property="Text" Value="🌗"/>
+                                        </DataTrigger>
+
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

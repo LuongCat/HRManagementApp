@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using HRManagementApp.BLL;
 
 namespace HRManagementApp.UI.Views
 {
@@ -12,13 +13,13 @@ namespace HRManagementApp.UI.Views
         private NhanVien _targetEmployee;
         
         // TODO: Inject Service phụ cấp
-        // private PhuCapService _phuCapService;
+         private PhuCapService _phuCapService;
 
         public AllowanceManagementWindow(NhanVien employee)
         {
             InitializeComponent();
             _targetEmployee = employee;
-            
+            _phuCapService = new PhuCapService();
             // Hiển thị info
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
 
@@ -90,7 +91,8 @@ namespace HRManagementApp.UI.Views
                 ApDungDenNgay = DpDenNgay.SelectedDate
             };
 
-            // TODO: Service Call -> _phuCapService.Add(newItem);
+            // TODO: Service Call ->
+            _phuCapService.AddPhuCap(newItem);
             
             // Giả lập
             _targetEmployee.PhuCaps.Add(newItem);
@@ -111,7 +113,8 @@ namespace HRManagementApp.UI.Views
             selected.ApDungTuNgay = DpTuNgay.SelectedDate.Value;
             selected.ApDungDenNgay = DpDenNgay.SelectedDate;
 
-            // TODO: Service Call -> _phuCapService.Update(selected);
+            // TODO: Service Call ->
+            _phuCapService.UpdatePhuCap(selected);
 
             MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             LoadData();
@@ -124,7 +127,8 @@ namespace HRManagementApp.UI.Views
 
             if (MessageBox.Show($"Bạn có chắc muốn xóa phụ cấp '{selected.TenPhuCap}'?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                // TODO: Service Call -> _phuCapService.Delete(selected.ID);
+                // TODO: Service Call ->
+                _phuCapService.DeletePhuCap(selected.ID);
 
                 // Giả lập
                 _targetEmployee.PhuCaps.Remove(selected);

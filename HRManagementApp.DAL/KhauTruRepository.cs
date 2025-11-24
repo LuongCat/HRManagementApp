@@ -92,4 +92,13 @@ public class KhauTruRepository
         };
         return Database.ExecuteNonQuery(query, parameters) > 0;
     }
+    public bool Delete(int maKT)
+    {
+        string query = "DELETE FROM khautru WHERE MaKT=@MaKT ";
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaKT", maKT },
+        };
+        return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
 }

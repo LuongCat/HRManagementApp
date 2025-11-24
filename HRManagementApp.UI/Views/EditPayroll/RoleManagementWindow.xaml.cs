@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using HRManagementApp.BLL;
 
 namespace HRManagementApp.UI.Views
 {
@@ -12,13 +13,15 @@ namespace HRManagementApp.UI.Views
         private NhanVien _targetEmployee;
         
         // Giả lập Service - Hãy thay thế bằng Service thật của bạn
-        // private VaiTroService _vaiTroService; 
-        // private ChucVuService _chucVuService;
+        private VaiTroNhanVienService _vaiTroNhanVienService; 
+        private ChucVuService _chucVuService;
 
         public RoleManagementWindow(NhanVien employee)
         {
             InitializeComponent();
             _targetEmployee = employee;
+            _vaiTroNhanVienService = new VaiTroNhanVienService();
+            _chucVuService = new ChucVuService();
             
             // Hiển thị tên nhân viên lên header
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
@@ -30,25 +33,16 @@ namespace HRManagementApp.UI.Views
         private void LoadComboBoxData()
         {
             // TODO: Lấy danh sách chức vụ từ Database
-            // var listChucVu = _chucVuService.GetAll();
+             var listChucVu = _chucVuService.GetAllChucVu();
             
-            // Dữ liệu giả lập để test UI
-            var mockChucVus = new List<ChucVu>
-            {
-                new ChucVu { MaCV = 1, TenCV = "Giám đốc" },
-                new ChucVu { MaCV = 2, TenCV = "Trưởng phòng" },
-                new ChucVu { MaCV = 3, TenCV = "Nhân viên" },
-                new ChucVu { MaCV = 4, TenCV = "Bảo vệ" },
-                new ChucVu { MaCV = 5, TenCV = "Kế toán trưởng" }
-            };
 
-            CboChucVu.ItemsSource = mockChucVus;
+            CboChucVu.ItemsSource = listChucVu;
         }
 
         private void LoadEmployeeRoles()
         {
             // TODO: Lấy danh sách vai trò của nhân viên này từ Database
-            // var roles = _vaiTroService.GetByEmployeeId(_targetEmployee.MaNV);
+             var roles = _vaiTroNhanVienService.GetVaiTroNhanVien(_targetEmployee.MaNV);
 
             // Sử dụng dữ liệu hiện có từ đối tượng NhanVien truyền vào (nếu đã load kèm)
             // Hoặc reload lại từ DB để đảm bảo mới nhất
@@ -125,7 +119,7 @@ namespace HRManagementApp.UI.Views
             };
 
             // TODO: Gọi Service để lưu vào DB
-            // _vaiTroService.Add(newRole);
+             _vaiTroNhanVienService.InsertVaiTroNhanVien(newRole);
             
             // Giả lập thêm vào list
             _targetEmployee.DanhSachChucVu.Add(newRole);
@@ -147,7 +141,7 @@ namespace HRManagementApp.UI.Views
             selectedRole.GhiChu = TxtGhiChu.Text;
 
             // TODO: Gọi Service để Update DB
-            // _vaiTroService.Update(selectedRole);
+            _vaiTroNhanVienService.UpdateVaiTroNhanVien(selectedRole);
 
             MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             LoadEmployeeRoles(); // Refresh Grid
@@ -164,10 +158,8 @@ namespace HRManagementApp.UI.Views
             if (result == MessageBoxResult.Yes)
             {
                 // TODO: Gọi Service để Xóa khỏi DB
-                // _vaiTroService.Delete(selectedRole.MaNV, selectedRole.MaCV);
-
-                // Giả lập xoá
-                _targetEmployee.DanhSachChucVu.Remove(selectedRole);
+                 _vaiTroNhanVienService.DeleteVaiTroNhanVien(selectedRole.MaNV, selectedRole.MaCV);
+                 
 
                 MessageBox.Show("Đã xóa vai trò!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                 LoadEmployeeRoles();

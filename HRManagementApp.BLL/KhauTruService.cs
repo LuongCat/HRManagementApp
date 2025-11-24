@@ -36,6 +36,9 @@ public class KhauTruService
     {
         return _KhauTruRepository.DeleteDeduction(maKT, maNV);
     }
-    
-    
+
+    public bool Delete(int maKT)
+    {
+        return _KhauTruRepository.Delete(maKT);
+    }
 }

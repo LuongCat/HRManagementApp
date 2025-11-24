@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using HRManagementApp.BLL;
 
 namespace HRManagementApp.UI.Views
 {
@@ -12,13 +13,13 @@ namespace HRManagementApp.UI.Views
         private NhanVien _targetEmployee;
         
         // TODO: Inject Service Khấu Trừ
-        // private KhauTruService _khauTruService;
+        private KhauTruService _khauTruService;
 
         public DeductionManagementWindow(NhanVien employee)
         {
             InitializeComponent();
             _targetEmployee = employee;
-            
+            _khauTruService = new KhauTruService();
             // Header Info
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
 
@@ -31,7 +32,7 @@ namespace HRManagementApp.UI.Views
         private void LoadData()
         {
             // TODO: Load data from Service
-            // var list = _khauTruService.GetByEmployee(_targetEmployee.MaNV);
+             var list = _khauTruService.GetDeductionByMaNV(_targetEmployee.MaNV);
 
             // Giả lập
             if (_targetEmployee.KhauTrus == null) 
@@ -93,7 +94,8 @@ namespace HRManagementApp.UI.Views
                 GhiChu = TxtGhiChu.Text
             };
 
-            // TODO: Service Call -> _khauTruService.Add(newItem);
+            // TODO: Service Call ->
+            _khauTruService.AddDeduction(newItem);
             
             // Giả lập
             _targetEmployee.KhauTrus.Add(newItem);
@@ -127,7 +129,9 @@ namespace HRManagementApp.UI.Views
 
             if (MessageBox.Show($"Bạn có chắc muốn xóa khoản trừ '{selected.TenKhoanTru}'?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                // TODO: Service Call -> _khauTruService.Delete(selected.MaKT);
+                //hơi kì xíu nhưng kệ đi chạy ngon là được lười chỉnh quá
+                // TODO: Service Call ->
+                _khauTruService.Delete(selected.MaKT);
 
                 // Giả lập
                 _targetEmployee.KhauTrus.Remove(selected);

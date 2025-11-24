@@ -36,4 +36,9 @@ public class ThueService
     {
         return _thueRepository.DeleteTax(maThue, maNV);
     }
+
+    public bool Delete(int maThue)
+    {
+        return _thueRepository.Delete(maThue);
+    }
 }

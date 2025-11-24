@@ -5,6 +5,14 @@ using System.Data;
 
 public class PhongBanReponsitory
 {
+
+    private readonly NhanVienRepository _nhanVienRepositor;
+
+    public PhongBanReponsitory()
+    {
+        _nhanVienRepositor = new NhanVienRepository();
+    }
+    
     public List<PhongBan> GetAllPhongBan()
     {
         string query = "SELECT * FROM PhongBan";
@@ -25,6 +33,36 @@ public class PhongBanReponsitory
 
         return list;
     }
+
+    public NhanVien GetDeparmentHead(int maPB)
+    {
+        string query = @"SELECT MaTruongPhong 
+                     FROM PhongBan 
+                     WHERE MaPB = @MaPB";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaPB", maPB }
+        };
+
+        DataTable data = Database.ExecuteQuery(query, parameters);
+
+        // Không có dòng nào → trả về null
+        if (data.Rows.Count == 0)
+            return null;
+
+        object rawValue = data.Rows[0]["MaTruongPhong"];
+
+        // Giá trị NULL trong DB → trả về null
+        if (rawValue == DBNull.Value)
+            return null;
+
+        int maTruongPhong = Convert.ToInt32(rawValue);
+
+        // Lấy thông tin nhân viên
+        return _nhanVienRepositor.GetEmployeeById(maTruongPhong);
+    }
+
 
     public PhongBan? GetPhongBanByName(string tenPB)
     {

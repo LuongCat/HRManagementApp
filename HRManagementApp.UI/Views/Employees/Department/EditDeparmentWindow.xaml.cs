@@ -32,14 +32,17 @@ namespace HRManagementApp.UI.Views
         public void LoadDepartmentInfo(PhongBan phongBan, List<NhanVien> departmentEmployees)
         {
             _maPB = phongBan.MaPB;
-            TruongPhong = _nhanVienService.GetEmployeeById(_maPB);
+            TruongPhong = _phongBanService.GetDeparmentHead(phongBan.MaPB);
             _employees = departmentEmployees;
 
             // Set thông tin cơ bản
             TxtDepartmentName.Text = phongBan.TenPB;
             TxtTenPB.Text = phongBan.TenPB;
             TxtMoTa.Text = phongBan.MoTa ?? "";
-            TxtTruongPhong.Text = TruongPhong.HoTen;
+            if (TruongPhong != null)
+                TxtTruongPhong.Text = TruongPhong.HoTen;
+            else
+                TxtTruongPhong.Text = "Chưa có trưởng phòng";
 
 
             // Load danh sách nhân viên
@@ -68,7 +71,7 @@ namespace HRManagementApp.UI.Views
             if (result == MessageBoxResult.Yes)
             {
                 // TODO: Gọi service để cập nhật
-                 _vaiTroNhanVienService.RemoveEmployeeFromDepartment(employee.MaNV, _maPB);
+                 _vaiTroNhanVienService.RemoveEmployeeFromDepartment(employee.MaNV);
 
                 _employees.Remove(employee);
                 EmployeesDataGrid.Items.Refresh();

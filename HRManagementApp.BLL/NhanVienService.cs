@@ -85,6 +85,12 @@ namespace HRManagementApp.BLL
             }
         }
 
+
+        public bool AssignEmployeeToDepartment(int maNV, int maPB)
+        {
+            return _repository.AssignEmployeeToDepartment( maNV, maPB);
+        }
+
         // =====================================================
         // CẬP NHẬT NHÂN VIÊN CÓ VALIDATION
         // =====================================================

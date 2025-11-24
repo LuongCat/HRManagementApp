@@ -6,5 +6,5 @@ public class PhongBan
     public string TenPB { get; set; }
     public string? MoTa { get; set; }
     
-    public int MaTruongPhong { get; set; }
+    public int? MaTruongPhong { get; set; }
 }

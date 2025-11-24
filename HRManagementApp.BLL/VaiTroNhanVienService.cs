@@ -30,14 +30,14 @@ public class VaiTroNhanVienService
         return _vaiTroNhanVienReponsitory.InsertVaiTroNhanVien(vtnv);
     }
 
-    public List<NhanVien> GetEmployeesNotInDepartment(int maPB)
+    public List<NhanVien> GetEmployeesNotInDepartment()
     {
-        return _vaiTroNhanVienReponsitory.GetEmployeesNotInDepartment(maPB);
+        return _vaiTroNhanVienReponsitory.GetEmployeesNotInDepartment();
     }
 
-    public bool RemoveEmployeeFromDepartment(int MaNV, int MaPB)
+    public bool RemoveEmployeeFromDepartment(int MaNV)
     {
-        return _vaiTroNhanVienReponsitory.RemoveEmployeeFromDepartment(MaNV, MaPB);
+        return _vaiTroNhanVienReponsitory.RemoveEmployeeRole(MaNV);
     }
 }
 

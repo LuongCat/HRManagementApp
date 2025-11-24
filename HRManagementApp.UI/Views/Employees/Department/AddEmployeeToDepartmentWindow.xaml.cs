@@ -11,6 +11,7 @@ namespace HRManagementApp.UI.Views
         private string _tenPhongBan;
         private readonly ChucVuService _chucVuService;
         private readonly VaiTroNhanVienService _vaiTroNhanVienService;
+        private readonly NhanVienService _nhanVienService;
         public List<ChucVu> ChucVuList { get; set; }
 
         private List<NhanVien> _allEmployees = new();
@@ -20,6 +21,7 @@ namespace HRManagementApp.UI.Views
             InitializeComponent();
             _chucVuService = new ChucVuService();
             _vaiTroNhanVienService = new VaiTroNhanVienService();
+            _nhanVienService = new NhanVienService();   
             ChucVuList = _chucVuService.GetAllChucVu();
             this.DataContext = this;
         }
@@ -142,12 +144,12 @@ namespace HRManagementApp.UI.Views
                     {
                         MaNV = nv.MaNV,
                         MaCV = nv.MaChucVuMoi,
-                        MaPB = maPB,
                         LoaiChucVu = "Kiêm nhiệm",
                         HeSoPhuCapKiemNhiem = nv.HeSoKiemNhiem
                     };
                     _vaiTroNhanVienService.InsertVaiTroNhanVien(vtnv);
-
+                    _nhanVienService.AssignEmployeeToDepartment(nv.MaNV, maPB);
+                    
                     Console.WriteLine(
                         $"{_maPhongBan} - {nv.HoTen} (MaNV: {nv.MaNV}, ChucVu: {nv.MaChucVuMoi}) , He So: {nv.HeSoKiemNhiem}");
                 }

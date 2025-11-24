@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
+using HRManagementApp.UI.Views.Leave;
 namespace HRManagementApp.UI
 {
     public partial class MainWindow : Window
@@ -117,8 +117,8 @@ namespace HRManagementApp.UI
 
         private void LoadLeaveSection()
         {
-            // Leave management logic
-            // Leave applications, approval workflow, leave balance, etc.
+            // Khởi tạo và hiển thị View quản lý đơn từ
+            ContentArea.Content = new LeaveManagementView(); 
         }
 
         private void LoadReportsSection()
@@ -129,8 +129,8 @@ namespace HRManagementApp.UI
 
         private void LoadSettingsSection()
         {
-            // System settings
-            // User management, company settings, system configuration
+             int currentLoggedInUserId = 2; 
+             ContentArea.Content = new MyLeaveView(currentLoggedInUserId);
         }
 
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
@@ -153,7 +153,7 @@ namespace HRManagementApp.UI
                 // Example logout process:
                 // LoginWindow loginWindow = new LoginWindow();
                 // loginWindow.Show();
-                // this.Close();
+                // this.Close();    
             }
         }
     }

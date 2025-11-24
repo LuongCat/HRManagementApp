@@ -151,7 +151,7 @@ namespace HRManagementApp.UI.Views
             if (department != null)
             {
                 // Lấy danh sách nhân viên chưa có phòng ban hoặc ở phòng ban khác
-                var availableEmployees = _vaiTroNhanVienService.GetEmployeesNotInDepartment(maPB);
+                var availableEmployees = _vaiTroNhanVienService.GetEmployeesNotInDepartment();
 
                 var window = new AddEmployeeToDepartmentWindow();
                 window.SetDepartmentInfo(department.MaPhongBan, department.TenPhongBan);

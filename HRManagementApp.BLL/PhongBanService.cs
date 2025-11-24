@@ -47,4 +47,9 @@ public class PhongBanService
     {
         return _phongBanReponsitory.DeleteDepartment(maPB);
     }
+
+    public NhanVien GetDeparmentHead(int maPB)
+    {
+        return _phongBanReponsitory.GetDeparmentHead(maPB);
+    }
 }

@@ -1,17 +1,18 @@
 namespace HRManagementApp.BLL;
 
 using HRManagementApp.models;
+using System.Linq; 
+using System.Collections.Generic;
+using System;
 
 public class PayrollResultService
 {
-    public NhanVienService NhanVienService { get; set; }
-    public LuongService LuongService { get; set; }
-    public PhuCapService PhuCapService { get; set; }
-    public ThueService ThueService { get; set; }
+    
+    public ChamCongService _chamCongService;
 
     public PayrollResultService()
     {
-        PhuCapService = new PhuCapService();
+        _chamCongService = new ChamCongService();
     }
 
     public PayrollResult GetPayrollResultForEmployee(NhanVien nhanVien, int Month, int Year)
@@ -31,74 +32,91 @@ public class PayrollResultService
         decimal? heSoLuongCoBan = 0;
         decimal? tongTienKiemNhiem = 0;
 
-        foreach (var vt in nhanVien.DanhSachChucVu)
+        // Kiểm tra null cho danh sách chức vụ
+        if (nhanVien.DanhSachChucVu != null)
         {
-            heSoLuongCoBan += vt.HeSoLuongCoBan ?? 0;
-            luongCoBan += vt.ChucVu.LuongCB;
+            foreach (var vt in nhanVien.DanhSachChucVu)
+            {
+                if (vt.ChucVu != null)
+                {
+                    heSoLuongCoBan += vt.HeSoLuongCoBan ?? 0;
+                    luongCoBan += vt.ChucVu.LuongCB;
 
-            // Phụ cấp kiêm nhiệm từ hệ số + số tiền cố định
-            tongTienKiemNhiem +=
-                (vt.HeSoPhuCapKiemNhiem ?? 0) * vt.ChucVu.LuongCB
-                + vt.ChucVu.TienPhuCapKiemNhiem;
+                    tongTienKiemNhiem +=
+                        (vt.HeSoPhuCapKiemNhiem ?? 0)  * vt.ChucVu.TienPhuCapKiemNhiem;
+                }
+            }
         }
 
         result.LuongCoBan = luongCoBan;
         result.HeSoLuongCB = heSoLuongCoBan;
         result.TongTienKiemNhiem = tongTienKiemNhiem;
 
-
         // ============================
-        // 2. PHỤ CẤP (lọc theo tháng)
+        // 2. PHỤ CẤP (lọc theo tháng) - Thêm check null (?.)
         // ============================
-        decimal tongPhuCap = nhanVien.PhuCaps
+        decimal tongPhuCap = nhanVien.PhuCaps?
             .Where(p =>
                 p.ApDungTuNgay <= new DateTime(Year, Month, 1) &&
                 (p.ApDungDenNgay == null || p.ApDungDenNgay >= new DateTime(Year, Month, 1)))
-            .Sum(p => p.SoTien);
+            .Sum(p => p.SoTien) ?? 0; // Nếu null thì trả về 0
 
         result.TongPhuCap = tongPhuCap;
 
-
         // ============================
-        // 3. THUẾ (tính theo thời gian hiệu lực)
+        // 3. THUẾ - Thêm check null (?.)
         // ============================
-        decimal tongThue = nhanVien.Thues
+        decimal tongThue = nhanVien.Thues?
             .Where(t =>
                 t.ApDungTuNgay <= new DateTime(Year, Month, 1) &&
                 (t.ApDungDenNgay == null || t.ApDungDenNgay >= new DateTime(Year, Month, 1)))
-            .Sum(t => t.SoTien);
+            .Sum(t => t.SoTien) ?? 0;
 
         result.TongThue = tongThue;
 
-
         // ============================
-        // 4. KHAU TRỪ (lọc trong tháng)
+        // 4. KHẤU TRỪ - Thêm check null (?.)
         // ============================
-        decimal tongKhauTru = nhanVien.KhauTrus
+        decimal tongKhauTru = nhanVien.KhauTrus?
             .Where(k => k.Ngay.Month == Month && k.Ngay.Year == Year)
-            .Sum(k => k.SoTien);
+            .Sum(k => k.SoTien) ?? 0;
 
         result.TongKhauTru = tongKhauTru;
 
-
         // ============================
-        // 5. SỐ NGÀY CÔNG (từ bảng Luongs)
+        // 5. SỐ NGÀY CÔNG & TRẠNG THÁI 
         // ============================
-        var luongRecord = nhanVien.Luongs
+        var luongRecord = nhanVien.Luongs?
             .FirstOrDefault(l => l.Thang == Month && l.Nam == Year);
 
-        result.TongNgayCong = luongRecord?.TongNgayCong ?? 0;
+        if (luongRecord != null)
+        {
+            result.TrangThai = luongRecord.TrangThai; 
+        }
+        else
+        {
+            result.TrangThai = "Chưa thanh toán";
+        }
+        // ============================
+        //  TÍNH TỔNG NGÀY CÔNG 
+        // ============================
+        
+        KetQuaChamCong ketQua = new KetQuaChamCong();
+        ketQua = _chamCongService.GetChamCongStatistics(nhanVien.MaNV,Month,Year);
 
-
+        result.TongNgayCong = ketQua.SoNgayDiLam;
+        
         // ============================
         // 6. TÍNH LƯƠNG CUỐI
         // ============================
-        decimal? luongChinh = luongCoBan * heSoLuongCoBan;
-
+        decimal? luongChinh = luongCoBan * heSoLuongCoBan + tongTienKiemNhiem;
+        luongChinh = luongChinh / 26 * ketQua.SoNgayDiLam - luongChinh / 26 * ketQua.DiemDiTre; 
+        
+       
+        
         result.LuongThucNhan =
             luongChinh
             + tongPhuCap
-            + tongTienKiemNhiem
             - tongKhauTru
             - tongThue;
 

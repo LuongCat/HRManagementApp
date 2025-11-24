@@ -10,8 +10,9 @@ public class NhanVien
     
     public string GioiTinh { get; set; }
     public DateTime? NgayVaoLam { get; set; }
-
-    public List<PhongBan> PhongBan { get; set; } = new();
+    
+    public int? MaPB { get; set; }
+    public List< PhongBan> PhongBan { get; set; } = new();
     public List<ChucVu> ChucVu { get; set; } = new();
     
     public List<VaiTroNhanVien> DanhSachChucVu { get; set; } = new();

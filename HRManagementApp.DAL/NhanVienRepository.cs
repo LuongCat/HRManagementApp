@@ -21,7 +21,7 @@ namespace HRManagementApp.DAL
         {
             string query = @"
                 SELECT MaNV, HoTen, NgaySinh, SoCCCD, DienThoai,
-                       NgayVaoLam, TrangThai, GioiTinh
+                       NgayVaoLam, TrangThai, GioiTinh, MaPB
                 FROM NhanVien
             ";
 
@@ -42,6 +42,8 @@ namespace HRManagementApp.DAL
                     GioiTinh = row["GioiTinh"]?.ToString(),
                     TrangThai = row["TrangThai"]?.ToString(),
                     NgayVaoLam = row["NgayVaoLam"] as DateTime?,
+                    
+                    MaPB = row["MaPB"] == DBNull.Value ? null : Convert.ToInt32(row["MaPB"]),
 
                     PhongBan = AllPhongBanOfNhanVien(id),
                     ChucVu = AllChucVuOfNhanVien(id),
@@ -60,13 +62,15 @@ namespace HRManagementApp.DAL
         // =====================================================
         // LẤY PHÒNG BAN CỦA NHÂN VIÊN
         // =====================================================
+
+        //đang sửa hàm này để chuển qua kiểu 1 nhân viên chỉ thuộc 1 phòng ban thôi hiện tại chưa sửa hàm
+        //và các thuộc tính lieen quan tới hàm này tạm thời chỉ sửa query để tạm sử dụng 
         public List<PhongBan> AllPhongBanOfNhanVien(int maNV)
         {
             string query = @"
                 SELECT pb.MaPB, pb.TenPB, pb.MoTa,pb.MaTruongPhong
                 FROM NhanVien nv
-                LEFT JOIN NhanVien_ChucVu nvcv ON nvcv.MaNV = nv.MaNV
-                LEFT JOIN PhongBan pb ON pb.MaPB = nvcv.MaPB
+                LEFT JOIN PhongBan pb ON pb.MaPB = nv.MaPB
                 WHERE nv.MaNV = @MaNV
             ";
 
@@ -84,13 +88,39 @@ namespace HRManagementApp.DAL
                     MaPB = (int)row["MaPB"],
                     TenPB = row["TenPB"]?.ToString(),
                     MoTa = row["MoTa"]?.ToString(),
-                    MaTruongPhong = Convert.ToInt32(row["MaTruongPhong"])
+                    MaTruongPhong = row["MaTruongPhong"] == DBNull.Value 
+                        ? null
+                        : Convert.ToInt32(row["MaTruongPhong"])
                 });
             }
 
             return list;
         }
+        
+        // =====================================================
+        // thêm PHÒNG BAN Cho NHÂN VIÊN chưa có phòng ban
+        // =====================================================
+        
+        public bool AssignEmployeeToDepartment(int maNV, int maPB)
+        {
+            string query = @"
+        UPDATE nhanvien
+        SET MaPB = @MaPB
+        WHERE MaNV = @MaNV;
+    ";
 
+            var parameters = new Dictionary<string, object>
+            {
+                { "@MaNV", maNV },
+                { "@MaPB", maPB }
+            };
+
+            int affected = Database.ExecuteNonQuery(query, parameters);
+
+            return affected > 0;
+        }
+
+        
         // =====================================================
         // LẤY CHỨC VỤ CỦA NHÂN VIÊN
         // =====================================================
@@ -150,6 +180,9 @@ namespace HRManagementApp.DAL
                 TrangThai = row["TrangThai"]?.ToString(),
                 GioiTinh = row["GioiTinh"]?.ToString(),
                 NgayVaoLam = row["NgayVaoLam"] as DateTime?,
+                
+                MaPB = row["MaPB"] == DBNull.Value ? null : Convert.ToInt32(row["MaPB"]),
+
 
                 PhongBan = AllPhongBanOfNhanVien(id),
                 ChucVu = AllChucVuOfNhanVien(id),
@@ -184,6 +217,9 @@ namespace HRManagementApp.DAL
                 TrangThai = row["TrangThai"]?.ToString(),
                 GioiTinh = row["GioiTinh"]?.ToString(),
                 NgayVaoLam = row["NgayVaoLam"] as DateTime?,
+                
+                MaPB = row["MaPB"] == DBNull.Value ? null : Convert.ToInt32(row["MaPB"]),
+
 
                 PhongBan = AllPhongBanOfNhanVien(id),
                 ChucVu = AllChucVuOfNhanVien(id),

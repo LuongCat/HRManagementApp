@@ -8,9 +8,10 @@ CREATE TABLE `nhanvien` (
   `NgaySinh` date DEFAULT NULL,
   `SoCCCD` varchar(20) DEFAULT NULL,
   `DienThoai` varchar(15) DEFAULT NULL,
-  `TrangThai` ENUM('Còn làm việc', 'Nghỉ việc') DEFAULT 'Còn làm việc',
+  `TrangThai` ENUM('Còn làm việc', 'Nghỉ việc') NOT NULL DEFAULT 'Còn làm việc',
   `NgayVaoLam` date DEFAULT (CURRENT_DATE),
   `GioiTinh` ENUM('Nam', 'Nữ') DEFAULT 'Nam',
+  `MaPB` INT,
   PRIMARY KEY (`MaNV`),
   UNIQUE KEY `SoCCCD` (`SoCCCD`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -21,6 +22,7 @@ CREATE TABLE `chucvu` (
   `PhuCap` decimal(18,2) DEFAULT 0,
   `LuongCB` decimal(18,2) DEFAULT 0,
   `TienPhuCapKiemNhiem` DECIMAL(18,2) DEFAULT 0,
+  `TrangThai` enum('Hoạt động', 'Tạm ngưng', 'Đã xóa') NOT NULL DEFAULT 'Hoạt động',
   PRIMARY KEY (`MaCV`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -59,13 +61,20 @@ CREATE TABLE `taikhoan` (
   `MaNV` int DEFAULT NULL,
   `TenDangNhap` varchar(50) NOT NULL,
   `MatKhau` varchar(256) NOT NULL,
-  `VaiTro` varchar(50) DEFAULT NULL,
-  `TrangThai` ENUM('Hoạt động', 'Đã khóa', 'Đã xóa') DEFAULT 'Hoạt động',
+  `TrangThai` ENUM('Hoạt động', 'Đã khóa', 'Đã xóa') NOT NULL DEFAULT 'Hoạt động',
   PRIMARY KEY (`MaTK`),
   UNIQUE KEY `TenDangNhap` (`TenDangNhap`),
   KEY `MaNV` (`MaNV`),
   CONSTRAINT `taikhoan_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `calam` (
+  `MaCa` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `TenCa` varchar(20) NOT NULL,
+  `GioBatDau` time DEFAULT '00:00:00',
+  `GioKetThuc` time DEFAULT '00:00:00',
+  `TrangThai` enum('Hoạt động', 'Tạm ngừng', 'Đã xóa') NOT NULL DEFAULT 'Hoạt động'
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `chamcong` (
   `MaCC` int NOT NULL AUTO_INCREMENT,
@@ -85,7 +94,7 @@ CREATE TABLE `dontu` (
   `NgayBatDau` datetime DEFAULT (CURRENT_TIMESTAMP),
   `NgayKetThuc` datetime DEFAULT (CURRENT_TIMESTAMP),
   `LyDo` varchar(200) DEFAULT NULL,
-  `TrangThai` ENUM('Chưa duyệt', 'Đã duyệt', 'Từ chối') DEFAULT 'Chưa duyệt',
+  `TrangThai` ENUM('Chưa duyệt', 'Đã duyệt', 'Từ chối') NOT NULL DEFAULT 'Chưa duyệt',
   `NgayGui` datetime DEFAULT (CURRENT_TIMESTAMP),
   `NguoiDuyet` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`MaDon`),
@@ -101,8 +110,9 @@ CREATE TABLE `luong` (
   `Thang` int NOT NULL,
   `Nam` int NOT NULL,
   `TongNgayCong` int DEFAULT 0,
+  `TienLuong` decimal(18,2) DEFAULT 0,
   `LuongThucNhan` decimal(18,2) DEFAULT 0,
-  `TrangThai` ENUM('Chưa trả', 'Đã trả') DEFAULT 'Chưa trả',
+  `TrangThai` ENUM('Chưa trả', 'Đã trả') NOT NULL DEFAULT 'Chưa trả',
   PRIMARY KEY (`MaLuong`),
   KEY `MaNV` (`MaNV`),
   CONSTRAINT `luong_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -129,18 +139,52 @@ CREATE TABLE `taikhoan_vaitro` (
 CREATE TABLE `nhanvien_chucvu` (
   `MaNV` INT NOT NULL,
   `MaCV` INT NOT NULL,
-  `MaPB` INT NOT NULL,
+  `HeSoLuongCoBan` DECIMAL(6,4) DEFAULT 0,
   `HeSoPhuCapKiemNhiem` DECIMAL(6,4) DEFAULT 0,
-  `LoaiChucVu` ENUM('Chính thức', 'Kiêm nhiệm') DEFAULT 'Chính thức',
+  `LoaiChucVu` ENUM('Chính thức', 'Kiêm nhiệm') NOT NULL DEFAULT 'Chính thức',
   `GhiChu` VARCHAR(200) DEFAULT NULL,
 
-  PRIMARY KEY (`MaNV`, `MaCV`, `MaPB`),
+  PRIMARY KEY (`MaNV`, `MaCV`),
   KEY `nv_cv_fk_cv` (`MaCV`),
-  KEY `nv_cv_fk_pb` (`MaPB`),
   
   CONSTRAINT `nv_cv_fk_nv` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `nv_cv_fk_cv` FOREIGN KEY (`MaCV`) REFERENCES `chucvu` (`MaCV`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `nv_cv_fk_pb` FOREIGN KEY (`MaPB`) REFERENCES `phongban` (`MaPB`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `nv_cv_fk_cv` FOREIGN KEY (`MaCV`) REFERENCES `chucvu` (`MaCV`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `phucap_nhanvien` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `MaNV` int NOT NULL,
+  `TenPhuCap` varchar(100) NOT NULL,
+  `SoTien` decimal(18,2) NOT NULL DEFAULT 0,
+  `ApDungTuNgay` date NOT NULL,
+  `ApDungDenNgay` date DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `fk_phucap_nv` (`MaNV`),
+  CONSTRAINT `fk_phucap_nv` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien`(`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `khautru` (
+  `MaKT` int NOT NULL AUTO_INCREMENT,
+  `MaNV` int NOT NULL,
+  `TenKhoanTru` varchar(100) NOT NULL,
+  `SoTien` decimal(18,2) NOT NULL DEFAULT 0,
+  `Ngay` date NOT NULL DEFAULT (CURRENT_DATE),
+  `GhiChu` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`MaKT`),
+  KEY `fk_khautru_nv` (`MaNV`),
+  CONSTRAINT `fk_khautru_nv` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien`(`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `thue` (
+  `MaThue` int NOT NULL AUTO_INCREMENT,
+  `MaNV` int NOT NULL,
+  `TenThue` varchar(100) NOT NULL,
+  `SoTien` decimal(18,2) NOT NULL DEFAULT 0,
+  `ApDungTuNgay` date NOT NULL,
+  `ApDungDenNgay` date DEFAULT NULL,
+  PRIMARY KEY (`MaThue`),
+  KEY `fk_thue_nv` (`MaNV`),
+  CONSTRAINT `fk_thue_nv` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien`(`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================
@@ -148,16 +192,16 @@ CREATE TABLE `nhanvien_chucvu` (
 -- ============================================
 
 INSERT INTO `chucvu` VALUES 
-(1,'Nhân viên',1000000.00,8000000.00,0),
-(2,'Tổ trưởng',1500000.00,10000000.00,10000),
-(3,'Trưởng phòng',3000000.00,15000000.00,10000),
-(4,'Giám đốc',5000000.00,25000000.00,20000);
+(1,'Nhân viên',1000000.00,8000000.00,0,'Hoạt động'),
+(2,'Tổ trưởng',1500000.00,10000000.00,10000,'Hoạt động'),
+(3,'Trưởng phòng',3000000.00,15000000.00,10000,'Hoạt động'),
+(4,'Giám đốc',5000000.00,25000000.00,20000,'Hoạt động');
 
 INSERT INTO `nhanvien` VALUES 
-(1,'Nguyễn Văn Ann','1990-05-15','012345678901','0901123456','Nghỉ việc','2020-01-10','Nam'),
-(2,'Trần Thị Bánh','1993-08-21','023456789012','0902345678','Còn làm việc','2022-03-18','Nữ'),
-(3,'Lê Văn C','1988-12-05','034567890123','0903456789','Còn làm việc','2019-06-01','Nam'),
-(4,'Phạm Thị D','1995-11-30','045678901234','0904567890','Còn làm việc','2022-02-25','Nữ');
+(1,'Nguyễn Văn Ann','1990-05-15','012345678901','0901123456','Nghỉ việc','2020-01-10','Nam',1),
+(2,'Trần Thị Bánh','1993-08-21','023456789012','0902345678','Còn làm việc','2022-03-18','Nữ',2),
+(3,'Lê Văn C','1988-12-05','034567890123','0903456789','Còn làm việc','2019-06-01','Nam',3),
+(4,'Phạm Thị D','1995-11-30','045678901234','0904567890','Còn làm việc','2022-02-25','Nữ',4);
 
 INSERT INTO `phongban` VALUES 
 (1,'Phòng Nhân Sự','Quản lý nhân sự và tuyển dụng',1),
@@ -184,18 +228,17 @@ INSERT INTO `chamcong` VALUES
 (76,4,'2024-09-04','08:00:00','16:00:00');
 
 INSERT INTO `luong` VALUES 
-(1,1,9,2024,26,18000000.00,'Đã trả'),
-(2,2,9,2024,24,11000000.00,'Đã trả'),
-(3,3,9,2024,27,14500000.00,'Đã trả'),
-(4,4,9,2024,25,10500000.00,'Đã trả');
+(1,1,9,2024,26,18000000.00,17000000.00,'Đã trả'),
+(2,2,9,2024,24,11000000.00,11000000.00,'Đã trả'),
+(3,3,9,2024,27,14500000.00,14500000.00,'Đã trả'),
+(4,4,9,2024,25,10500000.00,10500000.00,'Đã trả');
 
 INSERT INTO `nhanvien_chucvu` 
-(MaNV, MaCV, MaPB, HeSoPhuCapKiemNhiem, LoaiChucVu, GhiChu)
+(MaNV, MaCV, HeSoLuongCoBan, HeSoPhuCapKiemNhiem, LoaiChucVu, GhiChu)
 VALUES
 (1, 2, 1, 0,  'Chính thức', ''),
 (1, 3, 1, 0,  'Chính thức', ''),
-(2, 3, 2, 0.1500, 'Kiêm nhiệm', '');
-
+(2, 3, 1, 0.1500, 'Kiêm nhiệm', '');
 
 INSERT INTO `vaitro` VALUES 
 (1,'Admin','Quản trị hệ thống'),
@@ -211,3 +254,26 @@ INSERT INTO `vaitro_quyenhan` VALUES
 (1,1),(1,2),(1,3),
 (2,1),(2,2),
 (3,2);
+
+INSERT INTO `phucap_nhanvien` (`MaNV`, `TenPhuCap`, `SoTien`, `ApDungTuNgay`, `ApDungDenNgay`) VALUES
+(1, 'Phụ cấp thâm niên', 500000, '2024-01-01', NULL),
+(1, 'Phụ cấp trách nhiệm', 300000, '2024-06-01', '2024-12-31'),
+(2, 'Phụ cấp trách nhiệm', 200000, '2024-01-01', NULL),
+(3, 'Phụ cấp ca đêm', 150000, '2024-03-01', NULL),
+(4, 'Phụ cấp trách nhiệm', 250000, '2024-05-01', NULL);
+
+INSERT INTO `khautru` (`MaNV`, `TenKhoanTru`, `SoTien`, `Ngay`, `GhiChu`) VALUES
+(1, 'Bảo hiểm xã hội', 800000, '2024-09-30', 'Khấu trừ tháng 9'),                                                                              
+(1, 'Bảo hiểm y tế', 200000, '2024-09-30', NULL),
+(2, 'Bảo hiểm xã hội', 750000, '2024-09-30', NULL),                                                                              
+(3, 'Bảo hiểm xã hội', 700000, '2024-09-30', NULL),
+(4, 'Bảo hiểm xã hội', 650000, '2024-09-30', NULL);
+
+INSERT INTO `thue` (`MaNV`, `TenThue`, `SoTien`, `ApDungTuNgay`, `ApDungDenNgay`) VALUES
+(1, 'Thuế thu nhập cá nhân', 1200000, '2024-09-01', '2024-09-30'),
+(2, 'Thuế thu nhập cá nhân', 800000, '2024-09-01', '2024-09-30'),
+(3, 'Thuế thu nhập cá nhân', 1000000, '2024-09-01', '2024-09-30'),
+(4, 'Thuế thu nhập cá nhân', 750000, '2024-09-01', '2024-09-30');
+
+ALTER TABLE nhanvien
+ADD CONSTRAINT fk_nv_pb FOREIGN KEY (MaPB)  REFERENCES phongban(MaPB) ON DELETE SET NULL ON UPDATE CASCADE;

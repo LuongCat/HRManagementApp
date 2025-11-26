@@ -122,7 +122,68 @@ public class ChamCongRepository
         return listChamCong;
     }
 
+    public List<ChamCong> GetAllAttendancByMonthYear(int Day ,int Month, int Year)
+    {
+        var listChamCong = new List<ChamCong>();
+        string query = @"
+        SELECT MaCC, MaNV, Ngay, GioVao, GioRa, ThoiGianLam
+        FROM chamcong
+        WHERE  
+          MONTH(Ngay) = @Thang 
+          AND YEAR(Ngay) = @Nam
+            AND DAY(Ngay)=@Ngay
+        ORDER BY Ngay ASC";
 
+        var parameters = new Dictionary<string, object>
+        {
+            { "@Thang", Month },
+            { "@Nam", Year },
+            { "@Ngay", Day },
+        }; 
+        
+        DataTable data = Database.ExecuteQuery(query, parameters);
+        
+        if (data != null && data.Rows.Count > 0)
+        {
+            foreach (DataRow row in data.Rows)
+            {
+                var item = new ChamCong
+                {
+                    MaCC = Convert.ToInt32(row["MaCC"]),
+                    MaNV = Convert.ToInt32(row["MaNV"]),
+
+                    // Xử lý Ngày (DateTime)
+                    Ngay = row["Ngay"] != DBNull.Value
+                        ? Convert.ToDateTime(row["Ngay"])
+                        : (DateTime?)null,
+
+                    // Xử lý Giờ Vào (TimeSpan)
+                    // Lưu ý: MySQL TIME map sang C# là TimeSpan
+                    GioVao = row["GioVao"] != DBNull.Value
+                        ? (TimeSpan)row["GioVao"]
+                        : (TimeSpan?)null,
+
+                    // Xử lý Giờ Ra
+                    GioRa = row["GioRa"] != DBNull.Value
+                        ? (TimeSpan)row["GioRa"]
+                        : (TimeSpan?)null,
+                    
+                    // Xử lý Thời gian làm (Cột tự tính)
+                    ThoiGianLam = row["ThoiGianLam"] != DBNull.Value
+                        ? (TimeSpan)row["ThoiGianLam"]
+                        : (TimeSpan?)null
+                };
+
+                listChamCong.Add(item);
+            }
+        }
+        
+        return listChamCong;
+    }
+    
+    
+    
+    
     public KetQuaChamCong GetChamCongStatistics(int maNV, int thang, int nam)
     {
         var ketQua = new KetQuaChamCong();

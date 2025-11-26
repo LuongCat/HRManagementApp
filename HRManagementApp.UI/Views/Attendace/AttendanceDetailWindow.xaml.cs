@@ -14,7 +14,7 @@ namespace HRManagementApp.UI.Views
 
             // Set Title
             //txtTitle.Text = $"Chi tiết chấm công: {tenNV}";
-            //txtSubTitle.Text = $"Dữ liệu tháng {thang}/{nam}";
+            //txtSubTitle.Text = $"Dữ liệu tháng {thang}/{nam}"; 
 
             LoadData(maNV, thang, nam);
         }

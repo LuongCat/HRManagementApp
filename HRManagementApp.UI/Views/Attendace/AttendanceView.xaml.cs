@@ -1,28 +1,40 @@
 using System.Collections.Generic;
 using System.Windows.Controls;
 using HRManagementApp.models;
-
+using HRManagementApp.BLL;
 namespace HRManagementApp.UI.Views
 {
     public partial class AttendanceView : UserControl
     {
+        private readonly ChamCongService _chamCongService;
+        private int Day = 1;
+        private int Month = 9;
+        private int Year = 2025 ; // đang config cứng để test
         public AttendanceView()
         {
+            _chamCongService = new ChamCongService();
+            
             InitializeComponent();
             LoadDummyData();
         }
 
         private void LoadDummyData()
         {
-            var list = new List<AttendanceItem>
-            {
-                new AttendanceItem { MaNV = "NV001", HoTen = "Nguyễn Văn A", PhongBan = "IT", GioVao = "08:00", GioRa = "17:30", SoGio = "8.5h", TrangThai = "Đúng giờ" },
-                new AttendanceItem { MaNV = "NV002", HoTen = "Trần Thị B", PhongBan = "Sales", GioVao = "08:15", GioRa = "17:45",  SoGio = "8.5h", TrangThai = "Đi muộn" },
-                new AttendanceItem { MaNV = "NV003", HoTen = "Lê Văn C", PhongBan = "Marketing", GioVao = "08:05", GioRa = "-",  SoGio = "-h", TrangThai = "Đang làm" },
-                new AttendanceItem { MaNV = "NV004", HoTen = "Phạm Thị D", PhongBan = "HR", GioVao = "-", GioRa = "-",  TrangThai = "Vắng" },
-                new AttendanceItem { MaNV = "NV005", HoTen = "Hoàng Văn E", PhongBan = "Finance", GioVao = "08:00", GioRa = "12:00", SoGio = "4h", TrangThai = "Nửa ngày" },
-            };
 
+            var list = _chamCongService.GetAllAttendancByMonthYear( Day,Month, Year);
+            var listAttendanceItems = new List<AttendanceItem>();
+            foreach (var item in list)
+            {
+                var attendanceItem = new AttendanceItem
+                {
+                    MaNV = item.MaNV.ToString(),
+                    // thiếu phòng ban và HoTen
+                    GioVao = item.GioVao.ToString(),
+                    GioRa = item.GioRa.ToString(),
+                    SoGio = item.ThoiGianLam.ToString(),
+                };
+                listAttendanceItems.Add(attendanceItem);
+            }
             dgAttendance.ItemsSource = list;
         }
     }

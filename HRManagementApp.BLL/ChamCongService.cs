@@ -17,6 +17,11 @@ public class ChamCongService
 
     public KetQuaChamCong GetChamCongStatistics(int maNV, int thang, int nam)
     {
-        return _chamCongRepository.GetChamCongStatistics(maNV, thang, nam);
+        return _chamCongRepository.GetChamCongStatistics(maNV, thang, nam); 
+    }
+
+    public List<ChamCong> GetAllAttendancByMonthYear(int Day,int Month, int Year)
+    {
+        return _chamCongRepository.GetAllAttendancByMonthYear(Day,Month, Year);
     }
 }

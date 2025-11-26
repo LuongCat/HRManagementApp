@@ -1,0 +1,31 @@
+<UserControl x:Class="HRManagementApp.UI.Views.Report.DepartmentReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Background="White" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0 0 0 15">
+            <TextBlock Text="Department Report" FontSize="22" FontWeight="Bold" Foreground="#2C3E50"/>
+            <TextBlock Text="Danh sách phòng ban – số lượng nhân viên – trưởng phòng"
+                       FontSize="14" Foreground="#7F8C8D"/>
+        </StackPanel>
+
+        <DataGrid Grid.Row="1"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Department" Binding="{Binding Name}" Width="200"/>
+                <DataGridTextColumn Header="Employees" Binding="{Binding Count}" Width="100"/>
+                <DataGridTextColumn Header="Manager" Binding="{Binding Manager}" Width="200"/>
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+    </Grid>
+
+</UserControl>

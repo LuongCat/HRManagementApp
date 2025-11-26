@@ -108,8 +108,7 @@ namespace HRManagementApp.UI
 
         private void LoadAttendanceSection()
         {
-            // Attendance management logic
-            // Time tracking, attendance reports, etc.
+            ContentArea.Content = new Views.AttendanceManagementView();
         }
 
         private void LoadPayrollSection()

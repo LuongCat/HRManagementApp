@@ -4,8 +4,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             d:DesignHeight="800" d:DesignWidth="1200">
-    
+             d:DesignHeight="800"
+             d:DesignWidth="1200">
+
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
@@ -14,46 +15,60 @@
         <!-- Thay StackPanel bằng Grid để layout co dãn theo cửa sổ -->
         <Grid Margin="32">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/> <!-- Title -->
-                <RowDefinition Height="Auto"/> <!-- Subtitle -->
-                <RowDefinition Height="Auto"/> <!-- Statistics cards -->
-                <RowDefinition Height="*"/>    <!-- Account list area (chiếm phần còn lại) -->
+                <RowDefinition Height="Auto"/>
+                <!-- Title -->
+                <RowDefinition Height="Auto"/>
+                <!-- Subtitle -->
+                <RowDefinition Height="Auto"/>
+                <!-- Statistics cards -->
+                <RowDefinition Height="*"/>
+                <!-- Account list area (chiếm phần còn lại) -->
             </Grid.RowDefinitions>
 
             <!-- Header -->
             <StackPanel Grid.Row="0">
-                <TextBlock Text="Quản lý Tài khoản" FontSize="28" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,8"/>
-                <TextBlock Text="Quản lý tài khoản và phân quyền người dùng" FontSize="14" Foreground="#64748B" Margin="0,0,0,32"/>
+                <TextBlock Text="Quản lý Tài khoản"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           Foreground="#1E293B"
+                           Margin="0,0,0,8"/>
+                <TextBlock Text="Quản lý tài khoản và phân quyền người dùng"
+                           FontSize="14"
+                           Foreground="#64748B"
+                           Margin="0,0,0,32"/>
             </StackPanel>
 
             <!-- Statistics Cards -->
-            <UniformGrid Grid.Row="2" Columns="4" Margin="0,0,0,32">
+            <UniformGrid Grid.Row="2"
+                         Columns="4"
+                         Margin="0,0,0,32">
                 <!-- Tổng tài khoản -->
-                <Border BorderBrush="#E5E7EB" 
-                       BorderThickness="1" 
-                       Padding="24" 
-                       CornerRadius="12" 
-                       Background="White"
-                       Margin="0,0,12,0">
+                <Border BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        Padding="24"
+                        CornerRadius="12"
+                        Background="White"
+                        Margin="0,0,12,0">
                     <Grid>
                         <StackPanel>
-                            <TextBlock Text="Tổng tài khoản" 
-                                      Foreground="#64748B" 
-                                      FontSize="13" 
-                                      Margin="0,0,0,8"/>
-                            <TextBlock Text="5" 
-                                      FontSize="32" 
-                                      FontWeight="Bold" 
-                                      Foreground="#2563EB"/>
+                            <TextBlock Text="Tổng tài khoản"
+                                       Foreground="#64748B"
+                                       FontSize="13"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock x:Name="txtTotalAccounts"
+                                       Text="0"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#2563EB"/>
                         </StackPanel>
-                        <Border Width="56" 
-                               Height="56" 
-                               Background="#EFF6FF" 
-                               CornerRadius="28"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Top">
-                            <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" 
-                                  Fill="#2563EB" 
+                        <Border Width="56"
+                                Height="56"
+                                Background="#EFF6FF"
+                                CornerRadius="28"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                            <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                                  Fill="#2563EB"
                                   Stretch="Uniform"
                                   Width="28"
                                   Height="28"
@@ -64,31 +79,32 @@
                 </Border>
 
                 <!-- Đang hoạt động -->
-                <Border BorderBrush="#E5E7EB" 
-                       BorderThickness="1" 
-                       Padding="24" 
-                       CornerRadius="12" 
-                       Background="White"
-                       Margin="0,0,12,0">
+                <Border BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        Padding="24"
+                        CornerRadius="12"
+                        Background="White"
+                        Margin="0,0,12,0">
                     <Grid>
                         <StackPanel>
-                            <TextBlock Text="Đang hoạt động" 
-                                      Foreground="#64748B" 
-                                      FontSize="13" 
-                                      Margin="0,0,0,8"/>
-                            <TextBlock Text="4" 
-                                      FontSize="32" 
-                                      FontWeight="Bold" 
-                                      Foreground="#16A34A"/>
+                            <TextBlock Text="Đang hoạt động"
+                                       Foreground="#64748B"
+                                       FontSize="13"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock x:Name="txtActiveAccounts"
+                                       Text="0"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#16A34A"/>
                         </StackPanel>
-                        <Border Width="56" 
-                               Height="56" 
-                               Background="#F0FDF4" 
-                               CornerRadius="28"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Top">
-                            <Path Data="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 17.93c-3.95-.49-7-3.85-7-7.93V6.3l7-3.11v16.74z" 
-                                  Fill="#16A34A" 
+                        <Border Width="56"
+                                Height="56"
+                                Background="#F0FDF4"
+                                CornerRadius="28"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                            <Path Data="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 17.93c-3.95-.49-7-3.85-7-7.93V6.3l7-3.11v16.74z"
+                                  Fill="#16A34A"
                                   Stretch="Uniform"
                                   Width="28"
                                   Height="28"
@@ -99,31 +115,32 @@
                 </Border>
 
                 <!-- Bị khóa -->
-                <Border BorderBrush="#E5E7EB" 
-                       BorderThickness="1" 
-                       Padding="24" 
-                       CornerRadius="12" 
-                       Background="White"
-                       Margin="0,0,12,0">
+                <Border BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        Padding="24"
+                        CornerRadius="12"
+                        Background="White"
+                        Margin="0,0,12,0">
                     <Grid>
                         <StackPanel>
-                            <TextBlock Text="Bị khóa" 
-                                      Foreground="#64748B" 
-                                      FontSize="13" 
-                                      Margin="0,0,0,8"/>
-                            <TextBlock Text="1" 
-                                      FontSize="32" 
-                                      FontWeight="Bold" 
-                                      Foreground="#DC2626"/>
+                            <TextBlock Text="Bị khóa"
+                                       Foreground="#64748B"
+                                       FontSize="13"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock x:Name="txtLockedAccounts"
+                                       Text="0"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#DC2626"/>
                         </StackPanel>
-                        <Border Width="56" 
-                               Height="56" 
-                               Background="#FEF2F2" 
-                               CornerRadius="28"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Top">
-                            <Path Data="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z" 
-                                  Fill="#DC2626" 
+                        <Border Width="56"
+                                Height="56"
+                                Background="#FEF2F2"
+                                CornerRadius="28"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                            <Path Data="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"
+                                  Fill="#DC2626"
                                   Stretch="Uniform"
                                   Width="28"
                                   Height="28"
@@ -134,30 +151,31 @@
                 </Border>
 
                 <!-- Quản lý -->
-                <Border BorderBrush="#E5E7EB" 
-                       BorderThickness="1" 
-                       Padding="24" 
-                       CornerRadius="12" 
-                       Background="White">
+                <Border BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        Padding="24"
+                        CornerRadius="12"
+                        Background="White">
                     <Grid>
                         <StackPanel>
-                            <TextBlock Text="Quản lý" 
-                                      Foreground="#64748B" 
-                                      FontSize="13" 
-                                      Margin="0,0,0,8"/>
-                            <TextBlock Text="2" 
-                                      FontSize="32" 
-                                      FontWeight="Bold" 
-                                      Foreground="#9333EA"/>
+                            <TextBlock Text="Quản lý"
+                                       Foreground="#64748B"
+                                       FontSize="13"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock x:Name="txtManagerAccounts"
+                                       Text="0"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#9333EA"/>
                         </StackPanel>
-                        <Border Width="56" 
-                               Height="56" 
-                               Background="#FAF5FF" 
-                               CornerRadius="28"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Top">
-                            <Path Data="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" 
-                                  Fill="#9333EA" 
+                        <Border Width="56"
+                                Height="56"
+                                Background="#FAF5FF"
+                                CornerRadius="28"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                            <Path Data="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"
+                                  Fill="#9333EA"
                                   Stretch="Uniform"
                                   Width="28"
                                   Height="28"
@@ -169,40 +187,52 @@
             </UniformGrid>
 
             <!-- Account List Section - đặt ở hàng * để co dãn -->
-            <Border Grid.Row="3" BorderBrush="Transparent" BorderThickness="0" CornerRadius="12" Background="White" Padding="24">
+            <Border Grid.Row="3"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    CornerRadius="12"
+                    Background="White"
+                    Padding="24">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Header -->
-                        <RowDefinition Height="Auto"/> <!-- Search -->
-                        <RowDefinition Height="*"/>    <!-- DataGrid chiếm hết không gian còn lại -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Header -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Search -->
+                        <RowDefinition Height="*"/>
+                        <!-- DataGrid chiếm hết không gian còn lại -->
                     </Grid.RowDefinitions>
 
                     <!-- Header with Create Button (Grid.Row=0) -->
-                    <Grid Margin="0,0,0,24" Grid.Row="0">
-                        <TextBlock Text="Danh sách tài khoản" 
-                                  FontSize="18" 
-                                  FontWeight="SemiBold" 
-                                  Foreground="#1E293B"
-                                  VerticalAlignment="Center"/>
-                        <Button Content="+ Tạo tài khoản"
-                               HorizontalAlignment="Right"
-                               Background="#1E293B"
-                               Foreground="White"
-                               BorderThickness="0"
-                               Padding="20,10"
-                               FontWeight="SemiBold"
-                               FontSize="13"
-                               Cursor="Hand">
+                    <Grid Margin="0,0,0,24"
+                          Grid.Row="0">
+                        <TextBlock Text="Danh sách tài khoản"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="#1E293B"
+                                   VerticalAlignment="Center"/>
+                        <!-- thay thế phần Button hiện tại trong AccountManagementView.xaml -->
+                        <Button x:Name="btnCreateAccount"
+                                Content="+ Tạo tài khoản"
+                                Click="BtnCreateAccount_Click"
+                                HorizontalAlignment="Right"
+                                Background="#1E293B"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Padding="20,10"
+                                FontWeight="SemiBold"
+                                FontSize="13"
+                                Cursor="Hand">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
                                                 <Border Background="{TemplateBinding Background}"
-                                                       CornerRadius="8"
-                                                       Padding="{TemplateBinding Padding}">
-                                                    <ContentPresenter HorizontalAlignment="Center" 
-                                                                    VerticalAlignment="Center"/>
+                                                        CornerRadius="8"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center"
+                                                                      VerticalAlignment="Center"/>
                                                 </Border>
                                             </ControlTemplate>
                                         </Setter.Value>
@@ -213,20 +243,23 @@
                     </Grid>
 
                     <!-- Search Box (Grid.Row=1) -->
-                    <Border Background="#F9FAFB" 
-                           BorderBrush="#E5E7EB" 
-                           BorderThickness="1" 
-                           CornerRadius="8" 
-                           Padding="12"
-                           Margin="0,0,0,20"
-                           Grid.Row="1">
+                    <Border Background="#F9FAFB"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="12"
+                            Margin="0,0,0,20"
+                            Grid.Row="1">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/> <!-- Icon -->
-                                <ColumnDefinition Width="Auto"/> <!-- ComboBox -->
-                                <ColumnDefinition Width="*"/>    <!-- SearchBox -->
+                                <ColumnDefinition Width="Auto"/>
+                                <!-- Icon -->
+                                <ColumnDefinition Width="Auto"/>
+                                <!-- ComboBox -->
+                                <ColumnDefinition Width="*"/>
+                                <!-- SearchBox -->
                             </Grid.ColumnDefinitions>
-                            
+
                             <ComboBox x:Name="cboSearchColumn"
                                       Grid.Column="0"
                                       Width="150"
@@ -234,9 +267,9 @@
                                       SelectedIndex="0"
                                       VerticalAlignment="Center"
                                       BorderThickness="0"
-                                    Background="Transparent"
-                                    FontSize="14"
-                                    Foreground="#1E293B">
+                                      Background="Transparent"
+                                      FontSize="14"
+                                      Foreground="#1E293B">
                                 <ComboBoxItem Content="Tất cả"/>
                                 <ComboBoxItem Content="Tên đăng nhập"/>
                                 <ComboBoxItem Content="Họ tên"/>
@@ -245,31 +278,31 @@
                                 <ComboBoxItem Content="Phòng ban"/>
                             </ComboBox>
 
-                            <TextBlock Text="🔍" 
-                                      Grid.Column="1"
-                                      FontSize="16" 
-                                      VerticalAlignment="Center"
-                                      Margin="0,0,8,0"/>
+                            <TextBlock Text="🔍"
+                                       Grid.Column="1"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,8,0"/>
 
-                            
+
                             <TextBox Grid.Column="2"
-                                    x:Name="txtSearch"
-                                    BorderThickness="0"
-                                    Background="Transparent"
-                                    VerticalAlignment="Center"
-                                    FontSize="14"
-                                    Foreground="#64748B">
+                                     x:Name="txtSearch"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     VerticalAlignment="Center"
+                                     FontSize="14"
+                                     Foreground="#64748B">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox">
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="TextBox">
                                                     <Grid>
-                                                        <TextBlock Text="Tìm kiếm theo tên, username, email..." 
-                                                                  Foreground="#94A3B8"
-                                                                  FontSize="14"
-                                                                  VerticalAlignment="Center"
-                                                                  Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                        <TextBlock Text="Tìm kiếm theo tên, username, email..."
+                                                                   Foreground="#94A3B8"
+                                                                   FontSize="14"
+                                                                   VerticalAlignment="Center"
+                                                                   Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                                         <ScrollViewer x:Name="PART_ContentHost"/>
                                                     </Grid>
                                                 </ControlTemplate>
@@ -282,7 +315,7 @@
                     </Border>
 
                     <!-- Data Grid (Grid.Row=2) -->
-                    <DataGrid x:Name="dgAccounts" 
+                    <DataGrid x:Name="dgAccounts"
                               Grid.Row="2"
                               AutoGenerateColumns="False"
                               CanUserAddRows="False"
@@ -302,29 +335,43 @@
                         <DataGrid.Resources>
                             <!-- Tùy chỉnh style cho ScrollBar -->
                             <Style TargetType="ScrollBar">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="BorderBrush" Value="Transparent"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Margin" Value="0,0,-8,0"/> <!-- Điều chỉnh vị trí thanh cuộn -->
+                                <Setter Property="Background"
+                                        Value="Transparent"/>
+                                <Setter Property="BorderBrush"
+                                        Value="Transparent"/>
+                                <Setter Property="BorderThickness"
+                                        Value="0"/>
+                                <Setter Property="Margin"
+                                        Value="0,0,-8,0"/>
+                                <!-- Điều chỉnh vị trí thanh cuộn -->
                             </Style>
                             <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="#1E293B"/>
-                                <Setter Property="FontWeight" Value="SemiBold"/>
-                                <Setter Property="FontSize" Value="14"/>
-                                <Setter Property="Padding" Value="12,12"/>
-                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                                <Setter Property="Background"
+                                        Value="Transparent"/>
+                                <Setter Property="Foreground"
+                                        Value="#1E293B"/>
+                                <Setter Property="FontWeight"
+                                        Value="SemiBold"/>
+                                <Setter Property="FontSize"
+                                        Value="14"/>
+                                <Setter Property="Padding"
+                                        Value="12,12"/>
+                                <Setter Property="BorderThickness"
+                                        Value="0,0,0,1"/>
+                                <Setter Property="BorderBrush"
+                                        Value="#E5E7EB"/>
                             </Style>
                             <Style TargetType="DataGridCell">
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Padding" Value="12,0"/>
+                                <Setter Property="BorderThickness"
+                                        Value="0"/>
+                                <Setter Property="Padding"
+                                        Value="12,0"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="DataGridCell">
-                                            <Border Padding="{TemplateBinding Padding}" 
-                                                   Background="{TemplateBinding Background}"
-                                                   BorderThickness="0">
+                                            <Border Padding="{TemplateBinding Padding}"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderThickness="0">
                                                 <ContentPresenter VerticalAlignment="Center"/>
                                             </Border>
                                         </ControlTemplate>
@@ -332,49 +379,71 @@
                                 </Setter>
                             </Style>
                             <Style TargetType="DataGridRow">
-                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Background"
+                                        Value="White"/>
                             </Style>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Tên đăng nhập" Binding="{Binding TenDangNhap}" Width="1.2*"/>
-                            <DataGridTextColumn Header="Họ tên" Binding="{Binding Name}" Width="1.2*"/>
-                            <DataGridTextColumn Header="SDT" Binding="{Binding SDT}" Width="1.8*"/>
-                            
+                            <DataGridTextColumn Header="Tên đăng nhập"
+                                                Binding="{Binding TenDangNhap}"
+                                                Width="1.2*"/>
+                            <DataGridTextColumn Header="Họ tên"
+                                                Binding="{Binding Name}"
+                                                Width="1.2*"/>
+                            <DataGridTextColumn Header="SDT"
+                                                Binding="{Binding SDT}"
+                                                Width="1.8*"/>
+
                             <!-- Vai trò Column -->
-                            <DataGridTemplateColumn Header="Vai trò" Width="*">
+                            <DataGridTemplateColumn Header="Vai trò"
+                                                    Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Border CornerRadius="6" 
-                                               Padding="12,6"
-                                               HorizontalAlignment="Left">
+                                        <Border CornerRadius="6"
+                                                Padding="12,6"
+                                                HorizontalAlignment="Left">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding VaiTro}" Value="Quản lý">
-                                                            <Setter Property="Background" Value="#1E293B"/>
+                                                        <DataTrigger Binding="{Binding VaiTro}"
+                                                                     Value="Quản lý">
+                                                            <Setter Property="Background"
+                                                                    Value="#1E293B"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding VaiTro}" Value="Nhân viên">
-                                                            <Setter Property="Background" Value="#F1F5F9"/>
+                                                        <DataTrigger Binding="{Binding VaiTro}"
+                                                                     Value="Nhân viên">
+                                                            <Setter Property="Background"
+                                                                    Value="#F1F5F9"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding VaiTro}" Value="HR">
-                                                            <Setter Property="Background" Value="#F1F5F9"/>
+                                                        <DataTrigger Binding="{Binding VaiTro}"
+                                                                     Value="HR">
+                                                            <Setter Property="Background"
+                                                                    Value="#F1F5F9"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <TextBlock FontSize="12" FontWeight="Medium">
+                                            <TextBlock FontSize="12"
+                                                       FontWeight="Medium">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
-                                                        <Setter Property="Text" Value="{Binding VaiTro}"/>
+                                                        <Setter Property="Text"
+                                                                Value="{Binding VaiTro}"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding VaiTro}" Value="Quản lý">
-                                                                <Setter Property="Foreground" Value="White"/>
+                                                            <DataTrigger Binding="{Binding VaiTro}"
+                                                                         Value="Quản lý">
+                                                                <Setter Property="Foreground"
+                                                                        Value="White"/>
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding VaiTro}" Value="Nhân viên">
-                                                                <Setter Property="Foreground" Value="#1E293B"/>
+                                                            <DataTrigger Binding="{Binding VaiTro}"
+                                                                         Value="Nhân viên">
+                                                                <Setter Property="Foreground"
+                                                                        Value="#1E293B"/>
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding VaiTro}" Value="HR">
-                                                                <Setter Property="Foreground" Value="#1E293B"/>
+                                                            <DataTrigger Binding="{Binding VaiTro}"
+                                                                         Value="HR">
+                                                                <Setter Property="Foreground"
+                                                                        Value="#1E293B"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -385,72 +454,96 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTextColumn Header="Phòng ban" Binding="{Binding PhongBan}" Width="*"/>
+                            <DataGridTextColumn Header="Phòng ban"
+                                                Binding="{Binding PhongBan}"
+                                                Width="*"/>
                             <!-- <DataGridTextColumn Header="Đăng nhập gần đây" Binding="{Binding LastLogin}" Width="1.2*"/> -->
-                            
+
                             <!-- Trạng thái Column -->
-                            <DataGridTemplateColumn Header="Trạng thái" Width="*">
+                            <DataGridTemplateColumn Header="Trạng thái"
+                                                    Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Border CornerRadius="6" 
-                                               Padding="12,6"
-                                               HorizontalAlignment="Left">
+                                        <Border CornerRadius="6"
+                                                Padding="12,6"
+                                                HorizontalAlignment="Left">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding TrangThai}" Value="Hoạt động">
-                                                            <Setter Property="Background" Value="#1E293B"/>
+                                                        <DataTrigger Binding="{Binding TrangThai}"
+                                                                     Value="Hoạt động">
+                                                            <Setter Property="Background"
+                                                                    Value="#1E293B"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding TrangThai}" Value="Đã khóa">
-                                                            <Setter Property="Background" Value="#DC2626"/>
+                                                        <DataTrigger Binding="{Binding TrangThai}"
+                                                                     Value="Đã khóa">
+                                                            <Setter Property="Background"
+                                                                    Value="#DC2626"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding TrangThai}" Value="Đã xóa">
-                                                            <Setter Property="Background" Value="#DC2626"/>
+                                                        <DataTrigger Binding="{Binding TrangThai}"
+                                                                     Value="Đã xóa">
+                                                            <Setter Property="Background"
+                                                                    Value="#DC2626"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <TextBlock Text="{Binding TrangThai}" 
-                                                      Foreground="White" 
-                                                      FontSize="12"
-                                                      FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding TrangThai}"
+                                                       Foreground="White"
+                                                       FontSize="12"
+                                                       FontWeight="Medium"/>
                                         </Border>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
                             <!-- Thao tác Column -->
-                            <DataGridTemplateColumn Header="Thao tác" Width="*">
+                            <DataGridTemplateColumn Header="Thao tác"
+                                    Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                            <Button Content="✏️" 
-                                                   Background="Transparent"
-                                                   BorderThickness="0"
-                                                   Padding="8"
-                                                   Margin="0,0,4,0"
-                                                   Cursor="Hand"
-                                                   FontSize="16"
-                                                   ToolTip="Chỉnh sửa"/>
+                                        <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Left">
+                                            <Button Content="✏️"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Padding="8"
+                                                    Margin="0,0,4,0"
+                                                    Cursor="Hand"
+                                                    FontSize="16"
+                                                    ToolTip="Chỉnh sửa"
+                                                    CommandParameter="{Binding}"
+                                                    Click="BtnEdit_Click"/>
                                             <Button Background="Transparent"
-                                                   BorderThickness="0"
-                                                   Padding="8"
-                                                   Cursor="Hand"
-                                                   FontSize="16">
+                                                    BorderThickness="0"
+                                                    Padding="8"
+                                                    Cursor="Hand"
+                                                    FontSize="16"
+                                                    CommandParameter="{Binding}"
+                                                    Click="BtnLock_Click">
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Hoạt động">
-                                                                <Setter Property="Content" Value="🔒"/>
-                                                                <Setter Property="ToolTip" Value="Khóa tài khoản"/>
+                                                            <DataTrigger Binding="{Binding TrangThai}"
+                                                                    Value="Hoạt động">
+                                                                <Setter Property="Content"
+                                                                        Value="🔓"/>
+                                                                <Setter Property="ToolTip"
+                                                                        Value="Khóa tài khoản"/>
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Đã khóa">
-                                                                <Setter Property="Content" Value="🔓"/>
-                                                                <Setter Property="ToolTip" Value="Mở khóa tài khoản"/>
+                                                            <DataTrigger Binding="{Binding TrangThai}"
+                                                                    Value="Đã khóa">
+                                                                <Setter Property="Content"
+                                                                        Value="🔒"/>
+                                                                <Setter Property="ToolTip"
+                                                                        Value="Mở khóa tài khoản"/>
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Đã xóa">
-                                                                <Setter Property="Content" Value="🔄"/>
-                                                                <Setter Property="ToolTip" Value="Khôi phục tài khoản"/>
+                                                            <DataTrigger Binding="{Binding TrangThai}"
+                                                                    Value="Đã xóa">
+                                                                <Setter Property="Content"
+                                                                        Value="🔄"/>
+                                                                <Setter Property="ToolTip"
+                                                                        Value="Khôi phục tài khoản"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>

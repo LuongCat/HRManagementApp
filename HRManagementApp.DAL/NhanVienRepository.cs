@@ -73,10 +73,6 @@ namespace HRManagementApp.DAL
                         PhuCap = row["PhuCap"] != DBNull.Value ? (decimal)row["PhuCap"] : 0
                     }
                 };
-                
-                
-                
-
                 list.Add(nv);
             }
 

@@ -1,0 +1,24 @@
+﻿# Build folders
+**/bin/
+**/obj/
+**/TestResults/
+
+# Rider
+.idea/
+*.sln.iml
+
+# User-specific
+*.user
+*.suo
+*.userprefs
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.temp
+
+# OS
+.DS_Store
+Thumbs.db

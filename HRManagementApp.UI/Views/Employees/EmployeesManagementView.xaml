@@ -1,0 +1,89 @@
+<UserControl x:Class="HRManagementApp.UI.Views.EmployeesManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F5F7FA">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- Header -->
+            <RowDefinition Height="Auto"/>   <!-- Tabs -->
+            <RowDefinition Height="*"/>      <!-- Content Area -->
+        </Grid.RowDefinitions>
+
+        <!-- ✅ HEADER -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Quản lý Nhân viên" FontSize="28" FontWeight="Bold" Foreground="#1F2937"/>
+            <TextBlock Text="Quản lý thông tin nhân viên, phòng ban và chức vụ" 
+                       FontSize="14" Foreground="#6B7280" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- ✅ TABS -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,25">
+            <Border Background="White" CornerRadius="8" Padding="2">
+                
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="BtnDanhSach" Content="Danh sách nhân viên" 
+                            Background="#1F2937" Foreground="White"
+                            BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
+                            Cursor="Hand" Click="BtnDanhSach_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="BtnPhongBan" Content="Phòng ban" 
+                            Background="Transparent" Foreground="#6B7280"
+                            BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
+                            Cursor="Hand" Click="BtnPhongBan_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="BtnChucVu" Content="Chức vụ" 
+                            Background="Transparent" Foreground="#6B7280"
+                            BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
+                            Cursor="Hand" Click="BtnChucVu_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- ✅ CONTENT AREA -->
+        <ContentControl x:Name="MainContent" Grid.Row="2"/>
+    </Grid>
+</UserControl>

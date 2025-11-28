@@ -249,4 +249,142 @@ public class ChamCongRepository
 
         return ketQua;
     }
+    
+    
+    // =========================================================
+    // PHẦN 2: BỔ SUNG THÊM - SỬA - XÓA (CRUD)
+    // =========================================================
+
+    // 1. Lấy chi tiết 1 bản ghi chấm công (Dùng để hiển thị lên form sửa)
+    public ChamCong GetChamCongById(int maCC)
+    {
+        string query = "SELECT * FROM chamcong WHERE MaCC = @MaCC";
+        var parameters = new Dictionary<string, object> { { "@MaCC", maCC } };
+
+        DataTable data = Database.ExecuteQuery(query, parameters);
+        if (data != null && data.Rows.Count > 0)
+        {
+            return MapDataRowToChamCong(data.Rows[0]);
+        }
+        return null;
+    }
+
+    // 2. Thêm mới chấm công (Thường dùng cho Admin thêm tay nếu nhân viên quên chấm)
+    public bool AddChamCong(ChamCong cc)
+    {
+        // Không insert MaCC (Auto Increment) và ThoiGianLam (Generated Column)
+        string query = @"
+            INSERT INTO chamcong (MaNV, Ngay, GioVao, GioRa) 
+            VALUES (@MaNV, @Ngay, @GioVao, @GioRa)";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaNV", cc.MaNV },
+            { "@Ngay", cc.Ngay ?? (object)DBNull.Value },
+            { "@GioVao", cc.GioVao ?? (object)DBNull.Value },
+            { "@GioRa", cc.GioRa ?? (object)DBNull.Value }
+        };
+
+        // Giả sử Database.ExecuteNonQuery trả về số dòng bị ảnh hưởng (int)
+        return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
+
+    // 3. Cập nhật chấm công (Sửa giờ vào/ra)
+    public bool UpdateChamCong(ChamCong cc)
+    {
+        string query = @"
+            UPDATE chamcong 
+            SET Ngay = @Ngay, 
+                GioVao = @GioVao, 
+                GioRa = @GioRa 
+            WHERE MaCC = @MaCC";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaCC", cc.MaCC },
+            { "@Ngay", cc.Ngay ?? (object)DBNull.Value },
+            { "@GioVao", cc.GioVao ?? (object)DBNull.Value },
+            { "@GioRa", cc.GioRa ?? (object)DBNull.Value }
+        };
+
+        return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
+
+    // 4. Xóa chấm công
+    public bool DeleteChamCong(int maCC)
+    {
+        string query = "DELETE FROM chamcong WHERE MaCC = @MaCC";
+        var parameters = new Dictionary<string, object> { { "@MaCC", maCC } };
+
+        return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
+
+    // =========================================================
+    // HÀM PHỤ TRỢ (HELPER) ĐỂ MAP DỮ LIỆU
+    // =========================================================
+    private ChamCong MapDataRowToChamCong(DataRow row)
+    {
+        return new ChamCong
+        {
+            MaCC = Convert.ToInt32(row["MaCC"]),
+            MaNV = Convert.ToInt32(row["MaNV"]),
+            Ngay = row["Ngay"] != DBNull.Value ? Convert.ToDateTime(row["Ngay"]) : (DateTime?)null,
+            GioVao = row["GioVao"] != DBNull.Value ? (TimeSpan)row["GioVao"] : (TimeSpan?)null,
+            GioRa = row["GioRa"] != DBNull.Value ? (TimeSpan)row["GioRa"] : (TimeSpan?)null,
+            ThoiGianLam = row["ThoiGianLam"] != DBNull.Value ? (TimeSpan)row["ThoiGianLam"] : (TimeSpan?)null
+        };
+    }
+    
+    
+
+// 1. Lấy thông tin chấm công của ngày hôm nay (để biết đang Vào hay Ra)
+    public ChamCong GetChamCongToday(int maNV)
+    {
+        string query = @"
+        SELECT * FROM chamcong 
+        WHERE MaNV = @MaNV 
+        AND Ngay = CURDATE() 
+        LIMIT 1"; // Chỉ lấy bản ghi hôm nay
+
+        var parameters = new Dictionary<string, object> { { "@MaNV", maNV } };
+        DataTable data = Database.ExecuteQuery(query, parameters);
+
+        if (data != null && data.Rows.Count > 0)
+        {
+            DataRow row = data.Rows[0];
+            return new ChamCong
+            {
+                MaCC = Convert.ToInt32(row["MaCC"]),
+                MaNV = Convert.ToInt32(row["MaNV"]),
+                Ngay = row["Ngay"] != DBNull.Value ? Convert.ToDateTime(row["Ngay"]) : null,
+                GioVao = row["GioVao"] != DBNull.Value ? (TimeSpan)row["GioVao"] : null,
+                GioRa = row["GioRa"] != DBNull.Value ? (TimeSpan)row["GioRa"] : null,
+                ThoiGianLam = row["ThoiGianLam"] != DBNull.Value ? (TimeSpan)row["ThoiGianLam"] : null
+            };
+        }
+        return null; // Chưa chấm công hôm nay
+    }
+
+// 2. Hàm Check In (Chấm công vào)
+    public bool CheckIn(int maNV)
+    {
+        // Insert dòng mới với Giờ Vào là giờ hiện tại (CURTIME)
+        string query = @"INSERT INTO chamcong (MaNV, Ngay, GioVao) VALUES (@MaNV, CURDATE(), CURTIME())";
+    
+        var parameters = new Dictionary<string, object> { { "@MaNV", maNV } };
+    
+        // Giả sử class Database có hàm ExecuteNonQuery trả về số dòng bị ảnh hưởng
+        return Database.ExecuteNonQuery(query, parameters) > 0; 
+    }
+
+// 3. Hàm Check Out (Chấm công ra)
+    public bool CheckOut(int maCC)
+    {
+        // Update dòng hiện tại với Giờ Ra là giờ hiện tại
+        string query = @"UPDATE chamcong SET GioRa = CURTIME() WHERE MaCC = @MaCC";
+    
+        var parameters = new Dictionary<string, object> { { "@MaCC", maCC } };
+    
+        return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
 }

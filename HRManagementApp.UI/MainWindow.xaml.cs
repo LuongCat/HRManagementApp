@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using HRManagementApp.UI.Views;
 using HRManagementApp.UI.Views.Leave;
 namespace HRManagementApp.UI
 {
@@ -30,6 +31,7 @@ namespace HRManagementApp.UI
             SettingsBtn.Click += (s, e) => NavigateTo("Settings", s as Button);
             EditPayrollBtn.Click += (s, e) => NavigateTo("EditPayroll", s as Button);
             LogoutBtn.Click += LogoutBtn_Click; 
+            AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
         }
 
         private void NavigateTo(string section, Button clickedButton)
@@ -96,6 +98,9 @@ namespace HRManagementApp.UI
                 case "editpayroll":
                     LoadEditPayrollSection();
                     break;
+                case "account":
+                    LoadAccountsSection();
+                    break;
             }
         }
 
@@ -116,7 +121,7 @@ namespace HRManagementApp.UI
 
         private void LoadAttendanceSection()
         {
-            ContentArea.Content = new Views.AttendanceTag();
+            ContentArea.Content = new Views.AttendanceTagView();
         }
 
         private void LoadPayrollSection()
@@ -133,15 +138,18 @@ namespace HRManagementApp.UI
 
         private void LoadReportsSection()
         {
-            // Reports and analytics
-            // Generate various HR reports, charts, export functionality
+            
         }
 
         private void LoadSettingsSection()
         {
-             int currentLoggedInUserId = 2; 
-             ContentArea.Content = new MyLeaveView(currentLoggedInUserId);
+             ContentArea.Content = new ForEmployeeManagementView();
         }
+        private void LoadAccountsSection()
+        {
+            ContentArea.Content = new Views.AccountManagementView();
+
+        }   
 
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
         {

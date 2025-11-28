@@ -160,18 +160,24 @@
 
                     <Button Style="{StaticResource SidebarButtonStyle}" Name="SettingsBtn">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="⚙️" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>
                             <TextBlock Text="SubmitApplication"/>
                         </StackPanel>
                     </Button>
                     
                     <Button Style="{StaticResource SidebarButtonStyle}" Name="EditPayrollBtn">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="⚙️" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="🛠️" FontSize="16" Margin="0,0,10,0"/>
                             <TextBlock Text="EditPayroll"/>
                         </StackPanel>
                     </Button>
                     
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="AccountBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Account"/>
+                        </StackPanel>
+                    </Button>
                     
                 </StackPanel>
 
@@ -182,6 +188,7 @@
                         <TextBlock Text="Logout"/>
                     </StackPanel>
                 </Button>
+                
             </StackPanel>
         </Border>
 

@@ -1,0 +1,143 @@
+<UserControl x:Class="HRManagementApp.UI.Views.ApprovalView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="800"
+             d:DesignWidth="1360">
+
+    <Border Background="White"
+            CornerRadius="0,12,12,12"
+            Padding="32">
+        <StackPanel>
+            <TextBlock Text="Danh sách chờ duyệt công"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,24"
+                       Foreground="#1E293B"/>
+            <DataGrid x:Name="dgApprovals"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      GridLinesVisibility="None"
+                      BorderThickness="0"
+                      Background="White"
+                      RowBackground="White"
+                      AlternatingRowBackground="White"
+                      RowHeight="64">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background"
+                                Value="Transparent"/>
+                        <Setter Property="Foreground"
+                                Value="#1E293B"/>
+                        <Setter Property="FontWeight"
+                                Value="SemiBold"/>
+                        <Setter Property="FontSize"
+                                Value="14"/>
+                        <Setter Property="Padding"
+                                Value="12,12"/>
+                        <Setter Property="BorderThickness"
+                                Value="0"/>
+                    </Style>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="BorderThickness"
+                                Value="0"/>
+                        <Setter Property="Padding"
+                                Value="12,0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border Padding="{TemplateBinding Padding}"
+                                            Background="{TemplateBinding Background}"
+                                            BorderThickness="0">
+                                        <ContentPresenter VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background"
+                                Value="White"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Nhân viên"
+                                        Binding="{Binding Employee}"
+                                        Width="1.5*"/>
+                    <DataGridTextColumn Header="Ngày"
+                                        Binding="{Binding Date}"
+                                        Width="*"
+                                        MinWidth="120"/>
+                    <DataGridTextColumn Header="Giờ vào"
+                                        Binding="{Binding CheckIn}"
+                                        Width="*"
+                                        MinWidth="120"/>
+                    <DataGridTextColumn Header="Giờ ra"
+                                        Binding="{Binding CheckOut}"
+                                        Width="*"
+                                        MinWidth="120"/>
+                    <DataGridTextColumn Header="Lý do"
+                                        Binding="{Binding Reason}"
+                                        Width="1.5*"/>
+                    <DataGridTemplateColumn Header="Trạng thái"
+                                            Width="*"
+                                            MinWidth="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Status}"
+                                           Foreground="#64748B"
+                                           FontSize="13"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Thao tác"
+                            Width="1.2*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="👁️ Xem chi tiết"
+                                        Background="Transparent"
+                                        Foreground="#2563EB"
+                                        BorderThickness="1"
+                                        BorderBrush="#2563EB"
+                                        Padding="12,6"
+                                        Cursor="Hand"
+                                        FontWeight="Medium"
+                                        FontSize="13"
+                                        Click="BtnDetail_Click"
+                                        CommandParameter="{Binding}">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="6"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver"
+                                                        Value="True">
+                                                    <Setter Property="Background"
+                                                            Value="#EFF6FF"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </Border>
+</UserControl>

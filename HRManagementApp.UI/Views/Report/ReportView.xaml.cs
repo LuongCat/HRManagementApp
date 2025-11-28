@@ -1,6 +1,7 @@
-using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using HRManagementApp.UI.Views.Report; // Đảm bảo namespace này đúng với folder chứa các View con
 
 namespace HRManagementApp.UI.Views
 {
@@ -9,45 +10,51 @@ namespace HRManagementApp.UI.Views
         public ReportView()
         {
             InitializeComponent();
+
+            // Kích hoạt tab mặc định khi mở trang
             DefaultReport.IsChecked = true;
+            // Load nội dung mặc định luôn để người dùng không thấy trống
+            ReportContentArea.Content = new AnalyticsReportView();
         }
 
         private void ReportMenu_Checked(object sender, RoutedEventArgs e)
         {
-            var clicked = sender as ToggleButton;
+            var clickedBtn = sender as ToggleButton;
 
-            // Uncheck other toggle buttons
+            if (clickedBtn == null) return;
+
+            // Logic: Tắt các nút khác để chỉ có 1 nút được Active
             foreach (var child in ReportMenuPanel.Children)
             {
-                if (child is ToggleButton btn && btn != clicked)
+                if (child is ToggleButton btn && btn != clickedBtn)
+                {
                     btn.IsChecked = false;
+                }
             }
 
-            // Load correct report
-            switch (clicked.Tag.ToString())
+            // Chống việc click lại vào nút đang active thì bị uncheck (giữ nó luôn active)
+            clickedBtn.IsChecked = true;
+
+            // Load View tương ứng
+            switch (clickedBtn.Tag.ToString())
             {
-                case "Employee":
-                    ReportContentArea.Content = new Report.EmployeeReportView();
-                    break;
-
-                case "Attendance":
-                    ReportContentArea.Content = new Report.AttendanceReportView();
-                    break;
-
-                case "Payroll":
-                    ReportContentArea.Content = new Report.PayrollReportView();
-                    break;
-
-                case "Leave":
-                    ReportContentArea.Content = new Report.LeaveReportView();
-                    break;
-
-                case "Department":
-                    ReportContentArea.Content = new Report.DepartmentReportView();
-                    break;
-
                 case "Analytics":
-                    ReportContentArea.Content = new Report.AnalyticsReportView();
+                    ReportContentArea.Content = new AnalyticsReportView();
+                    break;
+                case "Attendance":
+                    ReportContentArea.Content = new AttendanceReportView();
+                    break;
+                case "Payroll":
+                    ReportContentArea.Content = new PayrollReportView();
+                    break;
+                case "Leave":
+                    ReportContentArea.Content = new LeaveReportView();
+                    break;
+                case "Employee":
+                    ReportContentArea.Content = new EmployeeReportView();
+                    break;
+                case "Department":
+                    ReportContentArea.Content = new DepartmentReportView();
                     break;
             }
         }

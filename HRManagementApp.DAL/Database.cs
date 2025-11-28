@@ -40,10 +40,7 @@ public static class Database
 
         return data;
     }
-<<<<<<< HEAD
-=======
-    
->>>>>>> 8c3b11cac68560f58e6989c78d2ef0783bd4c7d7
+
     public static int ExecuteNonQuery(string query, Dictionary<string, object>? parameters = null)
     {
         using (var conn = GetConnection())

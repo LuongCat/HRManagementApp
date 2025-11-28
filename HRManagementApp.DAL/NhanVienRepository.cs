@@ -39,22 +39,12 @@ namespace HRManagementApp.DAL
                     TrangThai = row["TrangThai"]?.ToString(),
                     NgayVaoLam = row["NgayVaoLam"] as DateTime?,
 
-<<<<<<< HEAD
-                    ChucVu = new ChucVu
-                    {
-                        MaCV = row["MaCV"] != DBNull.Value ? (int)row["MaCV"] : 0,
-                        TenCV = row["TenCV"]?.ToString(),
-                        LuongCB = row["LuongCB"] != DBNull.Value ? (decimal)row["LuongCB"] : 0,
-                        PhuCap = row["PhuCap"] != DBNull.Value ? (decimal)row["PhuCap"] : 0
-                    }
-                };
-                list.Add(nv);
-=======
+
                     PhongBan = AllPhongBanOfNhanVien(id),
                     ChucVu = AllChucVuOfNhanVien(id),
                     DanhSachChucVu = vaiTroNhanVien.GetVaiTroNhanVien(id)
                 });
->>>>>>> 8c3b11cac68560f58e6989c78d2ef0783bd4c7d7
+
             }
 
             return list;

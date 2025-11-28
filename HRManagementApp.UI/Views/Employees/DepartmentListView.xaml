@@ -16,6 +16,13 @@
                     <Border Background="White" CornerRadius="12" 
                             Margin="0,0,20,20" Padding="25"
                             Width="350" MinHeight="280">
+<<<<<<< HEAD
+=======
+                        <Border.Effect>
+                            <DropShadowEffect Color="#E0E0E0" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
+                        </Border.Effect>
+
+>>>>>>> 8c3b11cac68560f58e6989c78d2ef0783bd4c7d7
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -60,27 +67,26 @@
 
                             <!-- Buttons -->
                             <Grid Grid.Row="5" VerticalAlignment="Bottom">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                                <!-- Nút Sửa -->
-                                <Button Grid.Column="0" Content="✏️ Sửa"
-                                        Background="White" Foreground="#1F2937"
-                                        BorderBrush="#E5E7EB" BorderThickness="1"
+                                <!-- Nút Thêm nhân viên (Full width) -->
+                                <Button Grid.Row="0" Content="+ Thêm nhân viên"
+                                        Background="#10B981" Foreground="White"
+                                        BorderThickness="0"
                                         Padding="15,10" FontSize="14" FontWeight="SemiBold"
-                                        Cursor="Hand" Margin="0,0,8,0"
+                                        Cursor="Hand"
                                         Tag="{Binding MaPhongBan}"
-                                        Click="BtnEdit_Click">
+                                        Click="BtnAddEmployee_Click">
                                     <Button.Style>
                                         <Style TargetType="Button">
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Button">
                                                         <Border Background="{TemplateBinding Background}" 
-                                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                                BorderThickness="{TemplateBinding BorderThickness}"
                                                                 CornerRadius="8" 
                                                                 Padding="{TemplateBinding Padding}">
                                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -90,45 +96,85 @@
                                             </Setter>
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#F9FAFB"/>
+                                                    <Setter Property="Background" Value="#059669"/>
                                                 </Trigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Button.Style>
                                 </Button>
 
-                                <!-- Nút Xem -->
-                                <Button Grid.Column="1" Content="👁"
-                                        Background="White" 
-                                        BorderBrush="#E5E7EB" BorderThickness="1"
-                                        Width="45" Height="40" FontSize="18"
-                                        Cursor="Hand"
-                                        Tag="{Binding MaPhongBan}"
-                                        Click="BtnView_Click">
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}" 
-                                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                                CornerRadius="8"
-                                                                Width="{TemplateBinding Width}"
-                                                                Height="{TemplateBinding Height}">
-                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#F9FAFB"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <!-- Row 2: Nút Sửa và Xem -->
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Nút Sửa -->
+                                    <Button Grid.Column="0" Content="✏️ Sửa"
+                                            Background="White" Foreground="#1F2937"
+                                            BorderBrush="#E5E7EB" BorderThickness="1"
+                                            Padding="15,10" FontSize="14" FontWeight="SemiBold"
+                                            Cursor="Hand"
+                                            Tag="{Binding MaPhongBan}"
+                                            Click="BtnEdit_Click">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" 
+                                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                                    CornerRadius="8" 
+                                                                    Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#F9FAFB"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+
+                                    <!-- Nút Xem -->
+                                    <Button Grid.Column="2" Content="👁 Xem"
+                                            Background="White" Foreground="#1F2937"
+                                            BorderBrush="#E5E7EB" BorderThickness="1"
+                                            Padding="15,10" FontSize="14" FontWeight="SemiBold"
+                                            Cursor="Hand"
+                                            Tag="{Binding MaPhongBan}"
+                                            Click="BtnView_Click">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" 
+                                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                                    CornerRadius="8"
+                                                                    Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#F9FAFB"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Border>

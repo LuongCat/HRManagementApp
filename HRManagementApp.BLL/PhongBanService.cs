@@ -22,4 +22,14 @@ public class PhongBanService
             return new List<PhongBan>();
         }
     }
+
+    public PhongBan GetPhongBanByName(String name)
+    {
+        return _phongBanReponsitory.GetPhongBanByName(name);
+    }
+
+    public PhongBan GetPhongBanByID(int id)
+    {
+        return _phongBanReponsitory.GetPhongBanById(id);
+    }
 }

@@ -72,7 +72,6 @@ namespace HRManagementApp.UI.Views
                 win.ShowDialog();
             }
         }
-        // Thêm các hàm này vào RoleManagementView.xaml.cs
 
         // 1. Xử lý nút SỬA
         private void BtnEdit_Click(object sender, RoutedEventArgs e)

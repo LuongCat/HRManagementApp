@@ -1,0 +1,61 @@
+<UserControl x:Class="HRManagementApp.UI.Views.Report.AttendanceReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <Grid Background="White" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- TITLE -->
+        <StackPanel Grid.Row="0" Margin="0 0 0 15">
+            <TextBlock Text="Attendance Report" FontSize="22" FontWeight="Bold" Foreground="#2C3E50"/>
+            <TextBlock Text="Chấm công – vào/ra hằng ngày của nhân viên"
+                       FontSize="14" Foreground="#7F8C8D"/>
+        </StackPanel>
+
+        <!-- FILTER BAR -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 0 0 15">
+
+            <DatePicker Width="160" Height="32"/>
+            <DatePicker Width="160" Height="32"/>
+
+            <ComboBox Width="200" Height="32">
+                <ComboBoxItem Content="All Departments"/>
+                <ComboBoxItem Content="HR"/>
+                <ComboBoxItem Content="IT"/>
+                <ComboBoxItem Content="Finance"/>
+            </ComboBox>
+
+            <Button Content="📄 Export"
+                    Width="120"
+                    Height="32"
+                    Background="#2E86AB"
+                    Foreground="White"
+                    BorderThickness="0"/>
+        </StackPanel>
+
+        <!-- TABLE -->
+        <DataGrid Grid.Row="2"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  AlternatingRowBackground="#FAFAFA"
+                  BorderThickness="0">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Employee ID" Binding="{Binding Id}" Width="120"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200"/>
+                <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="150"/>
+                <DataGridTextColumn Header="Check In" Binding="{Binding CheckIn}" Width="150"/>
+                <DataGridTextColumn Header="Check Out" Binding="{Binding CheckOut}" Width="150"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</UserControl>

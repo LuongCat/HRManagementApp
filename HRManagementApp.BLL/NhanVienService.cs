@@ -9,133 +9,135 @@ namespace HRManagementApp.BLL
     public class NhanVienService
     {
         private readonly NhanVienRepository _repository;
+        private readonly VaiTroNhanVienReponsitory _vaiTroRepo;
 
         public NhanVienService()
         {
             _repository = new NhanVienRepository();
+            
+            _vaiTroRepo = new VaiTroNhanVienReponsitory(_repository);
+            
+            _repository.vaiTroNhanVien = _vaiTroRepo;
         }
 
-        // ✅ Lấy tất cả nhân viên
-        public List<NhanVien> GetAllNhanVien()
+        // =====================================================
+        // LẤY DANH SÁCH NHÂN VIÊN
+        // =====================================================
+        public List<NhanVien> GetListNhanVien()
+        {
+            return _repository.GetListNhanVien();
+        }
+
+        public List<PhongBan> GetListPhongBanOfNhanVien(int maNV)
+        {
+            return _repository.AllPhongBanOfNhanVien(maNV);
+        }
+
+        public List<ChucVu> GetListChucVuOfNhanVien(int maNV)
+        {
+            return _repository.AllChucVuOfNhanVien(maNV);
+        }
+
+        // =====================================================
+        // THÊM NHÂN VIÊN
+        // =====================================================
+        public bool AddNhanVien(NhanVien nv)
+        {
+            return _repository.AddNhanVien(nv);
+        }
+
+        // =====================================================
+        // CẬP NHẬT NHÂN VIÊN CƠ BẢN
+        // =====================================================
+        public bool UpdateNhanVien(NhanVien nv)
         {
             try
             {
-                return _repository.GetAll();
+                var old = _repository.GetById(nv.MaNV);
+                if (old == null) return false;
+
+                old.HoTen = nv.HoTen;
+                old.NgaySinh = nv.NgaySinh;
+                old.SoCCCD = nv.SoCCCD;
+                old.DienThoai = nv.DienThoai;
+                old.GioiTinh = nv.GioiTinh;
+
+                old.NgayVaoLam = nv.NgayVaoLam;
+                old.TrangThai = nv.TrangThai;
+
+                return _repository.UpdateBasicNhanVien(old);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Lỗi lấy danh sách nhân viên: " + ex.Message);
-                return new List<NhanVien>();
-            }
-        }
-        
-        public List<NhanVien> GetNhanVienDayDu()
-        {
-            return _repository.GetAllFull();
-        }
-        
-
-        /// <summary>
-        /// Cập nhật thông tin nhân viên
-        /// </summary>
-        public bool UpdateNhanVien(NhanVien nhanVien)
-        {
-            try
-            {
-                
-                // Tìm nhân viên trong database
-                var existingEmployee = _repository.GetById(nhanVien.MaNV);
-                
-                if (existingEmployee == null)
-                {
-                    return false;
-                }
-                
-                // Cập nhật các thuộc tính
-                existingEmployee.HoTen = nhanVien.HoTen;
-                existingEmployee.NgaySinh = nhanVien.NgaySinh;
-                existingEmployee.SoCCCD = nhanVien.SoCCCD;
-                existingEmployee.DienThoai = nhanVien.DienThoai;
-                existingEmployee.MaPB = nhanVien.MaPB;
-                existingEmployee.MaCV = nhanVien.MaCV;
-                existingEmployee.NgayVaoLam = nhanVien.NgayVaoLam;
-                existingEmployee.TrangThai = nhanVien.TrangThai;
-
-                // Lưu thay đổi
-                return true;
-                
-            }
-            catch (Exception ex)
-            {
-                // Log lỗi nếu cần
                 Console.WriteLine($"Lỗi UpdateNhanVien: {ex.Message}");
                 return false;
             }
         }
 
-/// <summary>
-/// Cập nhật thông tin nhân viên với validation
-/// </summary>
-public (bool success, string message) UpdateNhanVienWithValidation(NhanVien nhanVien)
-{
-    try
-    {
-        // Validate dữ liệu
-        if (string.IsNullOrWhiteSpace(nhanVien.HoTen))
+        // =====================================================
+        // CẬP NHẬT NHÂN VIÊN CÓ VALIDATION
+        // =====================================================
+        public (bool success, string message) UpdateNhanVienWithValidation(NhanVien nv)
         {
-            return (false, "Họ tên không được để trống");
-        }
-
-        if (!string.IsNullOrEmpty(nhanVien.DienThoai))
-        {
-            string cleanPhone = nhanVien.DienThoai.Replace(" ", "").Replace("-", "");
-            if (cleanPhone.Length < 10 || cleanPhone.Length > 11 || !cleanPhone.All(char.IsDigit))
+            try
             {
-                return (false, "Số điện thoại không hợp lệ (10-11 số)");
+                // ===== 1. VALIDATE =====
+                if (string.IsNullOrWhiteSpace(nv.HoTen))
+                    return (false, "Họ tên không được để trống");
+
+                if (!string.IsNullOrEmpty(nv.DienThoai))
+                {
+                    string phone = nv.DienThoai.Replace(" ", "").Replace("-", "");
+                    if (phone.Length < 10 || phone.Length > 11 || !phone.All(char.IsDigit))
+                        return (false, "Số điện thoại không hợp lệ (10-11 số)");
+                }
+
+                if (!string.IsNullOrEmpty(nv.SoCCCD))
+                {
+                    if (nv.SoCCCD.Length != 12 || !nv.SoCCCD.All(char.IsDigit))
+                        return (false, "CCCD phải có đúng 12 số");
+                }
+
+                // ===== 2. LẤY DỮ LIỆU GỐC =====
+                var old = _repository.GetById(nv.MaNV);
+                if (old == null) return (false, "Không tìm thấy nhân viên");
+
+                // ===== 3. CẬP NHẬT =====
+                old.HoTen = nv.HoTen;
+                old.NgaySinh = nv.NgaySinh;
+                old.SoCCCD = nv.SoCCCD;
+                old.DienThoai = nv.DienThoai;
+                old.GioiTinh = nv.GioiTinh;
+
+                old.NgayVaoLam = nv.NgayVaoLam;
+                old.TrangThai = nv.TrangThai;
+
+                bool ok = _repository.UpdateBasicNhanVien(old);
+                return ok
+                    ? (true, "Cập nhật thành công")
+                    : (false, "Không thể cập nhật nhân viên");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Lỗi: {ex.Message}");
             }
         }
 
-        if (!string.IsNullOrEmpty(nhanVien.SoCCCD))
+        // =====================================================
+        // XÓA NHÂN VIÊN
+        // =====================================================
+        public bool DeleteNhanVien(NhanVien nv)
         {
-            if (nhanVien.SoCCCD.Length != 12 || !nhanVien.SoCCCD.All(char.IsDigit))
-            {
-                return (false, "Số CCCD phải có 12 số");
-            }
+            if (nv == null) return false;
+            return _repository.DeleteNhanVien(nv.MaNV);
         }
 
-        
-            var existingEmployee = _repository.GetById(nhanVien.MaNV);
-            
-            if (existingEmployee == null)
-            {
-                return (false, "Không tìm thấy nhân viên");
-            }
-
-            // Kiểm tra trùng CCCD (nếu có thay đổi)
-            
-
-            // Kiểm tra trùng số điện thoại (nếu có thay đổi)
-           
-
-            // Cập nhật
-            existingEmployee.HoTen = nhanVien.HoTen;
-            existingEmployee.NgaySinh = nhanVien.NgaySinh;
-            existingEmployee.SoCCCD = nhanVien.SoCCCD;
-            existingEmployee.DienThoai = nhanVien.DienThoai;
-            existingEmployee.MaPB = nhanVien.MaPB;
-            existingEmployee.MaCV = nhanVien.MaCV;
-            existingEmployee.NgayVaoLam = nhanVien.NgayVaoLam;
-            existingEmployee.TrangThai = nhanVien.TrangThai;
-
-            
-            return (true, "Cập nhật thành công");
-        
-    }
-    catch (Exception ex)
-    {
-        return (false, $"Lỗi: {ex.Message}");
-    }
-}
-        
+        // =====================================================
+        // Chỉnh trạng thái NHÂN VIÊN
+        // =====================================================
+        public bool UpdateSate(int MaNV)
+        {
+            return _repository.ChangeSate(MaNV);
+        }
     }
 }

@@ -103,7 +103,18 @@ namespace HRManagementApp.UI
         }
         private void LoadDoashboardSection()
         {
-            ContentArea.Content = new Views.DashboardView();
+            var view = new Views.DashboardView();
+            ContentArea.Content = view;
+
+            view.AddNewEmployeeRequested += () =>
+            {
+                SetActiveButton(EmployeesBtn);
+                var employeeView = new Views.EmployeesView();
+                ContentArea.Content = employeeView;
+                employeeView.BtnThemNV.RaiseEvent(
+                    new RoutedEventArgs(Button.ClickEvent)
+                );
+            };
         }
         private void LoadEmployeeSection()
         {
@@ -135,6 +146,7 @@ namespace HRManagementApp.UI
         {
             // Reports and analytics
             // Generate various HR reports, charts, export functionality
+            ContentArea.Content = new Views.ReportView();
         }
 
         private void LoadSettingsSection()

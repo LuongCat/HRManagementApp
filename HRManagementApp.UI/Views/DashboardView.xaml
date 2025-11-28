@@ -115,14 +115,12 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="+ Add Employee"
-                            Style="{StaticResource ActionButtonStyle}"
-                            Margin="0,0,10,0"/>
                     <TextBlock Text="🔔"
                                FontSize="20"
                                VerticalAlignment="Center"
                                Margin="10,0"/>
-                    <TextBlock Text="Today: September 19, 2025"
+                    <TextBlock x:Name="TxtToday"
+                               Text="Today: September 19, 2025"
                                VerticalAlignment="Center"
                                Foreground="{StaticResource TextSecondary}"
                                FontSize="12"/>
@@ -150,8 +148,8 @@
                                 <TextBlock Text="👥" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
                                 <StackPanel>
                                     <TextBlock Text="Total Employees" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock Text="247" FontSize="28" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="0,5,0,0"/>
-                                    <TextBlock Text="+12 this month" FontSize="10" Foreground="#27AE60" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtTotalEmployee" FontSize="28" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtJoinedThisMonth" FontSize="12" Foreground="#27AE60" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -164,8 +162,8 @@
                                 <TextBlock Text="✅" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
                                 <StackPanel>
                                     <TextBlock Text="Present Today" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock Text="218" FontSize="28" FontWeight="Bold" Foreground="#27AE60" Margin="0,5,0,0"/>
-                                    <TextBlock Text="88.3% attendance" FontSize="10" Foreground="{StaticResource TextSecondary}" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtPresentToday" FontSize="28" FontWeight="Bold" Foreground="#27AE60" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtAttendanceRate" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -178,8 +176,8 @@
                                 <TextBlock Text="🏖️" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
                                 <StackPanel>
                                     <TextBlock Text="On Leave" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock Text="15" FontSize="28" FontWeight="Bold" Foreground="{StaticResource AccentColor}" Margin="0,5,0,0"/>
-                                    <TextBlock Text="3 pending approvals" FontSize="10" Foreground="#E74C3C" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtOnLeave" FontSize="28" FontWeight="Bold" Foreground="{StaticResource AccentColor}" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtPendingApprovals" FontSize="12" Foreground="#E74C3C" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -192,8 +190,8 @@
                                 <TextBlock Text="💰" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
                                 <StackPanel>
                                     <TextBlock Text="Monthly Payroll" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock Text="$428K" FontSize="28" FontWeight="Bold" Foreground="{StaticResource SecondaryColor}" Margin="0,5,0,0"/>
-                                    <TextBlock Text="Due in 5 days" FontSize="10" Foreground="{StaticResource AccentColor}" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtMonthlyPayroll" FontSize="28" FontWeight="Bold" Foreground="{StaticResource SecondaryColor}" Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="TxtDueDate" FontSize="12" Foreground="{StaticResource AccentColor}" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -278,7 +276,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <TextBlock Text="Quick Actions" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
 
-                            <Button Content="Add New Employee" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10"/>
+                            <Button Content="Add New Employee" Click="GoToAddNewEmployee" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10"/>
                             <Button Content="Process Payroll" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10" Background="{StaticResource AccentColor}"/>
                             <Button Content="Approve Leave Requests" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10" Background="{StaticResource SecondaryColor}"/>
                             <Button Content="Generate Reports" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,20" Background="#27AE60"/>

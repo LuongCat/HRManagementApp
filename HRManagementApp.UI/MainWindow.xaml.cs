@@ -28,7 +28,8 @@ namespace HRManagementApp.UI
             LeaveBtn.Click += (s, e) => NavigateTo("Leave Management", s as Button);
             ReportsBtn.Click += (s, e) => NavigateTo("Reports", s as Button);
             SettingsBtn.Click += (s, e) => NavigateTo("Settings", s as Button);
-            LogoutBtn.Click += LogoutBtn_Click; 
+            RoleBtn.Click += (s, e) => NavigateTo("Role", s as Button);
+            LogoutBtn.Click += LogoutBtn_Click;
         }
 
         private void NavigateTo(string section, Button clickedButton)
@@ -95,6 +96,9 @@ namespace HRManagementApp.UI
                 case "account":
                     LoadAccountsSection();
                     break;
+                case "role":
+                    LoadRoleSection();
+                    break;
             }
         }
         private void LoadDoashboardSection()
@@ -123,6 +127,10 @@ namespace HRManagementApp.UI
             // Leave applications, approval workflow, leave balance, etc.
         }
 
+        private void LoadRoleSection()
+        {
+            ContentArea.Content = new Views.RoleManagementView();
+        }
         private void LoadReportsSection()
         {
             // Reports and analytics
@@ -165,4 +173,4 @@ namespace HRManagementApp.UI
     }
 }
 
-        // Sample data models that would be used in a real application
+// Sample data models that would be used in a real application

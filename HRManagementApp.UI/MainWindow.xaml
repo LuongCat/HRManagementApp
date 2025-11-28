@@ -144,6 +144,13 @@
                         </StackPanel>
                     </Button>
 
+                    <Button Style="{StaticResource SidebarButtonStyle}" Name="RoleBtn">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="💰" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Role"/>
+                        </StackPanel>
+                    </Button>
+
                     <Button Style="{StaticResource SidebarButtonStyle}" Name="PayrollBtn">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="💰" FontSize="16" Margin="0,0,10,0"/>

@@ -2,19 +2,19 @@
 using HRManagementApp.models;
 namespace  HRManagementApp.BLL
 {
-    public class AnalyticsBLL
+    public class EmployeeReportBLL
     {
 
-        public AnalyticsModel GetDashboardAnalytics()
+        public EmployeeModel GetDashboarEmployee()
         {
             // Gọi DAL (giả sử bạn viết hàm trên trong AttendanceDAL hoặc ReportDAL)
-            return new AnalyticsDAL().GetAnalyticsSummary();
+            return new EmployeeDAL().GetEmployeeSummary();
         }
         // Trong file AnalyticsBLL.cs
 
         public Dictionary<string, int> GetDepartmentStats()
         {
-            return new AnalyticsDAL().GetEmployeeByDepartment();
+            return new EmployeeDAL().GetEmployeeByDepartment();
         }
     }
 };

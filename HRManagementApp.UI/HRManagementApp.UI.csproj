@@ -29,8 +29,17 @@
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>
       </Page>
+      <Page Update="Views\EditPayroll\EditPayroll.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
     </ItemGroup>
 <ItemGroup>
+</ItemGroup>
+<ItemGroup>
+  <PackageReference Include="LiveChartsCore" Version="2.0.0-rc6.1" />
+  <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc6.1" />
 </ItemGroup>
 
 </Project>

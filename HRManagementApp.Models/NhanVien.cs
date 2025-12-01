@@ -1,6 +1,6 @@
 namespace HRManagementApp.models;
-
-public class NhanVien
+using System.ComponentModel;
+public class NhanVien 
 {
     public int MaNV { get; set; }
     public string HoTen { get; set; }
@@ -10,12 +10,20 @@ public class NhanVien
     
     public string GioiTinh { get; set; }
     public DateTime? NgayVaoLam { get; set; }
-
-    public List<PhongBan> PhongBan { get; set; } = new();
+    
+    public int? MaPB { get; set; }
+    public List< PhongBan> PhongBan { get; set; } = new();
     public List<ChucVu> ChucVu { get; set; } = new();
     
     public List<VaiTroNhanVien> DanhSachChucVu { get; set; } = new();
 
+    public List<PhuCapNhanVien> PhuCaps  { get; set; } = new();
+
+    public List<KhauTru> KhauTrus  { get; set; } = new() ;
+    
+    public List<Thue> Thues  { get; set; } = new();
+
+    public List<Luong> Luongs { get; set; } = new();
     
     public String TrangThai { get; set; }
     
@@ -40,7 +48,11 @@ public class NhanVien
             return string.Join(", ", ChucVu.Select(c => c.TenCV));
         }
     }
-    
+    // hai cái này đang dùng cho thêm nhân viên vào 1 phòng ban
     public bool IsSelected { get; set; } = false;
+    public int MaChucVuMoi {get; set;}
+    
+    public decimal HeSoKiemNhiem { get; set; } = 1;
+
 
 }

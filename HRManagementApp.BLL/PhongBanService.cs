@@ -32,4 +32,24 @@ public class PhongBanService
     {
         return _phongBanReponsitory.GetPhongBanById(id);
     }
+
+    public bool UpdateDeparment(PhongBan phongBan)
+    {
+        return _phongBanReponsitory.UpdateDeparment(phongBan);
+    }
+
+    public bool InsertDepartment(PhongBan phongBan)
+    {
+        return _phongBanReponsitory.InsertDepartment(phongBan);
+    }
+
+    public bool DeleteDepartment(int maPB)
+    {
+        return _phongBanReponsitory.DeleteDepartment(maPB);
+    }
+
+    public NhanVien GetDeparmentHead(int maPB)
+    {
+        return _phongBanReponsitory.GetDeparmentHead(maPB);
+    }
 }

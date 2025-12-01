@@ -9,7 +9,11 @@ namespace HRManagementApp.DAL
     public class NhanVienRepository
     {
 
-        public VaiTroNhanVienReponsitory vaiTroNhanVien { get; set; } 
+        public VaiTroNhanVienReponsitory vaiTroNhanVien { get; set; }
+        public ThueRepository thueRepository { get; set; } = new();
+        public KhauTruRepository khauTruRepository { get; set; } = new();
+        public PhuCapNhanVienRepository  PhuCapNhanVienRepository { get; set; } = new();
+        public LuongRepository luongRepository { get; set; } = new();
         // =====================================================
         // LẤY DANH SÁCH NHÂN VIÊN
         // =====================================================
@@ -17,7 +21,7 @@ namespace HRManagementApp.DAL
         {
             string query = @"
                 SELECT MaNV, HoTen, NgaySinh, SoCCCD, DienThoai,
-                       NgayVaoLam, TrangThai, GioiTinh
+                       NgayVaoLam, TrangThai, GioiTinh, MaPB
                 FROM NhanVien
             ";
 
@@ -38,11 +42,18 @@ namespace HRManagementApp.DAL
                     GioiTinh = row["GioiTinh"]?.ToString(),
                     TrangThai = row["TrangThai"]?.ToString(),
                     NgayVaoLam = row["NgayVaoLam"] as DateTime?,
+                    
+                    MaPB = row["MaPB"] == DBNull.Value ? null : Convert.ToInt32(row["MaPB"]),
 
 
                     PhongBan = AllPhongBanOfNhanVien(id),
                     ChucVu = AllChucVuOfNhanVien(id),
-                    DanhSachChucVu = vaiTroNhanVien.GetVaiTroNhanVien(id)
+                    DanhSachChucVu = vaiTroNhanVien.GetVaiTroNhanVien(id),
+                    
+                    Luongs = luongRepository.GetSalaryByMaNV(id),
+                    PhuCaps = PhuCapNhanVienRepository.GetPhuCapByMaNV(id),
+                    Thues = thueRepository.GetTaxByMaNV(id),
+                    KhauTrus = khauTruRepository.GetDeductionByMaNV(id)
                 });
 
             }
@@ -53,13 +64,15 @@ namespace HRManagementApp.DAL
         // =====================================================
         // LẤY PHÒNG BAN CỦA NHÂN VIÊN
         // =====================================================
+
+        //đang sửa hàm này để chuển qua kiểu 1 nhân viên chỉ thuộc 1 phòng ban thôi hiện tại chưa sửa hàm
+        //và các thuộc tính lieen quan tới hàm này tạm thời chỉ sửa query để tạm sử dụng 
         public List<PhongBan> AllPhongBanOfNhanVien(int maNV)
         {
             string query = @"
                 SELECT pb.MaPB, pb.TenPB, pb.MoTa,pb.MaTruongPhong
                 FROM NhanVien nv
-                LEFT JOIN NhanVien_ChucVu nvcv ON nvcv.MaNV = nv.MaNV
-                LEFT JOIN PhongBan pb ON pb.MaPB = nvcv.MaPB
+                LEFT JOIN PhongBan pb ON pb.MaPB = nv.MaPB
                 WHERE nv.MaNV = @MaNV
             ";
 
@@ -77,13 +90,39 @@ namespace HRManagementApp.DAL
                     MaPB = (int)row["MaPB"],
                     TenPB = row["TenPB"]?.ToString(),
                     MoTa = row["MoTa"]?.ToString(),
-                    MaTruongPhong = Convert.ToInt32(row["MaTruongPhong"])
+                    MaTruongPhong = row["MaTruongPhong"] == DBNull.Value 
+                        ? null
+                        : Convert.ToInt32(row["MaTruongPhong"])
                 });
             }
 
             return list;
         }
+        
+        // =====================================================
+        // thêm PHÒNG BAN Cho NHÂN VIÊN chưa có phòng ban
+        // =====================================================
+        
+        public bool AssignEmployeeToDepartment(int maNV, int maPB)
+        {
+            string query = @"
+        UPDATE nhanvien
+        SET MaPB = @MaPB
+        WHERE MaNV = @MaNV;
+    ";
 
+            var parameters = new Dictionary<string, object>
+            {
+                { "@MaNV", maNV },
+                { "@MaPB", maPB }
+            };
+
+            int affected = Database.ExecuteNonQuery(query, parameters);
+
+            return affected > 0;
+        }
+
+        
         // =====================================================
         // LẤY CHỨC VỤ CỦA NHÂN VIÊN
         // =====================================================
@@ -122,7 +161,7 @@ namespace HRManagementApp.DAL
         // =====================================================
         // LẤY NHÂN VIÊN THEO ID
         // =====================================================
-        public NhanVien GetById(int id)
+        public NhanVien GetEmployeeById(int id)
         {
             string query = "SELECT * FROM NhanVien WHERE MaNV = @MaNV";
             var param = new Dictionary<string, object> { { "@MaNV", id } };
@@ -143,10 +182,55 @@ namespace HRManagementApp.DAL
                 TrangThai = row["TrangThai"]?.ToString(),
                 GioiTinh = row["GioiTinh"]?.ToString(),
                 NgayVaoLam = row["NgayVaoLam"] as DateTime?,
+                
+                MaPB = row["MaPB"] == DBNull.Value ? null : Convert.ToInt32(row["MaPB"]),
+
 
                 PhongBan = AllPhongBanOfNhanVien(id),
                 ChucVu = AllChucVuOfNhanVien(id),
-                DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>()
+                DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>(),
+                
+                Luongs = luongRepository.GetSalaryByMaNV(id),
+                PhuCaps = PhuCapNhanVienRepository.GetPhuCapByMaNV(id),
+                Thues = thueRepository.GetTaxByMaNV(id),
+                KhauTrus = khauTruRepository.GetDeductionByMaNV(id)
+            };
+        }
+        
+        public NhanVien GetEmployeeByName(string name)
+        {
+            string query = "SELECT * FROM NhanVien WHERE HoTen = @TenNV";
+            var param = new Dictionary<string, object> { { "@TenNV", name } };
+
+            DataTable dt = Database.ExecuteQuery(query, param);
+            if (dt.Rows.Count == 0) return null;
+
+            DataRow row = dt.Rows[0];
+            int id = Convert.ToInt32(row["MaNV"]);
+
+            return new NhanVien
+            {
+                MaNV = id,
+                HoTen = name,
+                NgaySinh = row["NgaySinh"] as DateTime?,
+                SoCCCD = row["SoCCCD"]?.ToString(),
+                DienThoai = row["DienThoai"]?.ToString(),
+
+                TrangThai = row["TrangThai"]?.ToString(),
+                GioiTinh = row["GioiTinh"]?.ToString(),
+                NgayVaoLam = row["NgayVaoLam"] as DateTime?,
+                
+                MaPB = row["MaPB"] == DBNull.Value ? null : Convert.ToInt32(row["MaPB"]),
+
+
+                PhongBan = AllPhongBanOfNhanVien(id),
+                ChucVu = AllChucVuOfNhanVien(id),
+                DanhSachChucVu = vaiTroNhanVien?.GetVaiTroNhanVien(id) ?? new List<VaiTroNhanVien>(),
+                
+                Luongs = luongRepository.GetSalaryByMaNV(id),
+                PhuCaps = PhuCapNhanVienRepository.GetPhuCapByMaNV(id),
+                Thues = thueRepository.GetTaxByMaNV(id),
+                KhauTrus = khauTruRepository.GetDeductionByMaNV(id)
             };
         }
 
@@ -227,7 +311,7 @@ namespace HRManagementApp.DAL
         // =====================================================
         // THÊM NHÂN VIÊN
         // =====================================================
-        public bool AddNhanVien(NhanVien nv)
+        public bool AddEmployeeHavingDeparmentAndRole(NhanVien nv)
         {
             using var conn = Database.GetConnection();
             conn.Open();
@@ -299,7 +383,28 @@ namespace HRManagementApp.DAL
             }
         }
 
-        
+        public bool addEmployeeBasic(NhanVien nv)
+        {
+            string insertNV = @"
+                    INSERT INTO NhanVien
+                    (HoTen, NgaySinh, SoCCCD, DienThoai, GioiTinh, NgayVaoLam, TrangThai)
+                    VALUES
+                    (@HoTen, @NgaySinh, @SoCCCD, @DienThoai, @GioiTinh, @NgayVaoLam, @TrangThai);
+                ";
+
+            var paramNV = new Dictionary<string, object>
+            {
+                { "@HoTen", nv.HoTen },
+                { "@NgaySinh", (object?)nv.NgaySinh ?? DBNull.Value },
+                { "@SoCCCD", (object?)nv.SoCCCD ?? DBNull.Value },
+                { "@DienThoai", (object?)nv.DienThoai ?? DBNull.Value },
+                { "@GioiTinh", nv.GioiTinh },
+                { "@NgayVaoLam", (object?)nv.NgayVaoLam ?? DBNull.Value },
+                { "@TrangThai", nv.TrangThai }
+            };
+
+            return Database.ExecuteNonQuery(insertNV, paramNV) > 0;
+        }
         
         // =====================================================
         // CHỈNH TRẠNG THÁI CỦA NHÂN VIÊN
@@ -312,7 +417,7 @@ namespace HRManagementApp.DAL
             DataTable dt = Database.ExecuteQuery(query, param);
 
             if (dt.Rows.Count == 0)
-                return null; // hoặc "" tùy logic
+                return null; 
 
             return dt.Rows[0]["TrangThai"].ToString();
         }
@@ -340,7 +445,6 @@ namespace HRManagementApp.DAL
             return  Database.ExecuteNonQuery(query, param) > 0;
             
         }
-        
         
     }
 }

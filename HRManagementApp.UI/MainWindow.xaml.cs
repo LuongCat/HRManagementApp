@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
+using HRManagementApp.UI.Views.Leave;
 namespace HRManagementApp.UI
 {
     public partial class MainWindow : Window
@@ -17,19 +17,21 @@ namespace HRManagementApp.UI
             SetActiveButton(DashboardBtn); // Set Dashboard as default active
             LoadSectionContent("dashboard");
         }
+
         private void InitializeEventHandlers()
         {
             // Navigation event handlers
             DashboardBtn.Click += (s, e) => NavigateTo("Dashboard", s as Button);
             EmployeesBtn.Click += (s, e) => NavigateTo("Employees", s as Button);
             AttendanceBtn.Click += (s, e) => NavigateTo("Attendance", s as Button);
-            PayrollBtn.Click += (s, e) => NavigateTo("Payroll", s as Button);
             AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
+            PayrollBtn.Click += (s, e) => NavigateTo("PayrollTag", s as Button);
             LeaveBtn.Click += (s, e) => NavigateTo("Leave Management", s as Button);
             ReportsBtn.Click += (s, e) => NavigateTo("Reports", s as Button);
             SettingsBtn.Click += (s, e) => NavigateTo("Settings", s as Button);
             RoleBtn.Click += (s, e) => NavigateTo("Role", s as Button);
             LogoutBtn.Click += LogoutBtn_Click;
+            EditPayrollBtn.Click += (s, e) => NavigateTo("EditPayroll", s as Button);
         }
 
         private void NavigateTo(string section, Button clickedButton)
@@ -81,7 +83,7 @@ namespace HRManagementApp.UI
                 case "attendance":
                     LoadAttendanceSection();
                     break;
-                case "payroll":
+                case "payrolltag":
                     LoadPayrollSection();
                     break;
                 case "leave management":
@@ -99,8 +101,18 @@ namespace HRManagementApp.UI
                 case "role":
                     LoadRoleSection();
                     break;
+                case "editpayroll":
+                    LoadEditPayrollSection();
+                    break;
             }
         }
+
+        private void LoadEditPayrollSection()
+        {
+            ContentArea.Content = new Views.EditPayroll();
+        }
+        
+        
         private void LoadDoashboardSection()
         {
             var view = new Views.DashboardView();
@@ -128,14 +140,14 @@ namespace HRManagementApp.UI
 
         private void LoadPayrollSection()
         {
-            ContentArea.Content = new Views.PayrollView();
+            ContentArea.Content = new Views.PayrollTag();
             // Salary calculations, pay slips, tax deductions, etc.
         }
 
         private void LoadLeaveSection()
         {
-            // Leave management logic
-            // Leave applications, approval workflow, leave balance, etc.
+            // Khởi tạo và hiển thị View quản lý đơn từ
+            ContentArea.Content = new LeaveManagementView(); 
         }
 
         private void LoadRoleSection()
@@ -151,8 +163,8 @@ namespace HRManagementApp.UI
 
         private void LoadSettingsSection()
         {
-            // System settings
-            // User management, company settings, system configuration
+             int currentLoggedInUserId = 2; 
+             ContentArea.Content = new MyLeaveView(currentLoggedInUserId);
         }
         private void LoadAccountsSection()
         {
@@ -179,10 +191,10 @@ namespace HRManagementApp.UI
                 // Example logout process:
                 // LoginWindow loginWindow = new LoginWindow();
                 // loginWindow.Show();
-                // this.Close();
+                // this.Close();    
             }
         }
     }
 }
 
-// Sample data models that would be used in a real application
+        // Sample data models that would be used in a real application

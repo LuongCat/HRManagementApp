@@ -103,8 +103,8 @@
                           IsReadOnly="True"
                           CanUserAddRows="False"
                           SelectionMode="Single"
-                          
-                          Margin="0,30,0,30"
+                          RowHeight="70"
+                          Margin="0,0,0,30"
                           FontSize="14"
                           GridLinesVisibility="None"
                           HeadersVisibility="Column"

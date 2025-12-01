@@ -12,13 +12,15 @@ namespace HRManagementApp.UI.Views
     {
         private readonly PhongBanService _phongBanService;
         private readonly VaiTroNhanVienService _vaiTroNhanVienService;
+        private readonly NhanVienService _nhanVienService;
         private ObservableCollection<PhongBanViewModel> _departments;
 
         public DepartmentListView()
         {
             InitializeComponent();
             _phongBanService = new PhongBanService();
-            _vaiTroNhanVienService = new VaiTroNhanVienService(); // ❗ BẮT BUỘC
+            _vaiTroNhanVienService = new VaiTroNhanVienService();
+            _nhanVienService = new NhanVienService();
             LoadDepartments();
         }
 
@@ -104,24 +106,34 @@ namespace HRManagementApp.UI.Views
             window.ShowDialog();
         }
 
+        
+        //chỉnh sửa phòng ban
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
-            string maPhongBan = button?.Tag?.ToString();
+            if (!int.TryParse(button?.Tag?.ToString(), out int maPB))
+                return;
 
-            if (!string.IsNullOrEmpty(maPhongBan))
+            var department = _departments.FirstOrDefault(d => int.Parse(d.MaPhongBan) == maPB);
+    
+            if (department != null)
             {
-                var department = _departments.FirstOrDefault(d => d.MaPhongBan == maPhongBan
-                );
-
-                if (department != null)
+                // Lấy thông tin phòng ban từ service
+                var phongBan = _phongBanService.GetPhongBanByID(maPB);
+        
+                // Lấy tất cả nhân viên (để chọn trưởng phòng)
+                var allEmployees = _nhanVienService.GetListNhanVien();
+        
+                // Lấy nhân viên thuộc phòng ban
+                var departmentEmployees = _vaiTroNhanVienService.GetNhanVienOfPhongBan(maPB);
+        
+                // Mở window (window này trong file Department)
+                var window = new EditDepartmentWindow();
+                window.LoadDepartmentInfo(phongBan, departmentEmployees);
+        
+                if (window.ShowDialog() == true)
                 {
-                    MessageBox.Show(
-                        $"Chỉnh sửa phòng ban: {department.TenPhongBan}\n" +
-                        $"Mã phòng ban: {department.MaPhongBan}",
-                        "Chỉnh sửa",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    LoadDepartments(); // Refresh
                 }
             }
         }
@@ -139,7 +151,7 @@ namespace HRManagementApp.UI.Views
             if (department != null)
             {
                 // Lấy danh sách nhân viên chưa có phòng ban hoặc ở phòng ban khác
-                var availableEmployees = _vaiTroNhanVienService.GetEmployeesNotInDepartment(maPB);
+                var availableEmployees = _vaiTroNhanVienService.GetEmployeesNotInDepartment();
 
                 var window = new AddEmployeeToDepartmentWindow();
                 window.SetDepartmentInfo(department.MaPhongBan, department.TenPhongBan);

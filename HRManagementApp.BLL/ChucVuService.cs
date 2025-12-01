@@ -15,4 +15,19 @@ public class ChucVuService
     {
         return _repo.GetChucVuById(id);
     }
+
+    public bool InsertChucVu(ChucVu chucVu)
+    {
+        return _repo.InsertChucVu(chucVu);
+    }
+
+    public bool UpdateChucVu(ChucVu chucVu)
+    {
+        return _repo.UpdateChucVu(chucVu);
+    }
+
+    public bool ChangeStatus(int maCV, string CurentStatus)
+    {
+        return _repo.ChangeStatus(maCV, CurentStatus);
+    }
 }

@@ -39,7 +39,6 @@ namespace HRManagementApp.UI.Views
             switch (clickedBtn.Tag.ToString())
             {
                 case "Analytics":
-                    ReportContentArea.Content = new AnalyticsReportView();
                     break;
                 case "Attendance":
                     ReportContentArea.Content = new AttendanceReportView();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using HRManagementApp.UI.Views;
 using HRManagementApp.UI.Views.Leave;
 namespace HRManagementApp.UI
 {
@@ -24,14 +25,13 @@ namespace HRManagementApp.UI
             DashboardBtn.Click += (s, e) => NavigateTo("Dashboard", s as Button);
             EmployeesBtn.Click += (s, e) => NavigateTo("Employees", s as Button);
             AttendanceBtn.Click += (s, e) => NavigateTo("Attendance", s as Button);
-            AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
             PayrollBtn.Click += (s, e) => NavigateTo("PayrollTag", s as Button);
             LeaveBtn.Click += (s, e) => NavigateTo("Leave Management", s as Button);
             ReportsBtn.Click += (s, e) => NavigateTo("Reports", s as Button);
             SettingsBtn.Click += (s, e) => NavigateTo("Settings", s as Button);
-            RoleBtn.Click += (s, e) => NavigateTo("Role", s as Button);
-            LogoutBtn.Click += LogoutBtn_Click;
             EditPayrollBtn.Click += (s, e) => NavigateTo("EditPayroll", s as Button);
+            LogoutBtn.Click += LogoutBtn_Click; 
+            AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
         }
 
         private void NavigateTo(string section, Button clickedButton)
@@ -95,14 +95,11 @@ namespace HRManagementApp.UI
                 case "settings":
                     LoadSettingsSection();
                     break;
-                case "account":
-                    LoadAccountsSection();
-                    break;
-                case "role":
-                    LoadRoleSection();
-                    break;
                 case "editpayroll":
                     LoadEditPayrollSection();
+                    break;
+                case "account":
+                    LoadAccountsSection();
                     break;
             }
         }
@@ -115,18 +112,7 @@ namespace HRManagementApp.UI
         
         private void LoadDoashboardSection()
         {
-            var view = new Views.DashboardView();
-            ContentArea.Content = view;
-
-            view.AddNewEmployeeRequested += () =>
-            {
-                SetActiveButton(EmployeesBtn);
-                var employeeView = new Views.EmployeesView();
-                ContentArea.Content = employeeView;
-                employeeView.BtnThemNV.RaiseEvent(
-                    new RoutedEventArgs(Button.ClickEvent)
-                );
-            };
+            ContentArea.Content = new Views.DashboardView();
         }
         private void LoadEmployeeSection()
         {
@@ -135,7 +121,7 @@ namespace HRManagementApp.UI
 
         private void LoadAttendanceSection()
         {
-            ContentArea.Content = new Views.AttendanceManagementView();
+            ContentArea.Content = new Views.AttendanceTagView();
         }
 
         private void LoadPayrollSection()
@@ -150,27 +136,21 @@ namespace HRManagementApp.UI
             ContentArea.Content = new LeaveManagementView(); 
         }
 
-        private void LoadRoleSection()
-        {
-            ContentArea.Content = new Views.RoleManagementView();
-        }
         private void LoadReportsSection()
         {
-            // Reports and analytics
-            // Generate various HR reports, charts, export functionality
-            ContentArea.Content = new Views.ReportView();
+            ContentArea.Content = new ReportView(); 
         }
 
         private void LoadSettingsSection()
         {
-             int currentLoggedInUserId = 2; 
-             ContentArea.Content = new MyLeaveView(currentLoggedInUserId);
+             ContentArea.Content = new ForEmployeeManagementView();
         }
         private void LoadAccountsSection()
         {
             ContentArea.Content = new Views.AccountManagementView();
 
-        }
+        }   
+
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to logout?",

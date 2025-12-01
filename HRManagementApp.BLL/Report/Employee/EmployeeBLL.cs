@@ -10,6 +10,12 @@ namespace  HRManagementApp.BLL
             // Gọi DAL (giả sử bạn viết hàm trên trong AttendanceDAL hoặc ReportDAL)
             return new AnalyticsDAL().GetAnalyticsSummary();
         }
+        // Trong file AnalyticsBLL.cs
+
+        public Dictionary<string, int> GetDepartmentStats()
+        {
+            return new AnalyticsDAL().GetEmployeeByDepartment();
+        }
     }
 };
 

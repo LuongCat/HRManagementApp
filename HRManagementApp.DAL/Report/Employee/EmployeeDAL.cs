@@ -52,5 +52,29 @@ namespace HRManagementApp.DAL
         
             return data;
         }
+        // Trong file AnalyticsDAL.cs
+
+        public Dictionary<string, int> GetEmployeeByDepartment()
+        {
+            var result = new Dictionary<string, int>();
+    
+            // Query đếm nhân viên theo phòng ban (chỉ tính người đang làm việc)
+            string query = @"
+        SELECT pb.TenPB, COUNT(nv.MaNV) as SoLuong
+        FROM phongban pb
+        LEFT JOIN nhanvien nv ON pb.MaPB = nv.MaPB AND nv.TrangThai = 'Còn làm việc'
+        GROUP BY pb.TenPB";
+
+            DataTable dt = Database.ExecuteQuery(query);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string tenPB = row["TenPB"].ToString();
+                int soLuong = Convert.ToInt32(row["SoLuong"]);
+                result.Add(tenPB, soLuong);
+            }
+
+            return result;
+        }
     }
 };

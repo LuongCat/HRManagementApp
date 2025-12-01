@@ -1,6 +1,6 @@
 ﻿namespace HRManagementApp.models
 {
-    public class AnalyticsModel
+    public class EmployeeModel
     {
         public int TotalEmployees { get; set; }      // Tổng nhân viên
         public int ActiveEmployees { get; set; }     // Đang làm việc

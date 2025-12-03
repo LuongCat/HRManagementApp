@@ -32,6 +32,7 @@ namespace HRManagementApp.UI
             EditPayrollBtn.Click += (s, e) => NavigateTo("EditPayroll", s as Button);
             LogoutBtn.Click += LogoutBtn_Click; 
             AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
+            RoleBtn.Click += (s, e) => NavigateTo("Role", s as Button);
         }
 
         private void NavigateTo(string section, Button clickedButton)
@@ -101,6 +102,9 @@ namespace HRManagementApp.UI
                 case "account":
                     LoadAccountsSection();
                     break;
+                case "role":
+                    LoadRoleSection();
+                    break;
             }
         }
 
@@ -149,7 +153,13 @@ namespace HRManagementApp.UI
         {
             ContentArea.Content = new Views.AccountManagementView();
 
-        }   
+        }
+
+        private void LoadRoleSection()
+        {
+            ContentArea.Content = new Views.RoleManagementView();
+        }
+        
 
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
         {

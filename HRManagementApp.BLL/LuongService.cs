@@ -35,4 +35,36 @@ public class LuongService
     {
         return _luongRepository.UpdateSalary(luong);
     }
+
+    public bool DeleteSalary(int maLuong)
+    {
+        return _luongRepository.DeleteSalary(maLuong);
+    }
+
+    public bool UpdateTrangThai(int maLuong, string trangThaiMoi)
+    {
+        return _luongRepository.UpdateTrangThai(maLuong, trangThaiMoi);
+    }
+
+    public bool UpdateChotLuong(int maLuong, string trangThaiChot)
+    {
+        return _luongRepository.UpdateChotLuong(maLuong, trangThaiChot);
+    }
+
+    public string GetChotLuongStatus(int maNV, int thang, int nam)
+    {
+        return _luongRepository.GetChotLuongStatus(maNV, thang, nam);
+    }
+
+    public string GetChotLuongStatusByMaLuong(int maLuong)
+    {
+        return _luongRepository.GetChotLuongStatusByMaLuong(maLuong);
+    }
+
+    public int AddSalaryReturnID(Luong luong)
+    {
+        return _luongRepository.AddSalaryReturnID(luong);
+    }
+    
+    
 }

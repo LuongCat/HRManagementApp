@@ -312,7 +312,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="🔄"
-                                        Click="ViewDetail_Click"
+                                        Click="ChangeStatusSalary_Click"
                                         Background="Transparent"
                                         Foreground="#D97706"
                                         BorderThickness="0"
@@ -329,7 +329,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="Chốt Lương"
-                                        Click="ViewDetail_Click"
+                                        Click="ConfirmSalary_Click"
                                         Background="Transparent"
                                         Foreground="#EF4444"
                                         BorderThickness="0"

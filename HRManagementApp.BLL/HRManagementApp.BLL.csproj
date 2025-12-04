@@ -12,4 +12,8 @@
       <ProjectReference Include="..\HRManagementApp.Models\HRManagementApp.Models.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="EPPlus" Version="4.5.3.3" />
+    </ItemGroup>
+
 </Project>

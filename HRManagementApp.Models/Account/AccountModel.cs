@@ -1,31 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace HRManagementApp.models
-{ 
+{
     public class AccountModel
     {
-        public AccountModel()
-        {
-        }
+        public int MaTK { get; set; }
+        public int? MaNV { get; set; } // Nullable int
+        public string TenDangNhap { get; set; } = string.Empty;
+        public string MatKhau { get; set; } = string.Empty;
+        public string TrangThai { get; set; } = "Hoạt động";
 
-        public AccountModel(String TenDangNhap, String Name, String SDT, String VaiTro, String PhongBan, String TrangThai)
-        {
-            this.TenDangNhap = TenDangNhap;
-            this.Name = Name; 
-            this.SDT = SDT;
-            this.VaiTro = VaiTro;
-            this.PhongBan = PhongBan;
-            this.TrangThai = TrangThai;
-        }
-
-        public String TenDangNhap { get; set; }
-        public String Name { get; set; }
-        public String SDT { get; set; } 
-        public String VaiTro { get; set; }
-        public String PhongBan { get; set; }
-        public String TrangThai { get; set; }
+        // Thuộc tính mở rộng để hiển thị lên GridView
+        public string? TenNhanVien { get; set; } 
     }
 }

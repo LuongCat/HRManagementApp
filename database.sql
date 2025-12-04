@@ -197,6 +197,16 @@ INSERT INTO `chucvu` VALUES
 (3,'Trưởng phòng',3000000.00,15000000.00,10000,'Hoạt động'),
 (4,'Giám đốc',5000000.00,25000000.00,20000,'Hoạt động');
 
+INSERT INTO taikhoan (MaNV, TenDangNhap, MatKhau, TrangThai)
+VALUES 
+-- lưu ý pass:123456
+(1, 'admin', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Hoạt động'),
+(2, 'user2', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Hoạt động'),
+(3, 'user3', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Hoạt động'),
+(4, 'user4', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Hoạt động'),
+
+
+
 INSERT INTO `nhanvien` VALUES 
 (1,'Nguyễn Văn Ann','1990-05-15','012345678901','0901123456','Nghỉ việc','2020-01-10','Nam',1),
 (2,'Trần Thị Bánh','1993-08-21','023456789012','0902345678','Còn làm việc','2022-03-18','Nữ',2),

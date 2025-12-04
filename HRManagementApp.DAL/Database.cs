@@ -41,7 +41,6 @@ public static class Database
         return data;
     }
 
-    
     public static int ExecuteNonQuery(string query, Dictionary<string, object>? parameters = null)
     {
         using (var conn = GetConnection())

@@ -1,0 +1,167 @@
+<Window x:Class="HRManagementApp.UI.Views.EditPermissionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Phân quyền vai trò"
+        Height="600"
+        Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F8FAFC">
+
+    <Window.Resources>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background"
+                    Value="Transparent"/>
+            <Setter Property="Width"
+                    Value="8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid>
+                            <Border Background="Transparent"/>
+                            <Track Name="PART_Track"
+                                    IsDirectionReversed="true">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate>
+                                                <Border Background="#CBD5E1"
+                                                        CornerRadius="4"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                            </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0"
+                Margin="0,0,0,20">
+            <TextBlock x:Name="txtTitle"
+                    Text="Phân quyền: ..."
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Foreground="#1E293B"/>
+            <TextBlock Text="Chọn các chức năng mà vai trò này được phép truy cập."
+                    FontSize="13"
+                    Foreground="#64748B"
+                    Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Background="White"
+                CornerRadius="12"
+                BorderBrush="#E2E8F0"
+                BorderThickness="1"
+                Padding="4">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                    Padding="12">
+                <ItemsControl x:Name="icPermissions">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,0,0,12"
+                                    CornerRadius="8"
+                                    Background="White"
+                                    BorderThickness="1"
+                                    Padding="12">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderBrush"
+                                                Value="#E2E8F0"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}"
+                                                    Value="True">
+                                                <Setter Property="BorderBrush"
+                                                        Value="#2563EB"/>
+                                                <Setter Property="Background"
+                                                        Value="#F0F7FF"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding TenQuyen}"
+                                                FontWeight="Bold"
+                                                FontSize="14"
+                                                Foreground="#1E293B"/>
+                                        <TextBlock Text="{Binding MoTa}"
+                                                FontSize="12"
+                                                Foreground="#64748B"
+                                                TextWrapping="Wrap"
+                                                Margin="0,2,0,0"/>
+                                    </StackPanel>
+
+                                    <CheckBox Grid.Column="1"
+                                            IsChecked="{Binding IsSelected}"
+                                            VerticalAlignment="Center"
+                                            Cursor="Hand">
+                                        <CheckBox.LayoutTransform>
+                                            <ScaleTransform ScaleX="1.2"
+                                                    ScaleY="1.2"/>
+                                        </CheckBox.LayoutTransform>
+                                    </CheckBox>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <Grid Grid.Row="2"
+                Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Đóng"
+                    IsCancel="True"
+                    Grid.Column="0"
+                    Background="Transparent"
+                    Foreground="#64748B"
+                    BorderThickness="0"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Cursor="Hand"
+                    Padding="10,0"/>
+
+            <Button Content="Lưu thay đổi"
+                    Click="BtnSave_Click"
+                    Grid.Column="2"
+                    Background="#1E293B"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Cursor="Hand"
+                    Padding="24,10">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius"
+                                Value="8"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

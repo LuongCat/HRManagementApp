@@ -1,0 +1,164 @@
+<UserControl x:Class="HRManagementApp.UI.Views.MyAttendanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1000" Background="#F3F4F6">
+
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> 
+            <RowDefinition Height="*"/>    
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="White" CornerRadius="15" Padding="20" Margin="0,0,0,20">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="50" Height="50" CornerRadius="25" Background="#374151" Margin="0,0,15,0">
+                        <!-- Thêm x:Name cho Avatar Char -->
+                        <TextBlock x:Name="txtAvatarChar" Text="A" Foreground="White" FontWeight="Bold" FontSize="20" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <!-- Thêm x:Name cho Tên và Mã -->
+                        <TextBlock x:Name="txtEmployeeName" Text="Nguyễn Văn An" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock x:Name="txtEmployeeID" Text="Mã NV: NV001 | Phòng Kỹ Thuật" Foreground="#6B7280" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+                <TextBlock x:Name="txtCurrentDate" Text="Thứ Sáu, 28 tháng 11, 2025" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#6B7280"/>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="350"/> 
+                    <ColumnDefinition Width="*"/>   
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                    
+                    <Border Background="White" CornerRadius="15" Padding="25" Margin="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="⏱ Chấm Công" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,20"/>
+                            
+                            <TextBlock x:Name="txtRealtimeClock" Text="14:03:18" 
+                                       FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="txtRealtimeDate" Text="28/11/2025" 
+                                       Foreground="#6B7280" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+                            <Button x:Name="btnCheckIn" 
+                                    Click="BtnCheckIn_Click" 
+                                    Content="➜ Chấm Công Vào" 
+                                    Height="50" FontSize="16" FontWeight="Bold"
+                                    Background="#4F46E5" Foreground="White" 
+                                    BorderThickness="0" Cursor="Hand">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="10"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+
+                            <TextBlock x:Name="txtStatusHint" 
+                                       Text="Nhấn nút để bắt đầu chấm công" 
+                                       HorizontalAlignment="Center" Margin="0,15,0,0" 
+                                       Foreground="#9CA3AF" FontSize="12"/>
+                            <TextBlock Text="Nhấn nút để bắt đầu chấm công" 
+                                       HorizontalAlignment="Center" Margin="0,15,0,0" Foreground="#9CA3AF" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="White" CornerRadius="15" Padding="20" Margin="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="📈 Thống Kê" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,15"/>
+
+                            <Border Background="#EFF6FF" CornerRadius="10" Padding="15" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="🕒 Tổng giờ làm" Foreground="#3B82F6" FontSize="12"/>
+                                    <TextBlock x:Name="txtTotalHours" Text="44.2h" FontSize="20" FontWeight="Bold" Foreground="#1F2937"/>
+                                    <TextBlock Text="Tháng này" Foreground="#6B7280" FontSize="11"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#FDF2F8" CornerRadius="10" Padding="15" Margin="0,0,0,15">
+                                <StackPanel>
+                                    <TextBlock Text="📊 Trung bình/ngày" Foreground="#DB2777" FontSize="12"/>
+                                    <TextBlock x:Name="txtAvgHours" Text="7.4h" FontSize="20" FontWeight="Bold" Foreground="#1F2937"/>
+                                    <TextBlock x:Name="txtWorkDays" Text="6 ngày làm việc" Foreground="#6B7280" FontSize="11"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <Border Grid.Column="0" Background="#ECFDF5" CornerRadius="10" Padding="15">
+                                    <StackPanel>
+                                        <TextBlock Text="✔ Đúng giờ" Foreground="#059669" FontSize="11"/>
+                                        <TextBlock x:Name="txtOnTime" Text="2" FontSize="18" FontWeight="Bold" Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" Background="#FFFBEB" CornerRadius="10" Padding="15">
+                                    <StackPanel>
+                                        <TextBlock Text="⚠ Đi muộn" Foreground="#D97706" FontSize="11"/>
+                                        <TextBlock x:Name="txtLate" Text="2" FontSize="18" FontWeight="Bold" Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <Border Grid.Column="1" Background="White" CornerRadius="15" Padding="25" VerticalAlignment="Top">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,20">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📅 Lịch Chấm Công" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="❮" Background="Transparent" BorderThickness="0" Click="PrevMonth_Click"/>
+                                <TextBlock x:Name="txtCalendarMonth" Text="Tháng 11, 2025" FontWeight="SemiBold" Margin="15,0" VerticalAlignment="Center"/>
+                                <Button Content="❯" Background="Transparent" BorderThickness="0" Click="NextMonth_Click"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <UniformGrid Grid.Row="1" Columns="7" Margin="0,0,0,10">
+                            <TextBlock Text="CN" HorizontalAlignment="Center" Foreground="#6B7280"/>
+                            <TextBlock Text="T2" HorizontalAlignment="Center" Foreground="#6B7280"/>
+                            <TextBlock Text="T3" HorizontalAlignment="Center" Foreground="#6B7280"/>
+                            <TextBlock Text="T4" HorizontalAlignment="Center" Foreground="#6B7280"/>
+                            <TextBlock Text="T5" HorizontalAlignment="Center" Foreground="#6B7280"/>
+                            <TextBlock Text="T6" HorizontalAlignment="Center" Foreground="#6B7280"/>
+                            <TextBlock Text="T7" HorizontalAlignment="Center" Foreground="#6B7280"/>
+                        </UniformGrid>
+
+                        <UniformGrid x:Name="CalendarGrid" Grid.Row="2" Columns="7" Rows="6"/>
+                        
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                            <Border Width="12" Height="12" CornerRadius="3" Background="#22C55E" Margin="0,0,5,0"/>
+                            <TextBlock Text="Đã chấm công" Margin="0,0,20,0" FontSize="12"/>
+                            
+                            <Border Width="12" Height="12" CornerRadius="3" Background="#E5E7EB" Margin="0,0,5,0"/>
+                            <TextBlock Text="Chưa chấm công" FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

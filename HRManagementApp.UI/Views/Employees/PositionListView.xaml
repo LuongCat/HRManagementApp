@@ -114,16 +114,7 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <!-- Hệ số lương -->
-                    <DataGridTextColumn Header="Hệ số lương" Binding="{Binding HeSoLuong, StringFormat=N1}" Width="130">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="#1F2937"/>
-                                <Setter Property="TextAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
+                    
                     <!-- Phụ cấp -->
                     <DataGridTextColumn Header="Phụ cấp (VNĐ)" Binding="{Binding PhuCapDisplay}" Width="150">
                         <DataGridTextColumn.ElementStyle>
@@ -135,7 +126,7 @@
                     </DataGridTextColumn>
 
                     <!-- Mô tả -->
-                    <DataGridTextColumn Header="Mô tả" Binding="{Binding MoTa}" Width="*">
+                    <DataGridTextColumn Header="Tien Phu Cap Kiem Nhiem" Binding="{Binding TienPhuCapKiemNhiem}" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="#6B7280"/>
@@ -143,7 +134,27 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-
+                    
+                     <!-- Lương Căn Bản -->
+                    <DataGridTextColumn Header="Lương Căn Bản" Binding="{Binding LuongCB}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#6B7280"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
+                    <!-- Trạng thái -->
+                    <DataGridTextColumn Header="Trạng thái" Binding="{Binding IsActive}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#6B7280"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    
                     <!-- Thao tác -->
                     <DataGridTemplateColumn Header="Thao tác" Width="120">
                         <DataGridTemplateColumn.CellTemplate>
@@ -183,17 +194,17 @@
                                         </Button.Style>
                                     </Button>
 
-                                    <!-- Nút Xóa -->
-                                    <Button Content="🗑️" 
+                                    <!-- Nút thay đổi trạng thái -->
+                                    <Button Content="🔄" 
                                             Background="Transparent" 
                                             BorderThickness="0"
                                             FontSize="16"
                                             Width="35" Height="35"
                                             Cursor="Hand"
                                             Margin="3,0"
-                                            ToolTip="Xóa"
+                                            ToolTip="Thay đổi trạng thái "
                                             Tag="{Binding MaChucVu}"
-                                            Click="BtnDelete_Click">
+                                            Click="BtnChangeStatus_Click">
                                         <Button.Style>
                                             <Style TargetType="Button">
                                                 <Setter Property="Template">

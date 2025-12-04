@@ -1,0 +1,201 @@
+<Window x:Class="HRManagementApp.UI.Views.TaxManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Quản lý Thuế TNCN" Height="720" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F9FAFB">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="LabelStyle">
+            <Setter Property="Foreground" Value="#4B5563"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,15,0,5"/>
+        </Style>
+
+        <Style x:Key="InputStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    CornerRadius="4"/>
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="Placeholder" Text="{TemplateBinding Tag}" 
+                                       Foreground="#9CA3AF" Margin="9,0,0,0"
+                                       VerticalAlignment="Center" IsHitTestVisible="False"
+                                       Visibility="Collapsed"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Margin="0,0,0,20" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Padding="0,0,0,15">
+            <StackPanel>
+                <TextBlock Text="QUẢN LÝ THUẾ THU NHẬP" FontSize="18" FontWeight="Bold" Foreground="#374151"/>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="Nhân viên:" Foreground="#6B7280" Margin="0,0,5,0"/>
+                    <TextBlock x:Name="TxtEmployeeName" Text="..." FontWeight="Bold" Foreground="#D97706"/> </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="1.2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="#E5E7EB">
+                <DataGrid x:Name="DgTaxes"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          SelectionMode="Single"
+                          GridLinesVisibility="None"
+                          HeadersVisibility="Column"
+                          BorderThickness="0"
+                          RowHeight="50"
+                          SelectionChanged="DgTaxes_SelectionChanged">
+
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F3F4F6"/>
+                            <Setter Property="Foreground" Value="#6B7280"/>
+                            <Setter Property="Padding" Value="10,0"/>
+                            <Setter Property="Height" Value="40"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                        </Style>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#FFFBEB"/> </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="10,0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.Resources>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Loại thuế" Binding="{Binding TenThue}" Width="*" FontWeight="Medium"/>
+
+                        <DataGridTextColumn Header="Số tiền (VNĐ)" Binding="{Binding SoTien, StringFormat={}{0:N0}}" Width="120" FontWeight="Bold">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="#D97706"/> <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTemplateColumn Header="Hiệu lực" Width="170">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock FontSize="11" Foreground="#6B7280">
+                                            <Run Text="Từ: "/>
+                                            <Run Text="{Binding ApDungTuNgay, StringFormat=dd/MM/yyyy}"/>
+                                        </TextBlock>
+                                        <TextBlock FontSize="11" Foreground="#6B7280">
+                                            <Run Text="Đến: "/>
+                                            <Run Text="{Binding ApDungDenNgay, StringFormat=dd/MM/yyyy, TargetNullValue='---'}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <Border Grid.Column="2" Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="#E5E7EB" Padding="2">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="18">
+                    <StackPanel>
+                        <TextBlock Text="Chi tiết thuế" FontSize="16" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Tên loại thuế" Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="TxtTenThue" Style="{StaticResource InputStyle}" Tag="Ví dụ: Thuế TNCN bậc 1..."/>
+
+                        <TextBlock Text="Số tiền nộp (VNĐ/tháng)" Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="TxtSoTien" Style="{StaticResource InputStyle}" Text="0"/>
+
+                        <TextBlock Text="Áp dụng từ ngày" Style="{StaticResource LabelStyle}"/>
+                        <DatePicker x:Name="DpTuNgay" Height="38" VerticalContentAlignment="Center"/>
+
+                        <TextBlock Text="Áp dụng đến ngày (Bỏ trống nếu dài hạn)" Style="{StaticResource LabelStyle}"/>
+                        <DatePicker x:Name="DpDenNgay" Height="38" VerticalContentAlignment="Center"/>
+
+                        <Border Background="#FFFBEB" BorderBrush="#FDE68A" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,20,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💡" Margin="0,0,10,0"/>
+                                <TextBlock Text="Hệ thống sẽ tự động tính toán tổng thuế dựa trên các khoản đang có hiệu lực trong tháng." 
+                                           TextWrapping="Wrap" FontSize="12" Foreground="#B45309" Width="260"/>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,25,0,0">
+                            <Button x:Name="BtnAdd" Content="Thêm" Click="BtnAdd_Click" Width="80" Height="36" Margin="0,0,10,0" Background="#F59E0B" Foreground="White" BorderThickness="0" Cursor="Hand">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+
+                            <Button x:Name="BtnEdit" Content="Sửa" Click="BtnEdit_Click" Width="80" Height="36" Margin="0,0,10,0" Background="#3B82F6" Foreground="White" BorderThickness="0" Cursor="Hand" IsEnabled="False">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+
+                            <Button x:Name="BtnDelete" Content="Xóa" Click="BtnDelete_Click" Width="80" Height="36" Margin="0,0,10,0" Background="#EF4444" Foreground="White" BorderThickness="0" Cursor="Hand" IsEnabled="False">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+
+                        <Button Content="Làm mới form" Click="BtnClear_Click" Margin="0,15,0,0" Background="Transparent" Foreground="#6B7280" BorderThickness="0" Cursor="Hand"/>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

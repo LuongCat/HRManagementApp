@@ -40,7 +40,10 @@ public static class Database
 
         return data;
     }
+<<<<<<< HEAD
     
+=======
+>>>>>>> origin/khanh
     public static int ExecuteNonQuery(string query, Dictionary<string, object>? parameters = null)
     {
         using (var conn = GetConnection())

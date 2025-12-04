@@ -60,8 +60,6 @@ namespace HRManagementApp.BLL
 
         public bool DeleteLeaveType(int maLoai)
         {
-            // Có thể thêm kiểm tra logic ở đây nếu cần (ví dụ: không cho xóa nếu đang có đơn sử dụng loại này)
-            // Tuy nhiên, trong database đã set ON DELETE SET NULL nên có thể xóa thoải mái.
             return _repo.DeleteLoaiDon(maLoai);
         }
         

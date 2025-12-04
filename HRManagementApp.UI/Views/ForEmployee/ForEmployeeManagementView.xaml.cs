@@ -1,21 +1,20 @@
 using System.Windows.Controls;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using HRManagementApp.UI.Views.Leave;
+using HRManagementApp.models; // Thêm
 
 namespace HRManagementApp.UI.Views;
 
 public partial class ForEmployeeManagementView : UserControl
 {
-    
     private Button currentActiveButton = null!;
     
     public ForEmployeeManagementView()
     {
         InitializeComponent();
-        SetActiveButton(btnLeave);
-        LoadLeave();
+        SetActiveButton(btnAttendance);
+        LoadAttendance();
     }
 
     private void BtnLeave_Click(object sender, RoutedEventArgs e)
@@ -32,12 +31,14 @@ public partial class ForEmployeeManagementView : UserControl
     
     private void LoadLeave()
     {
-        ContentArea.Content = new MyLeaveView(1);
+        int maNV = UserSession.MaNV ?? 0;
+        ContentArea.Content = new MyLeaveView(maNV);
     }
 
     private void LoadAttendance()
     {
-        ContentArea.Content = new MyAttendanceView(1);
+        int maNV = UserSession.MaNV ?? 0;
+        ContentArea.Content = new MyAttendanceView(maNV);
     }
     
     private void SetActiveButton(Button activeButton)

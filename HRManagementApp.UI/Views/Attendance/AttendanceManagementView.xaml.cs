@@ -24,6 +24,13 @@ namespace HRManagementApp.UI.Views
 
         private void LoadData_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(txtSearchMaNV.Text))
+            {
+                // Nếu muốn load tất cả nhân viên trong tháng (Repo cần hỗ trợ hàm GetAllByMonth)
+                // Hiện tại repo của bạn chỉ có GetByMonth(maNV), nên tạm thời báo user nhập MaNV
+                MessageBox.Show("Vui lòng nhập Mã nhân viên để xem dữ liệu.", "Thông báo");
+                dgAttendance.ItemsSource = null;
+            }
             LoadData();
         }
 
@@ -37,13 +44,6 @@ namespace HRManagementApp.UI.Views
                     // Lọc theo Mã NV và Tháng Năm
                     var list = _repo.GetChamCongByMonth(maNV, int.Parse(txtMonth.Text), int.Parse(txtYear.Text));
                     dgAttendance.ItemsSource = list;
-                }
-                else
-                {
-                    // Nếu muốn load tất cả nhân viên trong tháng (Repo cần hỗ trợ hàm GetAllByMonth)
-                    // Hiện tại repo của bạn chỉ có GetByMonth(maNV), nên tạm thời báo user nhập MaNV
-                    MessageBox.Show("Vui lòng nhập Mã nhân viên để xem dữ liệu.", "Thông báo");
-                    dgAttendance.ItemsSource = null;
                 }
             }
             catch (Exception ex)

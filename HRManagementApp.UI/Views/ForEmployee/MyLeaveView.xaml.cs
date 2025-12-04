@@ -1,22 +1,39 @@
 using System.Windows;
 using System.Windows.Controls;
 using HRManagementApp.BLL;
+using HRManagementApp.models; // Để dùng UserSession
 
 namespace HRManagementApp.UI.Views.Leave
 {
     public partial class MyLeaveView : UserControl
     {
         private readonly DonTuService _service;
-        private int _currentEmployeeId ; 
+        private int _currentEmployeeId; 
 
-        // Giả sử chúng ta sẽ truyền ID nhân viên vào đây
-        // Trong thực tế, bạn sẽ lấy từ biến toàn cục Session.CurrentEmployeeId
-        public MyLeaveView(int employeeId)
+        public MyLeaveView(int employeeId = 0)
         {
             InitializeComponent();
             _service = new DonTuService();
-            _currentEmployeeId = employeeId;
-            LoadData();
+            
+            // Ưu tiên lấy từ Session nếu không truyền vào (hoặc truyền 0)
+            if (employeeId == 0 && UserSession.MaNV.HasValue)
+            {
+                _currentEmployeeId = UserSession.MaNV.Value;
+            }
+            else
+            {
+                _currentEmployeeId = employeeId;
+            }
+
+            // Kiểm tra nếu có ID hợp lệ mới load
+            if (_currentEmployeeId > 0)
+            {
+                LoadData();
+            }
+            else
+            {
+                MessageBox.Show("Không tìm thấy thông tin nhân viên!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoadData()
@@ -27,13 +44,12 @@ namespace HRManagementApp.UI.Views.Leave
 
         private void BtnCreateRequest_Click(object sender, RoutedEventArgs e)
         {
-            // Gọi lại window AddLeaveWindow nhưng truyền ID vào
-            // -> Giao diện sẽ tự động chuyển sang chế độ "Nộp đơn cá nhân"
+            // Mở form tạo đơn mới
             var window = new AddLeaveWindow();
             
             if (window.ShowDialog() == true)
             {
-                LoadData(); // Refresh lại danh sách sau khi nộp
+                LoadData(); // Refresh lại danh sách sau khi nộp thành công
             }
         }
     }

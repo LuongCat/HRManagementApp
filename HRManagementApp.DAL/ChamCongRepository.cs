@@ -337,54 +337,89 @@ public class ChamCongRepository
     
     
 
-// 1. Lấy thông tin chấm công của ngày hôm nay (để biết đang Vào hay Ra)
-    public ChamCong GetChamCongToday(int maNV)
-    {
-        string query = @"
-        SELECT * FROM chamcong 
-        WHERE MaNV = @MaNV 
-        AND Ngay = CURDATE() 
-        LIMIT 1"; // Chỉ lấy bản ghi hôm nay
-
-        var parameters = new Dictionary<string, object> { { "@MaNV", maNV } };
-        DataTable data = Database.ExecuteQuery(query, parameters);
-
-        if (data != null && data.Rows.Count > 0)
+   public ChamCong GetTodayRecord(int maNV)
         {
-            DataRow row = data.Rows[0];
+            string query = "SELECT * FROM chamcong WHERE MaNV = @MaNV AND Ngay = CURRENT_DATE() LIMIT 1";
+            var param = new Dictionary<string, object> { { "@MaNV", maNV } };
+            
+            DataTable dt = Database.ExecuteQuery(query, param);
+            if (dt.Rows.Count > 0)
+            {
+                return MapDataRow(dt.Rows[0]);
+            }
+            return null;
+        }
+
+        public bool CheckIn(int maNV)
+        {
+            // Insert bản ghi mới với Giờ vào là hiện tại, Giờ ra là NULL
+            string query = @"INSERT INTO chamcong (MaNV, Ngay, GioVao, GioRa) 
+                             VALUES (@MaNV, CURRENT_DATE(), CURRENT_TIME(), NULL)";
+            
+            var param = new Dictionary<string, object> { { "@MaNV", maNV } };
+            return Database.ExecuteNonQuery(query, param) > 0;
+        }
+
+        public bool CheckOut(int maCC)
+        {
+            string query = "UPDATE chamcong SET GioRa = CURRENT_TIME() WHERE MaCC = @MaCC";
+            var param = new Dictionary<string, object> { { "@MaCC", maCC } };
+            return Database.ExecuteNonQuery(query, param) > 0;
+        }
+
+        public List<ChamCong> GetByMonth(int maNV, int month, int year)
+        {
+            List<ChamCong> list = new List<ChamCong>();
+            string query = @"SELECT *, 
+                             TIMEDIFF(GioRa, GioVao) as ThoiGianLamTinhToan 
+                             FROM chamcong 
+                             WHERE MaNV = @MaNV AND MONTH(Ngay) = @Month AND YEAR(Ngay) = @Year
+                             ORDER BY Ngay ASC";
+
+            var param = new Dictionary<string, object> 
+            { 
+                { "@MaNV", maNV },
+                { "@Month", month },
+                { "@Year", year }
+            };
+
+            DataTable dt = Database.ExecuteQuery(query, param);
+            foreach (DataRow row in dt.Rows)
+            {
+                var cc = MapDataRow(row);
+                // Nếu DB chưa có cột ảo ThoiGianLam thì lấy từ tính toán
+                if (row["ThoiGianLamTinhToan"] != DBNull.Value)
+                {
+                    cc.ThoiGianLam = (TimeSpan)row["ThoiGianLamTinhToan"];
+                }
+                list.Add(cc);
+            }
+            return list;
+        }
+
+        public List<ChamCong> GetByDate(int maNV, DateTime date)
+        {
+             List<ChamCong> list = new List<ChamCong>();
+             string query = "SELECT * FROM chamcong WHERE MaNV = @MaNV AND Ngay = @Ngay";
+             var param = new Dictionary<string, object> 
+             { 
+                 { "@MaNV", maNV },
+                 { "@Ngay", date.ToString("yyyy-MM-dd") }
+             };
+             DataTable dt = Database.ExecuteQuery(query, param);
+             foreach(DataRow row in dt.Rows) list.Add(MapDataRow(row));
+             return list;
+        }
+
+        private ChamCong MapDataRow(DataRow row)
+        {
             return new ChamCong
             {
                 MaCC = Convert.ToInt32(row["MaCC"]),
                 MaNV = Convert.ToInt32(row["MaNV"]),
                 Ngay = row["Ngay"] != DBNull.Value ? Convert.ToDateTime(row["Ngay"]) : null,
                 GioVao = row["GioVao"] != DBNull.Value ? (TimeSpan)row["GioVao"] : null,
-                GioRa = row["GioRa"] != DBNull.Value ? (TimeSpan)row["GioRa"] : null,
-                ThoiGianLam = row["ThoiGianLam"] != DBNull.Value ? (TimeSpan)row["ThoiGianLam"] : null
+                GioRa = row["GioRa"] != DBNull.Value ? (TimeSpan)row["GioRa"] : null
             };
         }
-        return null; // Chưa chấm công hôm nay
-    }
-
-// 2. Hàm Check In (Chấm công vào)
-    public bool CheckIn(int maNV)
-    {
-        // Insert dòng mới với Giờ Vào là giờ hiện tại (CURTIME)
-        string query = @"INSERT INTO chamcong (MaNV, Ngay, GioVao) VALUES (@MaNV, CURDATE(), CURTIME())";
-    
-        var parameters = new Dictionary<string, object> { { "@MaNV", maNV } };
-    
-        // Giả sử class Database có hàm ExecuteNonQuery trả về số dòng bị ảnh hưởng
-        return Database.ExecuteNonQuery(query, parameters) > 0; 
-    }
-
-// 3. Hàm Check Out (Chấm công ra)
-    public bool CheckOut(int maCC)
-    {
-        // Update dòng hiện tại với Giờ Ra là giờ hiện tại
-        string query = @"UPDATE chamcong SET GioRa = CURTIME() WHERE MaCC = @MaCC";
-    
-        var parameters = new Dictionary<string, object> { { "@MaCC", maCC } };
-    
-        return Database.ExecuteNonQuery(query, parameters) > 0;
-    }
 }

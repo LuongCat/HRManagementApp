@@ -23,7 +23,6 @@ namespace HRManagementApp.UI.Views
                     btn.IsChecked = false;
             }
 
-            // Load correct report
             switch (clicked.Tag.ToString())
             {
                 case "Employee":
@@ -44,10 +43,6 @@ namespace HRManagementApp.UI.Views
 
                 case "Department":
                     ReportContentArea.Content = new Report.DepartmentReportView();
-                    break;
-
-                case "Analytics":
-                    ReportContentArea.Content = new Report.AnalyticsReportView();
                     break;
             }
         }

@@ -1,6 +1,6 @@
 ﻿namespace HRManagementApp.BLL.statistics
 {
-    using HRManagementApp.DAL;
+    using HRManagementApp.DAL.Report;
 
     public class DashboardStatisticService
     {

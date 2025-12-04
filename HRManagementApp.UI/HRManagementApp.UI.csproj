@@ -1,34 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0-windows</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <UseWPF>true</UseWPF>
-        <ApplicationIcon>logo.ico</ApplicationIcon>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>false</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\HRManagementApp.BLL\HRManagementApp.BLL.csproj" />
-      <ProjectReference Include="..\HRManagementApp.Models\HRManagementApp.Models.csproj" />
-    </ItemGroup>
+  <!-- Project references -->
+  <ItemGroup>
+    <ProjectReference Include="..\HRManagementApp.BLL\HRManagementApp.BLL.csproj" />
+    <ProjectReference Include="..\HRManagementApp.Models\HRManagementApp.Models.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Compile Update="Views\Employees\EmployeesView.xml.cs">
-        <DependentUpon>EmployeesView.xaml</DependentUpon>
-      </Compile>
-      <Compile Update="Views\DashboardView.cs">
-        <DependentUpon>DashboardView.xaml</DependentUpon>
-      </Compile>
-    </ItemGroup>
+  <!-- XAML code-behind linking -->
+  <ItemGroup>
+    <Compile Update="Views\Employees\EmployeesView.xaml.cs">
+      <DependentUpon>EmployeesView.xaml</DependentUpon>
+    </Compile>
 
-    <ItemGroup>
-      <Page Update="Views\Payroll\PayrollView.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-    </ItemGroup>
+    <Compile Update="Views\DashboardView.xaml.cs">
+      <DependentUpon>DashboardView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <!-- XAML pages -->
+  <ItemGroup>
+    <Page Update="Views\Payroll\PayrollView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 
 </Project>

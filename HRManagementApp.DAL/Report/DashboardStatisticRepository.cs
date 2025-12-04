@@ -1,7 +1,7 @@
 using System.Data;
 using HRManagementApp.models;
 
-namespace HRManagementApp.DAL
+namespace HRManagementApp.DAL.Report
 {
     public class StatisticRepository
     {

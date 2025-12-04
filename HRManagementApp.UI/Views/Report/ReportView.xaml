@@ -80,14 +80,7 @@
                         HorizontalAlignment="Center">
 
                 <ToggleButton x:Name="DefaultReport"
-                              Content="Analytics"
-                              Tag="Analytics"
-                              Checked="ReportMenu_Checked"
-                              Style="{StaticResource MenuTabButtonStyle}"
-                              FontSize="16"
-                              Width="130"/>
-
-                <ToggleButton Content="Attendance"
+                              Content="Attendance"
                               Tag="Attendance"
                               Checked="ReportMenu_Checked"
                               Style="{StaticResource MenuTabButtonStyle}"
@@ -127,7 +120,7 @@
         <!-- CONTENT -->
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="20">
+            <StackPanel>
 
                 <!-- Where report UI loads -->
                 <Border Background="#FFFFFF"

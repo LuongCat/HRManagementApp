@@ -3,59 +3,129 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d">
 
-    <Grid Background="White" Margin="20">
+    <Grid Background="White"
+          Margin="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- TITLE -->
-        <StackPanel Grid.Row="0" Margin="0 0 0 15">
-            <TextBlock Text="Attendance Report" FontSize="22" FontWeight="Bold" Foreground="#2C3E50"/>
+        <StackPanel Grid.Row="0"
+                    Margin="0 0 0 15">
+            <TextBlock Text="Attendance Report"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       Foreground="#2C3E50"/>
             <TextBlock Text="Chấm công – vào/ra hằng ngày của nhân viên"
-                       FontSize="14" Foreground="#7F8C8D"/>
+                       FontSize="14"
+                       Foreground="#7F8C8D"/>
         </StackPanel>
 
         <!-- FILTER BAR -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 0 0 15">
+        <Grid Grid.Row="1"
+              Margin="0 0 0 15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <DatePicker Width="160" Height="32"/>
-            <DatePicker Width="160" Height="32"/>
+            <!-- LABEL ROW -->
+            <TextBlock Text="Name"
+                       Grid.Column="0"
+                       Margin="0 0 0 5"/>
+            <TextBlock Text="Date"
+                       Grid.Column="1"
+                       Margin="0 0 0 5"/>
+            <TextBlock Text="Department"
+                       Grid.Column="2"
+                       Margin="0 0 0 5"/>
+            <TextBlock Text="Status"
+                       Grid.Column="3"
+                       Margin="0 0 0 5"/>
 
-            <ComboBox Width="200" Height="32">
-                <ComboBoxItem Content="All Departments"/>
-                <ComboBoxItem Content="HR"/>
-                <ComboBoxItem Content="IT"/>
-                <ComboBoxItem Content="Finance"/>
+            <!-- FILTER ROW -->
+            <TextBox x:Name="TbAttendanceReportSearchName"
+                     Grid.Column="0"
+                     Margin="0 20 10 0"
+                     Height="32"
+                     FontSize="14"
+                     VerticalContentAlignment="Center"
+                     Text="Search name..."/>
+
+            <DatePicker x:Name="DpAttendanceReportDate"
+                        Grid.Column="1"
+                        Margin="0 20 10 0"
+                        Height="32"
+                        FontSize="14"
+                        VerticalContentAlignment="Center"
+                        SelectedDate="{x:Static sys:DateTime.Today}"/>
+
+            <ComboBox x:Name="CbAttendanceReportDepartment"
+                      Grid.Column="2"
+                      Margin="0 20 10 0"
+                      Height="32"
+                      FontSize="14"
+                      VerticalContentAlignment="Center"
+                      SelectedIndex="0">
+                <ComboBoxItem Content="All departments"/>
             </ComboBox>
 
-            <Button Content="📄 Export"
+            <ComboBox x:Name="CbAttendanceReportStatus"
+                      Grid.Column="3"
+                      Margin="0 20 10 0"
+                      Height="32"
+                      FontSize="14"
+                      VerticalContentAlignment="Center"
+                      SelectedIndex="0">
+                <ComboBoxItem Content="All status"/>
+            </ComboBox>
+
+            <Button Grid.Column="4"
+                    Content="📄 Export"
                     Width="120"
                     Height="32"
+                    Margin="10 20 0 0"
                     Background="#2E86AB"
                     Foreground="White"
                     BorderThickness="0"/>
-        </StackPanel>
-
+        </Grid>
         <!-- TABLE -->
-        <DataGrid Grid.Row="2"
+        <DataGrid Grid.Row="3"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   AlternatingRowBackground="#FAFAFA"
                   BorderThickness="0">
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Employee ID" Binding="{Binding Id}" Width="120"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200"/>
-                <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="150"/>
-                <DataGridTextColumn Header="Check In" Binding="{Binding CheckIn}" Width="150"/>
-                <DataGridTextColumn Header="Check Out" Binding="{Binding CheckOut}" Width="150"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="150"/>
+                <DataGridTextColumn Header="Employee ID"
+                                    Binding="{Binding Id}"
+                                    Width="120"/>
+                <DataGridTextColumn Header="Name"
+                                    Binding="{Binding Name}"
+                                    Width="200"/>
+                <DataGridTextColumn Header="Date"
+                                    Binding="{Binding Date}"
+                                    Width="150"/>
+                <DataGridTextColumn Header="Check In"
+                                    Binding="{Binding CheckIn}"
+                                    Width="150"/>
+                <DataGridTextColumn Header="Check Out"
+                                    Binding="{Binding CheckOut}"
+                                    Width="150"/>
+                <DataGridTextColumn Header="Status"
+                                    Binding="{Binding Status}"
+                                    Width="150"/>
             </DataGrid.Columns>
         </DataGrid>
-
     </Grid>
 </UserControl>

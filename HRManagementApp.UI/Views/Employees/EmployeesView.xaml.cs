@@ -15,7 +15,6 @@ namespace HRManagementApp.UI.Views
         private readonly NhanVienService _service;
         private ObservableCollection<NhanVien> _allEmployees;
         private ObservableCollection<NhanVien> _filteredEmployees;
-        
 
         public EmployeesView()
         {

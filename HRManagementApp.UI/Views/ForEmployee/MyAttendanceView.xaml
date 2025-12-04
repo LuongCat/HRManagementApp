@@ -16,12 +16,14 @@
             <Grid>
                 <StackPanel Orientation="Horizontal">
                     <Border Width="50" Height="50" CornerRadius="25" Background="#374151" Margin="0,0,15,0">
-                         <TextBlock Text="A" Foreground="White" FontWeight="Bold" FontSize="20" 
+                        <!-- Thêm x:Name cho Avatar Char -->
+                        <TextBlock x:Name="txtAvatarChar" Text="A" Foreground="White" FontWeight="Bold" FontSize="20" 
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Nguyễn Văn An" FontSize="18" FontWeight="Bold"/>
-                        <TextBlock Text="Mã NV: NV001 | Phòng Kỹ Thuật" Foreground="#6B7280" Margin="0,2,0,0"/>
+                        <!-- Thêm x:Name cho Tên và Mã -->
+                        <TextBlock x:Name="txtEmployeeName" Text="Nguyễn Văn An" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock x:Name="txtEmployeeID" Text="Mã NV: NV001 | Phòng Kỹ Thuật" Foreground="#6B7280" Margin="0,2,0,0"/>
                     </StackPanel>
                 </StackPanel>
                 <TextBlock x:Name="txtCurrentDate" Text="Thứ Sáu, 28 tháng 11, 2025" 

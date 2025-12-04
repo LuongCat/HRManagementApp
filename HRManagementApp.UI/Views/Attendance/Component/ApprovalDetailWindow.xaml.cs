@@ -7,10 +7,10 @@ namespace HRManagementApp.UI.Views
     public partial class ApprovalDetailWindow : Window
     {
         private ApprovalModel _data;
-        private int _userRole;
+        private String _userRole;
         private AttendanceBLL _bll = new AttendanceBLL();
 
-        public ApprovalDetailWindow(ApprovalModel data, int userRole)
+        public ApprovalDetailWindow(ApprovalModel data, String userRole)
         {
             InitializeComponent();
             _data = data;
@@ -30,7 +30,7 @@ namespace HRManagementApp.UI.Views
 
             // Logic hiển thị nút Duyệt/Từ chối:
             // Hiện nếu: Đơn chưa duyệt VÀ (Role là 1-Admin hoặc 2-Quản lý)
-            if (_data.Status == "Chưa duyệt" && (_userRole == 1 || _userRole == 2))
+            if (_data.Status == "Chưa duyệt" && (_userRole == "Admin" || _userRole == "Quanly"))
             {
                 pnlActions.Visibility = Visibility.Visible;
             }
@@ -43,7 +43,7 @@ namespace HRManagementApp.UI.Views
         private void BtnApprove_Click(object sender, RoutedEventArgs e)
         {
             // Lấy tên người đang đăng nhập để lưu vào DB
-            string approverName = UserSession.CurrentUserName ?? "Admin";
+            string approverName = UserSession.VaiTro ?? "Admin";
 
             if (_bll.UpdateApprovalStatus(_data.MaDon, "Đã duyệt", approverName))
             {
@@ -59,7 +59,7 @@ namespace HRManagementApp.UI.Views
 
         private void BtnReject_Click(object sender, RoutedEventArgs e)
         {
-            string approverName = UserSession.CurrentUserName ?? "Admin";
+            string approverName = UserSession.VaiTro ?? "Admin";
 
             if (_bll.UpdateApprovalStatus(_data.MaDon, "Từ chối", approverName))
             {

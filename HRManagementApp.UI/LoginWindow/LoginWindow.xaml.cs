@@ -1,11 +1,12 @@
 using HRManagementApp.BLL;
 using System.Windows;
+using System.Windows.Input;
 
 namespace HRManagementApp.UI
 {
     public partial class LoginWindow : Window
     {
-        private readonly TaiKhoanService _service = new TaiKhoanService();
+        private AuthenticationBLL _authBLL = new AuthenticationBLL();
 
         public LoginWindow()
         {
@@ -13,45 +14,49 @@ namespace HRManagementApp.UI
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
-{
-    string username = UsernameTextBox.Text.Trim();
-    string password = PasswordBox.Password.Trim();
+        {
+            PerformLogin();
+        }
 
-    // Kiểm tra trống trước 
-    if (string.IsNullOrEmpty(username))
-    {
-        ErrorText.Text = "Vui lòng nhập tên đăng nhập!";
-        UsernameTextBox.Focus();
-        return;
-    }
+        // Cho phép nhấn Enter để đăng nhập
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                PerformLogin();
+            }
+        }
 
-    if (string.IsNullOrEmpty(password))
-    {
-        ErrorText.Text = "Vui lòng nhập mật khẩu!";
-        PasswordBox.Focus();
-        return;
-    }
+        private void PerformLogin()
+        {
+            string username = UsernameTextBox.Text.Trim();
+            string password = PasswordBox.Password.Trim();
+            string errorMsg;
 
-    // Nếu đã nhập đầy đủ -> mới gọi BLL
-    if (_service.DangNhap(username, password))
-    {
-        MainWindow main = new MainWindow();
-        main.Show();
-        this.Close();
-    }
-    else
-    {
-        ErrorText.Text = "Tên đăng nhập hoặc mật khẩu không đúng!";
-    }
-}
+            if (_authBLL.Login(username, password, out errorMsg))
+            {
+                // Đăng nhập thành công -> Mở MainWindow
+                MainWindow main = new MainWindow();
+                main.Show();
+                
+                // Đóng cửa sổ đăng nhập
+                this.Close();
+            }
+            else
+            {
+                ErrorText.Text = errorMsg;
+                ErrorText.Visibility = Visibility.Visible;
+            }
+        }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
-{
-    PasswordPlaceholder.Visibility =
-        string.IsNullOrEmpty(PasswordBox.Password)
-        ? Visibility.Visible
-        : Visibility.Collapsed;
-}
-
+        {
+            if (PasswordPlaceholder != null)
+            {
+                PasswordPlaceholder.Visibility = string.IsNullOrEmpty(PasswordBox.Password)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+        }
     }
 }

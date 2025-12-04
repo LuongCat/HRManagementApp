@@ -1,13 +1,17 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
-namespace HRManagementApp.UI;
+﻿using System.Windows;
+using HRManagementApp.UI;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
-public partial class App : Application
+namespace HRManagementApp
 {
-    
-}
+    public partial class App : Application
+    {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
+            // Khởi chạy màn hình đăng nhập trước
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
+        }
+    }
+}

@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using HRManagementApp.DAL;
 using HRManagementApp.models;
 using HRManagementApp.BLL;
+
 namespace HRManagementApp.UI.Views
 {
     public partial class MyAttendanceView : UserControl
@@ -15,13 +16,33 @@ namespace HRManagementApp.UI.Views
         private ChamCongService _repo = new ChamCongService();
         private int _currentMonth = DateTime.Now.Month;
         private int _currentYear = DateTime.Now.Year;
-        private int _maNV = 1; // Giả sử mã nhân viên là 1, bạn có thể truyền vào Constructor
+        private int _maNV; // Sẽ lấy từ UserSession
         private ChamCong _todayRecord;
-        public MyAttendanceView(int maNV = 1)
+
+        public MyAttendanceView(int maNV = 0) // Tham số optional
         {
             InitializeComponent();
-            _maNV = maNV;
             
+            // --- LẤY THÔNG TIN TỪ SESSION ---
+            if (UserSession.MaNV.HasValue)
+            {
+                _maNV = UserSession.MaNV.Value;
+                // Cập nhật UI tên nhân viên
+                txtEmployeeName.Text = UserSession.HoTen; 
+                txtEmployeeID.Text = $"Mã NV: {_maNV} | {UserSession.TenPB ?? "Phòng ban"}";
+                
+                // Update Avatar chữ cái đầu
+                if(!string.IsNullOrEmpty(UserSession.HoTen))
+                    txtAvatarChar.Text = UserSession.HoTen.Substring(0, 1).ToUpper();
+            }
+            else
+            {
+                MessageBox.Show("Tài khoản này không liên kết với nhân viên nào!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                // Xử lý disable các chức năng
+                btnCheckIn.IsEnabled = false;
+                return;
+            }
+
             // Set ngày giờ hiện tại
             txtCurrentDate.Text = DateTime.Now.ToString("dddd, dd MMMM, yyyy");
             txtRealtimeDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
@@ -37,7 +58,6 @@ namespace HRManagementApp.UI.Views
         
         private void StartClock()
         {
-            // Code đồng hồ của bạn...
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += (s, e) => { 
@@ -50,22 +70,18 @@ namespace HRManagementApp.UI.Views
         // Hàm kiểm tra trạng thái để đổi màu nút
         private void CheckTodayStatus()
         {
-            // Lấy dữ liệu hôm nay từ DB
             _todayRecord = _repo.GetChamCongToday(_maNV);
 
             if (_todayRecord == null)
             {
-                // TH1: Chưa chấm công -> Nút Xanh (Mặc định)
                 SetButtonState("CheckIn");
             }
             else if (_todayRecord.GioVao != null && _todayRecord.GioRa == null)
             {
-                // TH2: Đã vào, Chưa ra -> Nút Đỏ (Đang làm)
                 SetButtonState("Working");
             }
             else
             {
-                // TH3: Đã vào và Đã ra -> Nút Xám (Hoàn thành)
                 SetButtonState("Done");
             }
         }
@@ -83,7 +99,6 @@ namespace HRManagementApp.UI.Views
             {
                 btnCheckIn.Content = "⚠ Đang làm (Bấm để về)";
                 btnCheckIn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EF4444")); // Đỏ
-                // Animation nhấp nháy nếu muốn (Optional)
                 txtStatusHint.Text = "Bạn đang trong ca làm việc...";
                 btnCheckIn.IsEnabled = true;
             }
@@ -92,54 +107,46 @@ namespace HRManagementApp.UI.Views
                 btnCheckIn.Content = "✔ Đã hoàn thành";
                 btnCheckIn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10B981")); // Xanh lá
                 txtStatusHint.Text = "Hẹn gặp lại bạn vào ngày mai!";
-                btnCheckIn.IsEnabled = false; // Khóa nút lại
+                btnCheckIn.IsEnabled = false;
             }
         }
 
-        // Sự kiện khi bấm nút
         private void BtnCheckIn_Click(object sender, RoutedEventArgs e)
         {
             if (_todayRecord == null)
             {
-                // --- LOGIC CHECK IN ---
                 bool success = _repo.CheckIn(_maNV);
                 if (success)
                 {
                     MessageBox.Show("Chấm công VÀO thành công!", "Thông báo");
-                    CheckTodayStatus(); // Load lại trạng thái để đổi màu nút
-                    // Reload biểu đồ/thống kê nếu cần
+                    CheckTodayStatus();
+                    LoadCalendar(_currentMonth, _currentYear); // Refresh lịch
                 }
             }
             else if (_todayRecord.GioRa == null)
             {
-                // --- LOGIC CHECK OUT ---
-                // Xác nhận trước khi về
                 var result = MessageBox.Show("Bạn có chắc chắn muốn kết thúc ca làm việc?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
-                    bool success = _repo.CheckOut(_todayRecord.MaCC); // Dùng MaCC đã lưu lúc load
+                    bool success = _repo.CheckOut(_todayRecord.MaCC);
                     if (success)
                     {
                         MessageBox.Show("Chấm công RA thành công!", "Thông báo");
-                        CheckTodayStatus(); // Đổi sang màu xanh lá
+                        CheckTodayStatus();
+                        LoadCalendar(_currentMonth, _currentYear); // Refresh lịch
                     }
                 }
             }
         }
         
-        
-
         private void LoadStatistics()
         {
-            // Lấy thống kê từ repo (dùng hàm có sẵn của bạn)
             var stats = _repo.GetChamCongStatistics(_maNV, _currentMonth, _currentYear);
             
-            // Cập nhật UI
-            txtOnTime.Text = (stats.SoNgayDiLam - stats.DiemDiTre).ToString(); // Giả sử tính đúng giờ đơn giản
+            txtOnTime.Text = (stats.SoNgayDiLam - stats.DiemDiTre).ToString(); 
             txtLate.Text = stats.DiemDiTre.ToString(); 
             txtWorkDays.Text = $"{stats.SoNgayDiLam} ngày làm việc";
             
-            // Tính tổng giờ làm (cần query thêm list chi tiết để sum)
             var list = _repo.GetChamCongByMonth(_maNV, _currentMonth, _currentYear);
             double totalHours = list.Where(x => x.ThoiGianLam.HasValue).Sum(x => x.ThoiGianLam.Value.TotalHours);
             
@@ -156,9 +163,7 @@ namespace HRManagementApp.UI.Views
             CalendarGrid.Children.Clear();
             txtCalendarMonth.Text = $"Tháng {month}, {year}";
 
-            // Lấy dữ liệu chấm công tháng này để tô màu
             var listChamCong = _repo.GetChamCongByMonth(_maNV, month, year);
-            // Tạo HashSet chứa các ngày đã đi làm (để tra cứu cho nhanh)
             HashSet<int> daysWorked = new HashSet<int>();
             foreach(var item in listChamCong)
             {
@@ -167,17 +172,13 @@ namespace HRManagementApp.UI.Views
 
             DateTime firstDayOfMonth = new DateTime(year, month, 1);
             int daysInMonth = DateTime.DaysInMonth(year, month);
-            
-            // DayOfWeek: Sunday = 0, Monday = 1...
             int startDayOfWeek = (int)firstDayOfMonth.DayOfWeek; 
 
-            // 1. Vẽ các ô trống trước ngày mùng 1
             for (int i = 0; i < startDayOfWeek; i++)
             {
-                CalendarGrid.Children.Add(new Border()); // Ô trống
+                CalendarGrid.Children.Add(new Border());
             }
 
-            // 2. Vẽ các ngày trong tháng
             for (int day = 1; day <= daysInMonth; day++)
             {
                 Button btnDay = new Button();
@@ -186,7 +187,6 @@ namespace HRManagementApp.UI.Views
                 btnDay.Margin = new Thickness(3);
                 btnDay.BorderThickness = new Thickness(0);
                 
-                // Style bo góc cho Button
                 ControlTemplate template = new ControlTemplate(typeof(Button));
                 FrameworkElementFactory borderFactory = new FrameworkElementFactory(typeof(Border));
                 borderFactory.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Button.BackgroundProperty));
@@ -198,22 +198,19 @@ namespace HRManagementApp.UI.Views
                 template.VisualTree = borderFactory;
                 btnDay.Template = template;
 
-                // LOGIC TÔ MÀU
                 if (daysWorked.Contains(day))
                 {
-                    // Đã chấm công -> Màu Xanh lá
                     btnDay.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#22C55E")); 
                     btnDay.Foreground = Brushes.White;
                     btnDay.FontWeight = FontWeights.Bold;
                     btnDay.Cursor = System.Windows.Input.Cursors.Hand;
                     
-                    // Gắn sự kiện Click để mở chi tiết
-                    int selectedDay = day; // Capture variable
+                    int selectedDay = day;
+                    // Gọi popup chi tiết, truyền MaNV và ngày
                     btnDay.Click += (s, e) => OpenDetailWindow(selectedDay, month, year);
                 }
                 else
                 {
-                    // Chưa chấm -> Màu Xám
                     btnDay.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E5E7EB")); 
                     btnDay.Foreground = Brushes.Gray;
                 }
@@ -225,6 +222,7 @@ namespace HRManagementApp.UI.Views
         private void OpenDetailWindow(int day, int month, int year)
         {
             DateTime selectedDate = new DateTime(year, month, day);
+            // Truyền MaNV vào AttendanceDetailWindow2
             var detailWin = new AttendanceDetailWindow2(_maNV, selectedDate);
             detailWin.ShowDialog();
         }

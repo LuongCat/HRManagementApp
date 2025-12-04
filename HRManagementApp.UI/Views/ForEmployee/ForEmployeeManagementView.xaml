@@ -54,14 +54,15 @@
                        Margin="0,0,0,24"/>
 
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="btnLeave"
-                        Content="Đơn xin nghỉ"
-                        Click="BtnLeave_Click"
-                        Style="{StaticResource TabButtonStyle}"/>
                 <Button x:Name="btnAttendance"
                         Content="Chấm công "
                         Click="BtnAttendance_Click"
                         Style="{StaticResource TabButtonStyle}"/>
+                <Button x:Name="btnLeave"
+                        Content="Đơn xin nghỉ"
+                        Click="BtnLeave_Click"
+                        Style="{StaticResource TabButtonStyle}"/>
+                
                
             </StackPanel>
         </StackPanel>

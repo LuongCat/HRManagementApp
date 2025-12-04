@@ -1,30 +1,33 @@
-namespace HRManagementApp.models;
+using System;
 
-public class DonTu
+namespace HRManagementApp.models
 {
-    public int MaDon { get; set; }
-    public int MaNV { get; set; }
-    public int MaLoaiDon { get; set; }
-    public DateTime NgayBatDau { get; set; }
-    public DateTime NgayKetThuc { get; set; }
-    public string LyDo { get; set; }
-    public string TrangThai { get; set; } // 'Chờ duyệt', 'Đã duyệt', 'Từ chối'
-    public DateTime NgayGui { get; set; }
-    public string NguoiDuyet { get; set; }
-
-    // Join Data
-    public string HoTenNhanVien { get; set; }
-    public string TenLoaiDon { get; set; }
-
-    // Helpers cho giao diện
-    public string MaDonDisplay => $"DT{MaDon:000}"; // VD: DT001
-    
-    public string SoNgayDisplay 
+    public class DonTu
     {
-        get 
+        public int MaDon { get; set; }
+        public int MaNV { get; set; }
+        public int MaLoaiDon { get; set; }
+        public DateTime NgayBatDau { get; set; }
+        public DateTime NgayKetThuc { get; set; }
+        public string LyDo { get; set; }
+        public string TrangThai { get; set; } // 'Chưa duyệt', 'Đã duyệt', 'Từ chối'
+        public DateTime NgayGui { get; set; }
+        public string NguoiDuyet { get; set; }
+
+        // Join Data (Dữ liệu hiển thị)
+        public string HoTenNhanVien { get; set; }
+        public string TenLoaiDon { get; set; }
+
+        // Helpers cho giao diện (Display Properties)
+        public string MaDonDisplay => $"DT{MaDon:000}";
+
+        public string SoNgayDisplay
         {
-            TimeSpan span = NgayKetThuc - NgayBatDau;
-            return $"{(int)span.TotalDays + 1} ngày";
+            get
+            {
+                TimeSpan span = NgayKetThuc - NgayBatDau;
+                return $"{(int)span.TotalDays + 1} ngày";
+            }
         }
     }
 }

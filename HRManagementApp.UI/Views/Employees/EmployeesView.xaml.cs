@@ -159,6 +159,7 @@ namespace HRManagementApp.UI.Views
                     // Mở cửa sổ hiển thị
                     var window = new InfoDisplayWindow();
                     window.SetInfo("THÔNG TIN NHÂN VIÊN", employee.HoTen, infoItems);
+                    window.ShowBarcode(employee.MaNV.ToString()); 
                     window.ShowDialog();
                 }
             }

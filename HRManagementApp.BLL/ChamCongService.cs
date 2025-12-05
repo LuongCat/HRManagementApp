@@ -50,4 +50,39 @@ public class ChamCongService
     {
         return _chamCongRepository.GetByMonth(maNV, month, year);
     }
+    public (bool Success, string Message, string EmployeeName, string ActionType) ProcessSmartAttendance(int maNV)
+    {
+        // 1. Lấy thông tin nhân viên để hiển thị tên
+        // (Ở đây gọi tạm hàm, thực tế bạn nên có hàm GetEmployeeInfo trong NhanVienDAL)
+        // Giả sử ta lấy được tên, nếu không thì hiển thị Mã
+        NhanVienService nvsv = new NhanVienService();
+        string empName = nvsv.GetEmployeeById(maNV).HoTen;
+
+        // 2. Lấy trạng thái hôm nay
+        var todayRecord = _chamCongRepository.GetTodayRecord(maNV);
+
+        if (todayRecord == null)
+        {
+            // Chưa có dữ liệu -> Chấm công VÀO
+            bool result = _chamCongRepository.CheckIn(maNV);
+            return (result, result ? "Chấm công VÀO thành công!" : "Lỗi hệ thống", empName, "CheckIn");
+        }
+        else if (todayRecord.GioRa == null)
+        {
+            // Đã vào, chưa ra -> Chấm công RA
+            // Kiểm tra: Nếu vừa check-in cách đây ít hơn 1 phút thì chặn (tránh quét đúp)
+            if (todayRecord.GioVao.HasValue && (DateTime.Now.TimeOfDay - todayRecord.GioVao.Value).TotalMinutes < 1)
+            {
+                return (false, "Bạn vừa chấm công vào, vui lòng chờ thêm!", empName, "Wait");
+            }
+
+            bool result = _chamCongRepository.CheckOut(todayRecord.MaCC);
+            return (result, result ? "Chấm công RA thành công!" : "Lỗi hệ thống", empName, "CheckOut");
+        }
+        else
+        {
+            // Đã xong cả vào và ra
+            return (false, "Bạn đã hoàn thành ca làm việc hôm nay!", empName, "Done");
+        }
+    }
 }

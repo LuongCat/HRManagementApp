@@ -85,6 +85,8 @@ namespace HRManagementApp.UI
             EditPayrollBtn.Click += (s, e) => NavigateTo("EditPayroll", s as Button);
             LogoutBtn.Click += LogoutBtn_Click; 
             AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
+            ChamCongBtn.Click += (s, e) => NavigateTo("ChamCong", s as Button);
+            InforBtn.Click += (s, e) => NavigateTo("Info", s as Button);
         }
 
         private void NavigateTo(string section, Button clickedButton)
@@ -136,7 +138,9 @@ namespace HRManagementApp.UI
                 case "settings": ContentArea.Content = new ForEmployeeManagementView(); break;
                 case "editpayroll": ContentArea.Content = new Views.EditPayroll(); break;
                 case "account": ContentArea.Content = new Views.AccountManagementView(); break;
-                case "roles": ContentArea.Content = new RoleManagementView(); break;
+                case "roles": ContentArea.Content = new Views.RoleManagementView(); break;
+                case "chamcong": ContentArea.Content = new Views.ScanAttendanceView(); break;
+                case "info": ContentArea.Content = new Views.AccountInfoView(); break;
             }
         }
 

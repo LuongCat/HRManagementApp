@@ -1,0 +1,284 @@
+﻿<UserControl x:Class="HRManagementApp.UI.Views.AccountInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="850" d:DesignWidth="1200">
+
+    <UserControl.Resources>
+        <!-- Colors -->
+        <SolidColorBrush x:Key="PrimaryColor" Color="#2563EB"/>
+        <SolidColorBrush x:Key="SecondaryColor" Color="#64748B"/>
+        <SolidColorBrush x:Key="BgColor" Color="#F1F5F9"/>
+        <SolidColorBrush x:Key="CardBg" Color="White"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/>
+        
+        <!-- Card Style -->
+        <Style x:Key="CardBorder" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardBg}"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#64748B" Direction="270" ShadowDepth="4" BlurRadius="20" Opacity="0.08"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Label Style -->
+        <Style x:Key="LabelText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <!-- Value Style -->
+        <Style x:Key="ValueText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
+        
+        <!-- Section Header Style -->
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+        
+        <!-- Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="OutlineButton" BasedOn="{StaticResource ModernButton}" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#EFF6FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Storyboard x:Key="FadeInSlideStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.5" />
+
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                             From="20" To="0" Duration="0:0:0.5" />
+        </Storyboard>
+        <Storyboard x:Key="AvatarZoomIn">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                             From="0.8" To="1" Duration="0:0:0.4"/>
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                             From="0.8" To="1" Duration="0:0:0.4"/>
+        </Storyboard>
+
+    </UserControl.Resources>
+<ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Background="{StaticResource BgColor}" Margin="0">
+            <Grid.RenderTransform>
+                <TranslateTransform Y="20"/>
+            </Grid.RenderTransform>
+
+            <Grid.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard Storyboard="{StaticResource FadeInSlideStoryboard}"/>
+                </EventTrigger>
+            </Grid.Triggers>
+            <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="420"/> <!-- Left Panel wider -->
+        <ColumnDefinition Width="*"/>   <!-- Right Panel -->
+    </Grid.ColumnDefinitions>
+
+    <!-- LEFT COLUMN -->
+    <Border Grid.Column="0" Margin="32,32,24,32" Style="{StaticResource CardBorder}" VerticalAlignment="Top">
+        <StackPanel Margin="12"> <!-- More inner spacing -->
+            
+            <!-- Avatar -->
+            
+            <Border Width="130" Height="130" CornerRadius="65" Background="#DBEAFE" 
+                    Margin="0,0,0,28" HorizontalAlignment="Center">
+                <Border.RenderTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Border.RenderTransform>
+
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard Storyboard="{StaticResource AvatarZoomIn}"/>
+                    </EventTrigger>
+                </Border.Triggers>
+                <TextBlock x:Name="txtAvatar" Text="A" FontSize="52" FontWeight="Bold" Foreground="#2563EB"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+
+            <!-- Name -->
+            <TextBlock x:Name="txtName" Text="Nguyễn Văn A" FontSize="24" FontWeight="Bold"
+                       Foreground="#1E293B" HorizontalAlignment="Center" TextAlignment="Center" 
+                       Margin="0,0,0,4"/>
+
+            <!-- Role -->
+            <Border Background="#F1F5F9" CornerRadius="12" Padding="14,6" 
+                    HorizontalAlignment="Center" Margin="0,6,0,28">
+                <TextBlock x:Name="txtRole" Text="Quản Lý" Foreground="#64748B" 
+                           FontWeight="SemiBold" FontSize="13"/>
+            </Border>
+
+            <Separator Background="#E2E8F0" Margin="0,0,0,28"/>
+
+            <!-- Quick Info -->
+            <Grid Margin="0,0,0,32">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="📧" FontSize="16" Margin="0,0,14,14"/>
+                <TextBlock x:Name="txtUsernameDisplay" Grid.Column="1" FontSize="15" Foreground="#475569"/>
+
+                <TextBlock Grid.Row="1" Text="📱" FontSize="16" Margin="0,0,14,0"/>
+                <TextBlock Grid.Row="1" x:Name="txtPhoneDisplay" Grid.Column="1" FontSize="15" Foreground="#475569"/>
+            </Grid>
+
+            <!-- Actions -->
+            <Button Content="Đổi Mật Khẩu" Style="{StaticResource ModernButton}" Click="BtnChangePassword_Click" 
+                    Margin="0,0,0,14" Height="42"/>
+            <Button Content="Đăng Xuất" Style="{StaticResource OutlineButton}" Height="42" Click="BtnLogout_Click"/>
+        </StackPanel>
+    </Border>
+
+    <!-- RIGHT COLUMN (unchanged layout but upgraded margins/padding) -->
+    <StackPanel Grid.Column="1" Margin="24,32,32,32"> <!-- Increased spacing from Left -->
+
+        <!-- Section 1 -->
+        <Border Style="{StaticResource CardBorder}" Padding="36" Margin="0,0,0,28">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,28">
+                    <TextBlock Text="👤" FontSize="20" Margin="0,0,12,0"/>
+                    <TextBlock Text="Thông Tin Cá Nhân" Style="{StaticResource SectionHeader}" Margin="0"/>
+                </StackPanel>
+
+                <!-- Keep original children -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,28,0">
+                        <TextBlock Text="Họ và tên" Style="{StaticResource LabelText}"/>
+                        <TextBlock x:Name="txtFullNameDetail" Style="{StaticResource ValueText}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBlock Text="Ngày sinh" Style="{StaticResource LabelText}"/>
+                        <TextBlock x:Name="txtDob" Style="{StaticResource ValueText}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,28,0">
+                        <TextBlock Text="Giới tính" Style="{StaticResource LabelText}"/>
+                        <TextBlock x:Name="txtGender" Style="{StaticResource ValueText}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="1">
+                        <TextBlock Text="Số CCCD/CMND" Style="{StaticResource LabelText}"/>
+                        <TextBlock x:Name="txtCCCD" Style="{StaticResource ValueText}"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Section 2 -->
+        <Border Style="{StaticResource CardBorder}" Padding="36">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,28">
+                    <TextBlock Text="💼" FontSize="20" Margin="0,0,12,0"/>
+                    <TextBlock Text="Thông Tin Công Việc" Style="{StaticResource SectionHeader}" Margin="0"/>
+                </StackPanel>
+
+                <!-- Keep original children -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,28,0">
+                        <TextBlock Text="Phòng ban" Style="{StaticResource LabelText}"/>
+                        <TextBlock x:Name="txtDepartment" Style="{StaticResource ValueText}" Foreground="#2563EB"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBlock Text="Mã nhân viên" Style="{StaticResource LabelText}"/>
+                        <TextBlock x:Name="txtEmployeeCode" Style="{StaticResource ValueText}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,28,0">
+                        <TextBlock Text="Số điện thoại công việc" Style="{StaticResource LabelText}"/>
+                        <TextBlock x:Name="txtWorkPhone" Style="{StaticResource ValueText}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="1">
+                        <TextBlock Text="Trạng thái làm việc" Style="{StaticResource LabelText}"/>
+                        <Border Background="#DCFCE7" CornerRadius="6" Padding="12,4">
+                            <TextBlock Text="Đang hoạt động" Foreground="#166534" FontWeight="Bold" FontSize="13"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+        
+    </StackPanel>
+</Grid>
+    </ScrollViewer>
+</UserControl>

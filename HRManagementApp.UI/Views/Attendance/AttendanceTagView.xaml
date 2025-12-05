@@ -58,10 +58,10 @@
                         Content="Chấm công hôm nay"
                         Click="BtnTodayAttendance_Click"
                         Style="{StaticResource TabButtonStyle}"/>
-                <Button x:Name="btnApproval"
+               <!--<Button x:Name="btnApproval"
                         Content="Duyệt công"
                         Click="BtnApproval_Click"
-                        Style="{StaticResource TabButtonStyle}"/>
+                        Style="{StaticResource TabButtonStyle}"/>-->
                 <Button x:Name="btnReports"
                         Content="Báo cáo"
                         Click="BtnReports_Click"

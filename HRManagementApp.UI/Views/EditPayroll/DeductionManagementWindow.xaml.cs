@@ -11,7 +11,7 @@ namespace HRManagementApp.UI.Views
     public partial class DeductionManagementWindow : Window
     {
         private NhanVien _targetEmployee;
-        
+        private LuongService _luongService;
         // TODO: Inject Service Khấu Trừ
         private KhauTruService _khauTruService;
 
@@ -20,6 +20,7 @@ namespace HRManagementApp.UI.Views
             InitializeComponent();
             _targetEmployee = employee;
             _khauTruService = new KhauTruService();
+            _luongService = new LuongService();
             // Header Info
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
 

@@ -42,7 +42,7 @@ namespace HRManagementApp.UI.Views
 
         private void LoadDepartmentView()
         {
-            //MainContent.Content = new DepartmentPayrollView(); // <-- tạo UC này
+            MainContent.Content = new DepartmentPayrollView(); 
             
         }
 

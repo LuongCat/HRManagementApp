@@ -65,6 +65,37 @@ public class LuongService
     {
         return _luongRepository.AddSalaryReturnID(luong);
     }
-    
+    public bool UnLockSalary(int maNV, DateTime date)
+    {
+        try
+        {
+            int month = date.Month;
+            int year = date.Year;
+
+            // 1. Tìm bảng lương
+            var luong = GetSalaryByMonthYear(maNV, month, year);
+
+            // 2. Kiểm tra
+            if (luong != null)
+            {
+                if (luong.ChotLuong == "Chưa chốt") return false;
+
+                // 3. Thực hiện update
+                // Đồng bộ chữ hoa/thường với DB: "Chưa chốt", "Chưa thanh toán"
+                bool kq1 = UpdateChotLuong(luong.MaLuong, "chưa chốt");
+                bool kq2 = UpdateTrangThai(luong.MaLuong, "Chưa trả");
+
+                return kq1 && kq2; // Trả về true nếu update thành công
+            }
+
+            return false; // Không có bảng lương tháng này
+        }
+        catch (Exception ex)
+        {
+            // Ghi log lỗi nếu cần
+            Console.WriteLine("Lỗi Service Unlock: " + ex.Message);
+            return false;
+        }
+    }
     
 }

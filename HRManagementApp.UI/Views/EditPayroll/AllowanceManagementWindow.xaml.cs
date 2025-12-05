@@ -82,31 +82,7 @@ namespace HRManagementApp.UI.Views
         
         
         
-        private void UnLockSalary(DateTime date)
-        {
-            try
-            {
-                int month = date.Month;
-                int year = date.Year;
-
-                // Tìm bảng lương của tháng đó
-                var luong = _luongService.GetSalaryByMonthYear(_targetEmployee.MaNV, month, year);
-                
-                if (luong != null)
-                {
-                    Console.WriteLine(luong.ChotLuong);
-                    _luongService.UpdateChotLuong(luong.MaLuong, "chưa chốt");
-                    _luongService.UpdateTrangThai(luong.MaLuong, "Chưa trả"); 
-                    
-                    // (Optional) Thông báo nhẹ cho người dùng biết
-                     MessageBox.Show($"Bảng lương tháng {month}/{year} đã được mở chốt để tính lại.", "Thông báo hệ thống");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Lỗi mở chốt lương: " + ex.Message);
-            }
-        }
+        
         
         
         
@@ -129,13 +105,23 @@ namespace HRManagementApp.UI.Views
 
             // TODO: Service Call ->
             _phuCapService.AddPhuCap(newItem);
-            
             // Giả lập
             _targetEmployee.PhuCaps.Add(newItem);
             
-            UnLockSalary(newItem.ApDungTuNgay);
+            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, newItem.ApDungTuNgay);
 
-            MessageBox.Show("Thêm phụ cấp thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (isUnlocked)
+            {
+                MessageBox.Show($"Thêm thành công! Bảng lương tháng {newItem.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
+                MessageBox.Show("Thêm phụ cấp thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            
             LoadData();
             BtnClear_Click(null, null);
         }
@@ -156,14 +142,21 @@ namespace HRManagementApp.UI.Views
 
             // TODO: Service Call ->
             _phuCapService.UpdatePhuCap(selected);
-            UnLockSalary(selected.ApDungTuNgay);
-            // Nếu tháng cũ khác tháng mới, mở chốt cả tháng cũ
-            if (oldDate.Month != selected.ApDungTuNgay.Month || oldDate.Year != selected.ApDungTuNgay.Year)
-            {
-                UnLockSalary(oldDate);
-            }
+            
+            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, selected.ApDungTuNgay);
 
-            MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (isUnlocked)
+            {
+                MessageBox.Show($"Sửa thành công! Bảng lương tháng {selected.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
+                MessageBox.Show("cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            
             LoadData();
             BtnClear_Click(null, null);
         }
@@ -179,9 +172,19 @@ namespace HRManagementApp.UI.Views
 
                 // Giả lập
                 _targetEmployee.PhuCaps.Remove(selected);
-                UnLockSalary(selected.ApDungTuNgay);
+                // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+                bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, selected.ApDungTuNgay);
 
-                MessageBox.Show("Đã xóa phụ cấp!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (isUnlocked)
+                {
+                    MessageBox.Show($"xóa phụ cấp thành công! Bảng lương tháng {selected.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.", 
+                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
+                    MessageBox.Show("xóa phụ cấp thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
                 LoadData();
                 BtnClear_Click(null, null);
             }

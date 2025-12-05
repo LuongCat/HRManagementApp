@@ -104,6 +104,12 @@ namespace HRManagementApp.BLL
                     return new Dictionary<string, decimal>();
             }
         }
+        
+        // Thêm vào PayrollBLL
+        public PayrollStatsDTO GetPayrollSummary(int month, int year) => dal.GetPayrollSummary(month, year);
+        public List<ChartDataDTO> GetIncomeStructure(int month, int year) => dal.GetIncomeStructure(month, year);
+        public List<ChartDataDTO> GetSalaryDistribution(int month, int year) => dal.GetSalaryDistribution(month, year);
+        public List<ChartDataDTO> GetAvgSalaryByDept(int month, int year) => dal.GetAvgSalaryByDept(month, year);
     }
 
 }

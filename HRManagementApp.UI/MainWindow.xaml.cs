@@ -7,7 +7,7 @@ using HRManagementApp.BLL;
 using HRManagementApp.models;
 using HRManagementApp.UI.Views;
 using HRManagementApp.UI.Views.Leave;
-using HRManagementApp.UI.Views.Report; // Thêm namespace Report
+using HRManagementApp.Constants; // <--- 1. THÊM NAMESPACE NÀY
 
 namespace HRManagementApp.UI
 {
@@ -44,16 +44,20 @@ namespace HRManagementApp.UI
             // Hoặc kiểm tra chi tiết từng quyền trong UserSession.QuyenHan
             bool isAdmin = UserSession.VaiTro == "Admin";
             
-            if (isAdmin || UserSession.HasPermission("QuanLyNhanVien")){ EmployeesBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission("XemBaoCao")) { ReportsBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission("Attandance")) { AttendanceBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission("QuanLiDonTu")) { LeaveBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission("QuanTriHeThong"))
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QL_NHAN_VIEN))
+            { EmployeesBtn.Visibility = Visibility.Visible; }
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_XEM_BAO_CAO)) 
+            { ReportsBtn.Visibility = Visibility.Visible; }
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QL_CHAM_CONG)) 
+            { AttendanceBtn.Visibility = Visibility.Visible; }
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_DUYET_DON)) 
+            { LeaveBtn.Visibility = Visibility.Visible; }
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QT_HE_THONG))
             {
                 RoleBtn.Visibility = Visibility.Visible;
                 AccountBtn.Visibility = Visibility.Visible;
             }
-            if (isAdmin || UserSession.HasPermission("EditPayroll")) 
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QL_LUONG))
             {   
                 PayrollBtn.Visibility = Visibility.Visible;
                 EditPayrollBtn.Visibility = Visibility.Visible; 

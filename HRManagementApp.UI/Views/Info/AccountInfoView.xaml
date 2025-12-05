@@ -20,11 +20,6 @@
             <Setter Property="CornerRadius" Value="16"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="#64748B" Direction="270" ShadowDepth="4" BlurRadius="20" Opacity="0.08"/>
-                </Setter.Value>
-            </Setter>
         </Style>
 
         <!-- Label Style -->

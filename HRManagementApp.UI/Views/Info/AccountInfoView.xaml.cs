@@ -45,7 +45,7 @@ namespace HRManagementApp.UI.Views
         private void BtnChangePassword_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new ChangePasswordDialog();
-            dialog.Owner = Window.GetWindow(this);
+            dialog.ShowDialog();
         }
 
 

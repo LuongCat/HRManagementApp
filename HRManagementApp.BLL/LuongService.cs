@@ -82,7 +82,7 @@ public class LuongService
 
                 // 3. Thực hiện update
                 // Đồng bộ chữ hoa/thường với DB: "Chưa chốt", "Chưa thanh toán"
-                bool kq1 = UpdateChotLuong(luong.MaLuong, "chưa chốt");
+                bool kq1 = UpdateChotLuong(luong.MaLuong, "Chưa chốt");
                 bool kq2 = UpdateTrangThai(luong.MaLuong, "Chưa trả");
 
                 return kq1 && kq2; // Trả về true nếu update thành công

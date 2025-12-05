@@ -110,7 +110,7 @@ namespace HRManagementApp.UI.Views
                     // Kiểm tra kỹ trong DB xem trạng thái thực tế là gì
                     var statusDB = _luongService.GetChotLuongStatusByMaLuong(selectedItem.maLuong);
                     
-                    if (statusDB == "đã chốt")
+                    if (statusDB == "Đã chốt")
                     {
                         MessageBox.Show("Bảng lương này ĐÃ ĐƯỢC CHỐT trước đó, không cần chốt lại.",
                             "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -141,7 +141,7 @@ namespace HRManagementApp.UI.Views
                     LuongThucNhan = selectedItem.LuongThucNhan,
 
                     TrangThai = "Chưa trả",
-                    ChotLuong = "đã chốt"
+                    ChotLuong = "Đã chốt"
                 };
 
                 // 4. Thực hiện Lưu xuống DB
@@ -152,7 +152,7 @@ namespace HRManagementApp.UI.Views
                     selectedItem.maLuong= _luongService.AddSalaryReturnID(luong);
                     success = selectedItem.maLuong > 0;
                     
-                    selectedItem.TrangThai = "đã chốt";
+                    selectedItem.TrangThai = "Đã chốt";
                 }
                 else
                 {
@@ -199,7 +199,7 @@ namespace HRManagementApp.UI.Views
                 // 2. Kiểm tra trạng thái chốt trong DB
                 var chotLuongStatus = _luongService.GetChotLuongStatusByMaLuong(selectedItem.maLuong);
 
-                if (chotLuongStatus != "đã chốt")
+                if (chotLuongStatus != "Đã chốt")
                 {
                     MessageBox.Show("Bảng lương này CHƯA ĐƯỢC CHỐT. Không thể thanh toán.",
                         "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);

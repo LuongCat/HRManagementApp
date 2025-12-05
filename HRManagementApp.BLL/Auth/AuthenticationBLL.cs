@@ -39,5 +39,14 @@ namespace HRManagementApp.BLL
         {
             UserSession.Clear();
         }
+
+        public bool ChangePassword(int UserID,  string newPass, string oldPass)
+        {
+
+            // Gọi DAL kiểm tra
+            bool isSuccess = dal.ChangePassword(UserID,newPass,oldPass);
+            
+            return isSuccess;
+        }
     }
 }

@@ -47,8 +47,7 @@ namespace HRManagementApp.UI.Views
             var dialog = new ChangePasswordDialog();
             dialog.Owner = Window.GetWindow(this);
         }
-
-
+        
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
             // Gọi lại logic logout từ MainWindow (hoặc xử lý trực tiếp)

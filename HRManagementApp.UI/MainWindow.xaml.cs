@@ -91,6 +91,8 @@ namespace HRManagementApp.UI
             AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
             ChamCongBtn.Click += (s, e) => NavigateTo("ChamCong", s as Button);
             InforBtn.Click += (s, e) => NavigateTo("Info", s as Button);
+            QLyCaLam.Click += (s, e) => NavigateTo("QLyCaLam", s as Button);
+            MyPayslip.Click += (s, e) => NavigateTo("mypayslip", s as Button);
         }
 
         private void NavigateTo(string section, Button clickedButton)
@@ -145,6 +147,8 @@ namespace HRManagementApp.UI
                 case "roles": ContentArea.Content = new Views.RoleManagementView(); break;
                 case "chamcong": ContentArea.Content = new Views.ScanAttendanceView(); break;
                 case "info": ContentArea.Content = new Views.AccountInfoView(); break;
+                case "qlycalam": ContentArea.Content = new Views.ShiftManagementView(); break;
+                case "mypayslip": ContentArea.Content = new Views.MyPayslipView(); break;
             }
         }
 

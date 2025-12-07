@@ -11,8 +11,6 @@ namespace HRManagementApp.Constants
         public const string PERM_QT_HE_THONG = "QuanTriHeThong";
         public const string PERM_QL_CHAM_CONG = "QuanLyChamCong";
         public const string PERM_QL_LUONG = "QuanLyLuong";
-        public const string PERM_XUAT_LUONG = "XuatBangLuong"; 
-
         // Danh sách ánh xạ giữa Key và Mô tả (để hiển thị lên UI tiếng Việt)
         public static Dictionary<string, string> ListAll = new Dictionary<string, string>
         {
@@ -22,7 +20,6 @@ namespace HRManagementApp.Constants
             { PERM_QT_HE_THONG, "Cấu hình hệ thống, tạo tài khoản" },
             { PERM_QL_CHAM_CONG, "Xem và chỉnh sửa dữ liệu chấm công" },
             {PERM_QL_LUONG,"Xem và quản lý lương"},
-            { PERM_XUAT_LUONG, "Quyền xuất file Excel bảng lương" } // Mới
         };
     }
 }

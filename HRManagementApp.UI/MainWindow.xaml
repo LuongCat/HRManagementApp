@@ -327,11 +327,10 @@
                                 <TextBlock Text="ScanChamCong"/>
                             </StackPanel>
                         </Button>
-
-                        <Button Style="{StaticResource SidebarButtonStyle}" Name="InforBtn">
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="QLyCaLam">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
-                                <TextBlock Text="Thông tin"/>
+                                <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Quản lý ca làm"/>
                             </StackPanel>
                         </Button>
 
@@ -353,6 +352,20 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="📈" FontSize="16" Margin="0,0,10,0"/>
                                 <TextBlock Text="Reports"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="MyPayslip">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Lương của tôi"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="InforBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Thông tin"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>

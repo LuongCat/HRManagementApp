@@ -25,10 +25,10 @@ namespace HRManagementApp.DAL
                     pb.TenPB AS PhongBan,
                     vt.TenVaiTro AS VaiTro
                 FROM taikhoan tk
-                left JOIN nhanvien nv ON tk.MaNV = nv.MaNV
-                left JOIN phongban pb ON nv.MaPB = pb.MaPB
-                left JOIN taikhoan_vaitro tkvt ON tk.MaTK = tkvt.MaTK
-                left JOIN vaitro vt ON tkvt.MaVaiTro = vt.MaVaiTro
+                LEFT JOIN nhanvien nv ON tk.MaNV = nv.MaNV
+                LEFT JOIN phongban pb ON nv.MaPB = pb.MaPB
+                LEFT JOIN taikhoan_vaitro tkvt ON tk.MaTK = tkvt.MaTK
+                LEFT JOIN vaitro vt ON tkvt.MaVaiTro = vt.MaVaiTro
                 WHERE tk.TrangThai != 'Đã xóa'
                 ORDER BY tk.MaTK DESC";
 

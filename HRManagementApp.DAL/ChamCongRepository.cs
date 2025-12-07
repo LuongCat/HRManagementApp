@@ -419,7 +419,8 @@ public class ChamCongRepository
                 MaNV = Convert.ToInt32(row["MaNV"]),
                 Ngay = row["Ngay"] != DBNull.Value ? Convert.ToDateTime(row["Ngay"]) : null,
                 GioVao = row["GioVao"] != DBNull.Value ? (TimeSpan)row["GioVao"] : null,
-                GioRa = row["GioRa"] != DBNull.Value ? (TimeSpan)row["GioRa"] : null
+                GioRa = row["GioRa"] != DBNull.Value ? (TimeSpan)row["GioRa"] : null,
+                ThoiGianLam = row["ThoiGianLam"] != DBNull.Value ? (TimeSpan)row["ThoiGianLam"] : null
             };
         }
 }

@@ -327,13 +327,9 @@
                                 <TextBlock Text="ScanChamCong"/>
                             </StackPanel>
                         </Button>
-                        <Button Style="{StaticResource SidebarButtonStyle}" Name="QLyCaLam">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>
-                                <TextBlock Text="Quản lý ca làm"/>
-                            </StackPanel>
-                        </Button>
-
+                       
+                        
+                        
                         <Button Style="{StaticResource SidebarButtonStyle}" Name="SettingsBtn">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>

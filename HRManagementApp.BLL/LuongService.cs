@@ -97,5 +97,11 @@ public class LuongService
             return false;
         }
     }
+
+
+    public PayrollSummary GetPayrollSummary(int thang, int nam)
+    {
+        return _luongRepository.GetPayrollSummary(thang, nam);
+    }
     
 }

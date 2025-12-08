@@ -28,7 +28,7 @@ namespace HRManagementApp.UI
         {
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password.Trim();
-            string errorMsg;
+            string errorMsg; 
 
             if (_authBLL.Login(username, password, out errorMsg))
             {

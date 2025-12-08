@@ -13,18 +13,7 @@ public class LuongRepository
         List<Luong> list = new List<Luong>();
         foreach (DataRow row in dt.Rows)
         {
-            list.Add(new Luong
-            {
-                MaLuong = int.Parse(row["MaLuong"].ToString()),
-                MaNV = int.Parse(row["MaNV"].ToString()),
-                Thang = int.Parse(row["Thang"].ToString()),
-                Nam = int.Parse(row["Nam"].ToString()),
-                TongNgayCong = int.Parse(row["TongNgayCong"].ToString()),
-                TienLuong = decimal.Parse(row["TienLuong"].ToString()),
-                LuongThucNhan = decimal.Parse(row["LuongThucNhan"].ToString()),
-                TrangThai = row["TrangThai"].ToString(),
-                ChotLuong = row["ChotLuong"].ToString(),
-            });
+            list.Add(MapDataRowToLuong(row));
         }
 
         return list;
@@ -40,21 +29,30 @@ public class LuongRepository
         List<Luong> list = new List<Luong>();
         foreach (DataRow row in dt.Rows)
         {
-            list.Add(new Luong
-            {
-                MaLuong = int.Parse(row["MaLuong"].ToString()),
-                MaNV = int.Parse(row["MaNV"].ToString()),
-                Thang = int.Parse(row["Thang"].ToString()),
-                Nam = int.Parse(row["Nam"].ToString()),
-                TongNgayCong = int.Parse(row["TongNgayCong"].ToString()),
-                TienLuong = decimal.Parse(row["TienLuong"].ToString()),
-                LuongThucNhan = decimal.Parse(row["LuongThucNhan"].ToString()),
-                TrangThai = row["TrangThai"].ToString(),
-                ChotLuong = row["ChotLuong"].ToString(),
-            });
+            list.Add(MapDataRowToLuong(row));
         }
 
         return list;
+    }
+    
+    // Tạo hàm ánh xạ riêng để tái sử dụng
+    private Luong MapDataRowToLuong(DataRow row)
+    {
+        return new Luong
+        {
+            MaLuong = Convert.ToInt32(row["MaLuong"]),
+            MaNV = Convert.ToInt32(row["MaNV"]),
+            Thang = Convert.ToInt32(row["Thang"]),
+            Nam = Convert.ToInt32(row["Nam"]),
+            
+            // Xử lý các thuộc tính nullable
+            TongNgayCong = row["TongNgayCong"] != DBNull.Value ? (int?)Convert.ToInt32(row["TongNgayCong"]) : null,
+            TienLuong = row["TienLuong"] != DBNull.Value ? (decimal?)Convert.ToDecimal(row["TienLuong"]) : null,
+            LuongThucNhan = row["LuongThucNhan"] != DBNull.Value ? (decimal?)Convert.ToDecimal(row["LuongThucNhan"]) : null,
+            
+            TrangThai = row["TrangThai"]?.ToString() ?? "Chưa trả",
+            ChotLuong = row["ChotLuong"]?.ToString() ?? "Chưa chốt",
+        };
     }
 
     public Luong GetSalaryByMonthYear(int maNV, int thang, int nam)
@@ -257,4 +255,58 @@ public class LuongRepository
 
         return null;
     }
+    
+    /// <summary>
+    /// Lấy tổng quan lương trong một tháng/năm cụ thể.
+    /// </summary>
+    public PayrollSummary GetPayrollSummary(int thang, int nam)
+    {
+        // Sử dụng COALESCE/IFNULL trong SQL để đảm bảo SUM(NULL) vẫn trả về 0
+        string salaryQuery = @"
+            SELECT 
+                COALESCE(SUM(CASE WHEN l.TrangThai = 'Đã trả' THEN l.LuongThucNhan ELSE 0 END), 0) AS Paid,
+                COALESCE(SUM(CASE WHEN l.TrangThai = 'Chưa trả' THEN l.LuongThucNhan ELSE 0 END), 0) AS Unpaid,
+                COALESCE(SUM(l.LuongThucNhan), 0) AS Total
+            FROM Luong l
+            WHERE l.Thang = @Thang AND l.Nam = @Nam
+        ";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@Thang", thang },
+            { "@Nam", nam }
+        };
+
+        DataTable dtSalary = Database.ExecuteQuery(salaryQuery, parameters);
+        
+        var summary = new PayrollSummary();
+
+        if (dtSalary.Rows.Count > 0)
+        {
+            DataRow row = dtSalary.Rows[0];
+            
+            // Kết quả từ COALESCE(SUM(), 0) trong SQL đã đảm bảo không là DBNull, 
+            // nhưng ta vẫn kiểm tra an toàn (nếu DB engine không hỗ trợ COALESCE)
+            summary.TotalSalary = row["Total"] != DBNull.Value ? Convert.ToDecimal(row["Total"]) : 0M;
+            summary.PaidSalary = row["Paid"] != DBNull.Value ? Convert.ToDecimal(row["Paid"]) : 0M;
+            summary.UnpaidSalary = row["Unpaid"] != DBNull.Value ? Convert.ToDecimal(row["Unpaid"]) : 0M;
+        }
+
+        // Lấy Tổng số nhân viên (không cần thay đổi)
+        string employeeQuery = "SELECT COUNT(*) FROM NhanVien";
+        object countResult = Database.ExecuteScalar(employeeQuery); 
+        
+        if (countResult != null && countResult != DBNull.Value)
+        {
+            summary.TotalEmployees = Convert.ToInt32(countResult);
+        }
+        else
+        {
+            summary.TotalEmployees = 0;
+        }
+        
+        return summary;
+    }
+    
+    
 }

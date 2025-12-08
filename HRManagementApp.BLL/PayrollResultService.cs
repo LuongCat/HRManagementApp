@@ -112,13 +112,14 @@ public class PayrollResultService
         ketQuaNghi = _donTuService.GetSoNgayNghi(nhanVien.MaNV, Month, Year);
 
         ketQuachamcong.SoNgayDiLam += ketQuaNghi.NghiCoLuong;
+        ketQuachamcong.SoGioDiLam += 8* ketQuaNghi.NghiCoLuong;
         result.TongNgayCong = ketQuachamcong.SoNgayDiLam;
         
         // ============================
         // 6. TÍNH LƯƠNG CUỐI
         // ============================
         decimal? luongChinh = luongCoBan * heSoLuongCoBan + tongTienKiemNhiem;
-        luongChinh = luongChinh / 26 * ketQuachamcong.SoNgayDiLam - luongChinh / 26 * 1/3*ketQuachamcong.DiemDiTre; 
+        luongChinh = luongChinh / (26*8) * ketQuachamcong.SoGioDiLam  ; 
         
         result.luongchinh = luongChinh;
         
@@ -129,20 +130,6 @@ public class PayrollResultService
             - tongKhauTru
             - tongThue;
 
-        
-        Luong luong = new Luong
-        {
-            MaLuong = result.maLuong,
-            MaNV = result.maNV,
-            TrangThai = result.TrangThai,
-            Thang = Month,
-            Nam = Year,
-            TongNgayCong = result.TongNgayCong,
-            TienLuong = luongChinh,
-            LuongThucNhan = result.LuongThucNhan,
-        };
-
-        
         
         return result;
     }

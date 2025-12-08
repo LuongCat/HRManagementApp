@@ -52,37 +52,64 @@ public class ChamCongService
     }
     public (bool Success, string Message, string EmployeeName, string ActionType) ProcessSmartAttendance(int maNV)
     {
-        // 1. Lấy thông tin nhân viên để hiển thị tên
-        // (Ở đây gọi tạm hàm, thực tế bạn nên có hàm GetEmployeeInfo trong NhanVienDAL)
-        // Giả sử ta lấy được tên, nếu không thì hiển thị Mã
         NhanVienService nvsv = new NhanVienService();
-        string empName = nvsv.GetEmployeeById(maNV).HoTen;
 
-        // 2. Lấy trạng thái hôm nay
+        // 🔥 1. Lấy thông tin nhân viên – phải kiểm tra null trước
+        var employee = nvsv.GetEmployeeById(maNV);
+        if (employee == null)
+        {
+            return (false, $"Không tìm thấy nhân viên với mã {maNV}.", "Unknown", "Error");
+        }
+
+        string empName = string.IsNullOrWhiteSpace(employee.HoTen) ? $"NV-{maNV}" : employee.HoTen;
+
+        // 🔥 2. Lấy record hôm nay – có thể null (hợp lệ)
         var todayRecord = _chamCongRepository.GetTodayRecord(maNV);
 
+        // 🔥 3. Nếu chưa có record → Check-in
         if (todayRecord == null)
         {
-            // Chưa có dữ liệu -> Chấm công VÀO
             bool result = _chamCongRepository.CheckIn(maNV);
-            return (result, result ? "Chấm công VÀO thành công!" : "Lỗi hệ thống", empName, "CheckIn");
+
+            return (
+                result,
+                result ? "Chấm công VÀO thành công!" : "Không thể chấm công vào.",
+                empName,
+                "CheckIn"
+            );
         }
-        else if (todayRecord.GioRa == null)
+
+        // 🔥 4. Nếu có GioVao nhưng chưa có GioRa → Check-out
+        if (todayRecord.GioRa == null)
         {
-            // Đã vào, chưa ra -> Chấm công RA
-            // Kiểm tra: Nếu vừa check-in cách đây ít hơn 1 phút thì chặn (tránh quét đúp)
-            if (todayRecord.GioVao.HasValue && (DateTime.Now.TimeOfDay - todayRecord.GioVao.Value).TotalMinutes < 1)
+            // Check null safety: GioVao có thể null nếu DB lỗi
+            if (todayRecord.GioVao.HasValue)
             {
-                return (false, "Bạn vừa chấm công vào, vui lòng chờ thêm!", empName, "Wait");
+                var diff = (DateTime.Now - todayRecord.GioVao.Value).Minute;
+                if (diff < 1)
+                {
+                    return (false, "Bạn vừa chấm công vào, vui lòng chờ thêm!", empName, "Wait");
+                }
             }
 
             bool result = _chamCongRepository.CheckOut(todayRecord.MaCC);
-            return (result, result ? "Chấm công RA thành công!" : "Lỗi hệ thống", empName, "CheckOut");
+
+            return (
+                result,
+                result ? "Chấm công RA thành công!" : "Không thể chấm công ra.",
+                empName,
+                "CheckOut"
+            );
         }
-        else
-        {
-            // Đã xong cả vào và ra
-            return (false, "Bạn đã hoàn thành ca làm việc hôm nay!", empName, "Done");
-        }
+
+        // 🔥 5. Đã có GioVao + GioRa đầy đủ → Không cho chấm thêm
+        return (false, "Bạn đã hoàn thành ca làm việc hôm nay!", empName, "Done");
+    }
+
+
+
+    public AttendanceMonthlyResult GetAttendanceStatistics(int maNV, int thang, int nam)
+    {
+        return _chamCongRepository.GetAttendanceStatistics(maNV, thang, nam);
     }
 }

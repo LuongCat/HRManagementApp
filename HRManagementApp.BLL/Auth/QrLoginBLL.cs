@@ -217,7 +217,7 @@ namespace HRManagementApp.BLL
 
         private string GetLocalIPAddress()
         {
-            return "192.168.1.6";
+            return "192.168.1.101";
         }
     }
 }

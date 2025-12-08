@@ -55,37 +55,38 @@ namespace HRManagementApp.DAL
                 dto.Thang = month;
                 dto.Nam = year;
                 dto.TuNgay = new DateTime(year, month, 1);
-                dto.DenNgay = dto.TuNgay.AddMonths(1).AddDays(-1); // Ngày cuối tháng
+                dto.DenNgay = dto.TuNgay.AddMonths(1).AddDays(-1);
 
                 dto.HoTen = row["HoTen"].ToString();
                 dto.TenPB = row["TenPB"] != DBNull.Value ? row["TenPB"].ToString() : "N/A";
                 dto.TenChucVu = row["TenCV"] != DBNull.Value ? row["TenCV"].ToString() : "N/A";
                 
                 // Thu nhập
-                dto.LuongCoBan = Convert.ToDecimal(row["LuongCB"]);
-                // Giả sử 1 ngày công = 8 giờ
-                int ngayCong = Convert.ToInt32(row["TongNgayCong"]);
+                // Sử dụng hàm kiểm tra DBNull và Convert an toàn
+                dto.LuongCoBan = row["LuongCB"] != DBNull.Value ? Convert.ToDecimal(row["LuongCB"]) : 0M;
+                
+                // Dòng 65 (giả định) và các giá trị số khác
+                int ngayCong = row["TongNgayCong"] != DBNull.Value ? Convert.ToInt32(row["TongNgayCong"]) : 0;
                 dto.TongGioLam = ngayCong * 8; 
-                dto.LuongTheoNgayCong = Convert.ToDecimal(row["TienLuong"]); // Lương tính theo ngày đi làm thực tế
-                dto.TongPhuCap = Convert.ToDecimal(row["TongPhuCap"]);
+                
+                dto.LuongTheoNgayCong = row["TienLuong"] != DBNull.Value ? Convert.ToDecimal(row["TienLuong"]) : 0M;
+                dto.TongPhuCap = row["TongPhuCap"] != DBNull.Value ? Convert.ToDecimal(row["TongPhuCap"]) : 0M;
 
                 // Kiêm nhiệm
                 double heso = row["HeSoPhuCapKiemNhiem"] != DBNull.Value ? Convert.ToDouble(row["HeSoPhuCapKiemNhiem"]) : 0;
                 dto.CoKiemNhiem = heso > 0;
-                dto.HeSoKiemNhiem = heso;
-                // Giả sử tiền kiêm nhiệm tính = % Lương CB (hoặc logic riêng của bạn)
+                dto.HeSoKiemNhiem = 0;
+                
                 if(dto.CoKiemNhiem) dto.TienKiemNhiem = dto.LuongCoBan * (decimal)heso;
 
                 // Khấu trừ
-                dto.TongThue = Convert.ToDecimal(row["TongThue"]);
-                decimal tongKhauTruRaw = Convert.ToDecimal(row["TongKhauTru"]);
+                dto.TongThue = row["TongThue"] != DBNull.Value ? Convert.ToDecimal(row["TongThue"]) : 0M;
+                decimal tongKhauTruRaw = row["TongKhauTru"] != DBNull.Value ? Convert.ToDecimal(row["TongKhauTru"]) : 0M;
                 
-                // Giả định: Trong bảng KhauTru, nếu TenKhoanTru like 'Ung%' thì là Tiền Ứng
-                // Ở đây tách đơn giản để demo, thực tế cần query kỹ hơn
-                dto.TienUng = 0; // Cần query riêng nếu muốn tách bạch hoàn toàn
-                dto.TongBaoHiem = tongKhauTruRaw; // Tạm gán tổng
+                dto.TienUng = 0; 
+                dto.TongBaoHiem = tongKhauTruRaw; 
                 
-                dto.ThucLanh = Convert.ToDecimal(row["LuongThucNhan"]);
+                dto.ThucLanh = row["LuongThucNhan"] != DBNull.Value ? Convert.ToDecimal(row["LuongThucNhan"]) : 0M;
                 dto.TrangThai = row["TrangThai"].ToString();
 
                 return dto;

@@ -1,5 +1,6 @@
 ﻿using HRManagementApp.BLL;
 using HRManagementApp.models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -9,84 +10,179 @@ namespace HRManagementApp.UI.Views
 {
     public partial class MyPayslipView : UserControl
     {
-        private MyPayslipBLL _bll = new MyPayslipBLL();
+        private readonly PayrollResultService _payrollResultService;
+        private readonly NhanVienService _nhanVienService;
         private bool _isLoaded = false;
 
         public MyPayslipView()
         {
             InitializeComponent();
+            
+            // Khởi tạo các Service
+            _payrollResultService = new PayrollResultService();
+            _nhanVienService = new NhanVienService();
+
             LoadAvailableMonths();
+            _isLoaded = true;
         }
 
+        /// <summary>
+        /// Tạo danh sách các tháng (ví dụ 12 tháng gần nhất) để đưa vào ComboBox
+        /// </summary>
         private void LoadAvailableMonths()
         {
-            if (!UserSession.IsLoggedIn || UserSession.MaNV == null)
+            var months = new List<MonthOption>();
+            DateTime currentDate = DateTime.Now;
+
+            // Tạo danh sách 12 tháng gần nhất
+            for (int i = 0; i < 12; i++)
             {
-                MessageBox.Show("Vui lòng đăng nhập bằng tài khoản nhân viên.");
-                return;
+                DateTime d = currentDate.AddMonths(-i);
+                months.Add(new MonthOption 
+                { 
+                    Display = $"Tháng {d.Month}/{d.Year}", 
+                    Month = d.Month, 
+                    Year = d.Year 
+                });
             }
 
-            // Lấy danh sách tháng có lương của nhân viên này
-            List<string> months = _bll.GetMonthList(UserSession.MaNV.Value);
-            
             cboMonth.ItemsSource = months;
-            String nowMonths = months[0];
-            if (months.Count > 0)
-            {
-                cboMonth.SelectedIndex = 0; // Chọn tháng mới nhất
-            }
-            else
-            {
-                txtNoData.Visibility = Visibility.Visible;
-                pnlPayslipContent.Visibility = Visibility.Collapsed;
-                txtNoData.Text = "Chưa có dữ liệu lương nào.";
-            }
-
-            LoadPayslipData(nowMonths);
-            _isLoaded = true;
+            cboMonth.DisplayMemberPath = "Display";
+            cboMonth.SelectedIndex = 0; // Mặc định chọn tháng hiện tại
         }
 
         private void CboMonth_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!_isLoaded || cboMonth.SelectedItem == null) return;
-
-            string selectedMonth = cboMonth.SelectedItem.ToString();
-            LoadPayslipData(selectedMonth);
+            if (_isLoaded)
+            {
+                LoadPayslipData();
+            }
         }
 
-        private void LoadPayslipData(string monthStr)
+        /// <summary>
+        /// Hàm xử lý chính: Lấy dữ liệu và Binding lên giao diện
+        /// </summary>
+        private void LoadPayslipData()
         {
-            var dto = _bll.GetPayslip(UserSession.MaNV.Value, monthStr);
+            // 1. Kiểm tra đăng nhập (Giả sử UserSession có MaNV)
+            // Lưu ý: Bạn cần đảm bảo UserSession.MaNV có giá trị hợp lệ
+            if (!UserSession.IsLoggedIn || UserSession.MaNV == null)
 
-            if (dto != null)
             {
-                // Binding dữ liệu vào UI
-                pnlPayslipContent.DataContext = dto;
+
+                MessageBox.Show("Vui lòng đăng nhập bằng tài khoản nhân viên.");
+
+                return;
+
+            }
+
+
+            int maNV = Convert.ToInt32(UserSession.MaNV);
+
+            
+
+            // 2. Lấy thông tin tháng/năm đang chọn
+            if (cboMonth.SelectedItem is not MonthOption selectedMonth) return;
+
+            try
+            {
+                // 3. Lấy thông tin nhân viên (để lấy Chức vụ, Phòng ban, Hệ số kiêm nhiệm)
+                // Cần đảm bảo hàm GetEmployeeById đã Include các bảng liên quan (ChucVu, PhongBan)
+                NhanVien nhanVien = _nhanVienService.GetEmployeeById(maNV);
+
+                if (nhanVien == null)
+                {
+                    ShowError("Không tìm thấy thông tin nhân viên.");
+                    return;
+                }
+
+                // 4. Gọi Service tính lương
+                PayrollResult result = _payrollResultService.GetPayrollResultForEmployee(nhanVien, selectedMonth.Month, selectedMonth.Year);
+
+                // 5. Kiểm tra kết quả
+                // Nếu chưa có dữ liệu chấm công hoặc lương = 0, có thể coi là chưa có dữ liệu
+                if (result.LuongThucNhan == 0 && result.TongNgayCong == 0)
+                {
+                    ShowError(); // Hiện thông báo không có dữ liệu
+                    return;
+                }
+
+                // 6. Ánh xạ sang ViewModel để Binding lên XAML
+                // Logic hiển thị Phòng ban và Chức vụ
+                string tenPB = nhanVien.PhongBan != null && nhanVien.PhongBan.Count > 0 
+                               ? nhanVien.PhongBan[0].TenPB 
+                               : "Chưa phân bổ";
                 
-                // Xử lý hiển thị phần Kiêm nhiệm
-                grdKiemNhiem.Visibility = dto.CoKiemNhiem ? Visibility.Visible : Visibility.Collapsed;
+                string tenCV = nhanVien.ChucVu != null && nhanVien.ChucVu.Count > 0 
+                               ? nhanVien.ChucVu[0].TenCV 
+                               : "N/A";
 
-                // Xử lý màu sắc badge trạng thái
-                if (dto.TrangThai == "Đã trả")
+                var viewModel = new MyPayslipDTO()
                 {
-                    badgeStatus.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(209, 250, 229)); // Xanh lá nhạt
-                    ((TextBlock)badgeStatus.Child).Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(5, 150, 105));
-                }
-                else
-                {
-                    badgeStatus.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(254, 226, 226)); // Đỏ nhạt
-                    ((TextBlock)badgeStatus.Child).Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 38, 38));
-                    ((TextBlock)badgeStatus.Child).Text = "Chưa Thanh Toán";
-                }
+                    HoTen = nhanVien.HoTen,
+                    TenChucVu = tenCV,
+                    TenPB = tenPB,
+                    
+                    // Thời gian kỳ lương (Đầu tháng -> Cuối tháng)
+                    TuNgay = new DateTime(selectedMonth.Year, selectedMonth.Month, 1),
+                    DenNgay = new DateTime(selectedMonth.Year, selectedMonth.Month, DateTime.DaysInMonth(selectedMonth.Year, selectedMonth.Month)),
 
+                    // Các khoản thu nhập
+                    LuongCoBan = result.LuongCoBan ?? 0,
+                    TongGioLam = result.TongNgayCong ?? 0, // XAML ghi là "giờ" nhưng logic service đang tính theo "ngày công"
+                    LuongTheoNgayCong = result.luongchinh ?? 0,
+                    TongPhuCap = result.TongPhuCap,
+                    
+                    // Kiêm nhiệm
+                    HeSoKiemNhiem = nhanVien.HeSoKiemNhiem, // Lấy từ Model NV
+                    TienKiemNhiem = result.TongTienKiemNhiem ?? 0,
+
+                    // Các khoản khấu trừ
+                    // Trong Service bạn: TongKhauTru (gồm phạt,...) và TongThue.
+                    // XAML có: Bảo hiểm, Thuế, Tạm ứng.
+                    // Ta map tạm: TongKhauTru -> Tạm ứng/Phạt. TongThue -> Thuế. Bảo hiểm -> 0 (vì service chưa tính riêng).
+                    TongBaoHiem = 0, 
+                    TongThue = result.TongThue,
+                    TienUng = result.TongKhauTru,
+
+                    // Tổng kết
+                    ThucLanh = result.LuongThucNhan ?? 0,
+                    TrangThai = string.IsNullOrEmpty(result.TrangThai) ? "Chưa chốt" : result.TrangThai
+                };
+
+                // 7. Binding
+                pnlPayslipContent.DataContext = viewModel;
+                
+                // Hiển thị nội dung, ẩn thông báo lỗi
                 pnlPayslipContent.Visibility = Visibility.Visible;
                 txtNoData.Visibility = Visibility.Collapsed;
             }
-            else
+            catch (Exception ex)
             {
-                pnlPayslipContent.Visibility = Visibility.Collapsed;
-                txtNoData.Visibility = Visibility.Visible;
+                MessageBox.Show("Lỗi hiển thị bảng lương: " + ex.Message);
             }
         }
+
+        private void ShowError(string msg = null)
+        {
+            pnlPayslipContent.Visibility = Visibility.Collapsed;
+            txtNoData.Visibility = Visibility.Visible;
+            if (msg != null) txtNoData.Text = msg;
+            else txtNoData.Text = "Không có dữ liệu lương cho tháng này.";
+        }
     }
+
+    // ===============================================
+    // CÁC CLASS HỖ TRỢ (VIEW MODELS)
+    // ===============================================
+
+    public class MonthOption
+    {
+        public string Display { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
+    }
+
+    // Class này khớp với Binding trong XAML của bạn
+   
 }

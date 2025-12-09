@@ -9,20 +9,11 @@ public class ChamCongRepository
     {
         var listChamCong = new List<ChamCong>();
 
-        // 1. Câu lệnh SQL lấy tất cả bản ghi của nhân viên, sắp xếp ngày mới nhất lên đầu
         string query = @"
-<<<<<<< HEAD
-        SELECT MaCC, MaNV, Ngay, GioVao, GioRa, TrangThai
-        FROM ChamCong
-        WHERE MaNV = @MaNV
-        ORDER BY Ngay DESC, GioVao DESC
-        LIMIT 1;";
-=======
         SELECT MaCC, MaNV, Ngay, GioVao, GioRa, ThoiGianLam
         FROM chamcong
         WHERE MaNV = @MaNV
         ORDER BY Ngay DESC, GioVao DESC";
->>>>>>> origin/khanh
 
         var parameters = new Dictionary<string, object>
         {
@@ -35,22 +26,12 @@ public class ChamCongRepository
         // 3. Duyệt từng dòng và map vào List
         if (data != null && data.Rows.Count > 0)
         {
-<<<<<<< HEAD
-            MaCC = row["MaCC"] != DBNull.Value ? Convert.ToInt32(row["MaCC"]) : 0,
-            MaNV = row["MaNV"] != DBNull.Value ? Convert.ToInt32(row["MaNV"]) : 0,
-            Ngay = row["Ngay"] != DBNull.Value ? Convert.ToDateTime(row["Ngay"]) : (DateTime?)null,
-            GioVao = row["GioVao"] != DBNull.Value ? Convert.ToDateTime(row["GioCC"]) : (DateTime?)null,
-            GioRa = row["GioRa"] != DBNull.Value ? Convert.ToDateTime(row["GioCC"]) : (DateTime?)null,
-            TrangThai = row["TrangThai"]?.ToString()
-        };
-=======
             foreach (DataRow row in data.Rows)
             {
                 var item = new ChamCong
                 {
                     MaCC = Convert.ToInt32(row["MaCC"]),
                     MaNV = Convert.ToInt32(row["MaNV"]),
->>>>>>> origin/khanh
 
                     // Xử lý Ngày (DateTime)
                     Ngay = row["Ngay"] != DBNull.Value

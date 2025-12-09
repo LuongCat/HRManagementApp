@@ -1,4 +1,4 @@
-using HRManagementApp.DAL;
+using HRManagementApp.DAL.Report;
 using HRManagementApp.models;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System.Linq;
 using System.IO;
-namespace HRManagementApp.BLL
+namespace HRManagementApp.BLL.Report
 {
     public class PayrollBLL
     {
@@ -104,6 +104,35 @@ namespace HRManagementApp.BLL
                     return new Dictionary<string, decimal>();
             }
         }
-    }
 
+        public double GetMonthlyPayroll()
+        {
+            return dal.CalcMonthlyPayroll();
+        }
+
+        public int GetMonthlyPayrollEmployees()
+        {
+            return dal.CountPayrollEmployees();
+        }
+
+        public double GetPrevMonthlyPayroll()
+        {
+            return dal.CalcPrevMonthlyPayroll();
+        }
+
+        public double GetMonthlyPaidPayroll()
+        {
+            return dal.CalcMonthlyPaidPayroll();
+        }
+
+        public double[] GetDepartmentPayroll()
+        {
+            return dal.GetDepartmentPayroll();
+        }
+
+        public double[] GetSalaryTrend()
+        {
+            return dal.GetSalaryTrend();
+        }
+    }
 }

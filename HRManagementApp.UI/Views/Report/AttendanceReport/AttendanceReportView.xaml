@@ -4,128 +4,306 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             mc:Ignorable="d">
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             mc:Ignorable="d"
+             Loaded="UserControl_Loaded">
 
-    <Grid Background="White"
-          Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Grid Background="White"
+              Margin="20">
+                <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-        <!-- TITLE -->
-        <StackPanel Grid.Row="0"
-                    Margin="0 0 0 15">
-            <TextBlock Text="Attendance Report"
-                       FontSize="22"
-                       FontWeight="Bold"
-                       Foreground="#2C3E50"/>
-            <TextBlock Text="Chấm công – vào/ra hằng ngày của nhân viên"
-                       FontSize="14"
-                       Foreground="#7F8C8D"/>
-        </StackPanel>
+                <!-- TITLE -->
+                <StackPanel Grid.Row="0"
+                            Margin="0 0 0 15">
+                        <TextBlock Text="Attendance Report"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="#2C3E50"/>
+                        <TextBlock Text="Chấm công – vào/ra hằng ngày của nhân viên"
+                                   FontSize="14"
+                                   Foreground="#7F8C8D"/>
+                </StackPanel>
 
-        <!-- FILTER BAR -->
-        <Grid Grid.Row="1"
-              Margin="0 0 0 15">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="160"/>
-                <ColumnDefinition Width="160"/>
-                <ColumnDefinition Width="160"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+                <!-- DASHBOARD OVERVIEW -->
+                <Grid Grid.Row="1"
+                      Margin="0 0 0 20">
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-            <!-- LABEL ROW -->
-            <TextBlock Text="Name"
-                       Grid.Column="0"
-                       Margin="0 0 0 5"/>
-            <TextBlock Text="Date"
-                       Grid.Column="1"
-                       Margin="0 0 0 5"/>
-            <TextBlock Text="Department"
-                       Grid.Column="2"
-                       Margin="0 0 0 5"/>
-            <TextBlock Text="Status"
-                       Grid.Column="3"
-                       Margin="0 0 0 5"/>
+                        <!-- SUMMARY CARDS -->
+                        <StackPanel Grid.Column="0"
+                                    Orientation="Horizontal">
 
-            <!-- FILTER ROW -->
-            <TextBox x:Name="TbAttendanceReportSearchName"
-                     Grid.Column="0"
-                     Margin="0 20 10 0"
-                     Height="32"
-                     FontSize="14"
-                     VerticalContentAlignment="Center"
-                     Text="Search name..."/>
+                                <!-- CARD: Present -->
+                                <Border Background="#E6F2FF"
+                                        CornerRadius="12"
+                                        Padding="15"
+                                        Width="200"
+                                        Margin="0 10 10 10">
+                                        <StackPanel>
+                                                <TextBlock Text="Đi làm hôm nay"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="14"
+                                                           Foreground="#2468A8"/>
+                                                <TextBlock x:Name="TbSummaryPresent"
+                                                           Text="0"
+                                                           FontSize="30"
+                                                           FontWeight="Bold"
+                                                           Margin="0,8,0,0"
+                                                           Foreground="#123A63"/>
+                                        </StackPanel>
+                                </Border>
 
-            <DatePicker x:Name="DpAttendanceReportDate"
-                        Grid.Column="1"
-                        Margin="0 20 10 0"
-                        Height="32"
-                        FontSize="14"
-                        VerticalContentAlignment="Center"
-                        SelectedDate="{x:Static sys:DateTime.Today}"/>
+                                <!-- CARD: Late -->
+                                <Border Background="#FFF7D6"
+                                        CornerRadius="12"
+                                        Padding="15"
+                                        Width="200"
+                                        Margin="0 10 10 10">
+                                        <StackPanel>
+                                                <TextBlock Text="Đi trễ"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="14"
+                                                           Foreground="#A67C00"/>
+                                                <TextBlock x:Name="TbSummaryLate"
+                                                           Text="0"
+                                                           FontSize="30"
+                                                           FontWeight="Bold"
+                                                           Margin="0,8,0,0"
+                                                           Foreground="#7A5A00"/>
+                                        </StackPanel>
+                                </Border>
 
-            <ComboBox x:Name="CbAttendanceReportDepartment"
-                      Grid.Column="2"
-                      Margin="0 20 10 0"
-                      Height="32"
-                      FontSize="14"
-                      VerticalContentAlignment="Center"
-                      SelectedIndex="0">
-                <ComboBoxItem Content="All departments"/>
-            </ComboBox>
+                                <!-- CARD: Absent -->
+                                <Border Background="#FFECEC"
+                                        CornerRadius="12"
+                                        Padding="15"
+                                        Width="200"
+                                        Margin="0 10 10 10">
+                                        <StackPanel>
+                                                <TextBlock Text="Nghỉ"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="14"
+                                                           Foreground="#C44747"/>
+                                                <TextBlock x:Name="TbSummaryAbsent"
+                                                           Text="0"
+                                                           FontSize="30"
+                                                           FontWeight="Bold"
+                                                           Margin="0,8,0,0"
+                                                           Foreground="#A02020"/>
+                                        </StackPanel>
+                                </Border>
 
-            <ComboBox x:Name="CbAttendanceReportStatus"
-                      Grid.Column="3"
-                      Margin="0 20 10 0"
-                      Height="32"
-                      FontSize="14"
-                      VerticalContentAlignment="Center"
-                      SelectedIndex="0">
-                <ComboBoxItem Content="All status"/>
-            </ComboBox>
+                        </StackPanel>
 
-            <Button Grid.Column="4"
-                    Content="📄 Export"
-                    Width="120"
-                    Height="32"
-                    Margin="10 20 0 0"
-                    Background="#2E86AB"
-                    Foreground="White"
-                    BorderThickness="0"/>
+
+                        <!-- PIE CHART -->
+                        <Border Grid.Column="1"
+                                Background="#FFFFFF"
+                                CornerRadius="12"
+                                Margin="0 10 0 0"
+                                Height="140">
+                                <lvc:PieChart x:Name="ChartAttendanceDonut"
+                                              LegendPosition="Right"
+                                              VerticalAlignment="Stretch"
+                                              HorizontalAlignment="Stretch"
+                                              MaxAngle="360"/>
+                        </Border>
+
+                </Grid>
+
+                <!-- FILTER BAR -->
+                <Grid Grid.Row="2"
+                      Margin="0 0 0 15">
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- LABEL ROW -->
+                        <TextBlock Text="Họ tên"
+                                   Grid.Column="0"
+                                   Margin="0 0 0 5"/>
+                        <TextBlock Text="Ngày"
+                                   Grid.Column="1"
+                                   Margin="0 0 0 5"/>
+                        <TextBlock Text="Phòng ban"
+                                   Grid.Column="2"
+                                   Margin="0 0 0 5"/>
+                        <TextBlock Text="Trạng thái"
+                                   Grid.Column="3"
+                                   Margin="0 0 0 5"/>
+
+                        <!-- FILTER ROW -->
+                        <TextBox x:Name="TbAttendanceReportSearchName"
+                                 Grid.Column="0"
+                                 Margin="0 20 10 0"
+                                 Height="32"
+                                 FontSize="14"
+                                 VerticalContentAlignment="Center"
+                                 Text="Tìm nhân viên..."
+                                 TextChanged="TbAttendanceReportSearchName_TextChanged"/>
+
+                        <DatePicker x:Name="DpAttendanceReportDate"
+                                    Grid.Column="1"
+                                    Margin="0 20 10 0"
+                                    Height="32"
+                                    FontSize="14"
+                                    VerticalContentAlignment="Center"
+                                    SelectedDateChanged="DpAttendanceReportDate_SelectedDateChanged"
+                                    SelectedDate="{x:Static sys:DateTime.Today}"/>
+
+                        <ComboBox x:Name="CbAttendanceReportDepartment"
+                                  Grid.Column="2"
+                                  Margin="0 20 10 0"
+                                  Height="32"
+                                  FontSize="14"
+                                  VerticalContentAlignment="Center"
+                                  SelectionChanged="CbAttendanceReportDepartment_SelectionChanged">
+                        </ComboBox>
+
+                        <ComboBox x:Name="CbAttendanceReportStatus"
+                                  Grid.Column="3"
+                                  Margin="0 20 10 0"
+                                  Height="32"
+                                  FontSize="14"
+                                  VerticalContentAlignment="Center"
+                                  SelectedIndex="0"
+                                  SelectionChanged="CbAttendanceReportStatus_SelectionChanged">
+                                <ComboBoxItem Content="Tất cả"/>
+                                <ComboBoxItem Content="Đi trễ"/>
+                                <ComboBoxItem Content="Đúng giờ"/>
+                        </ComboBox>
+
+                        <Button Grid.Column="4"
+                                Content="📄 Export"
+                                Width="120"
+                                Height="32"
+                                Margin="10 20 0 0"
+                                Background="#2E86AB"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Click="BtnExport_Click"/>
+                </Grid>
+                <!-- TABLE -->
+                <DataGrid x:Name="DgAttendanceReport"
+                          MinHeight="500"
+                          Grid.Row="3"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="None"
+                          RowHeight="38"
+                          ColumnHeaderHeight="40"
+                          AlternatingRowBackground="#F7FBFF"
+                          Background="White"
+                          BorderThickness="1"
+                          BorderBrush="#DCE3E8"
+                          Margin="0 10 0 0">
+
+                        <DataGrid.Resources>
+
+                                <!-- Header style -->
+                                <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="Background"
+                                                Value="#EEF4F8"/>
+                                        <Setter Property="Foreground"
+                                                Value="#2C3E50"/>
+                                        <Setter Property="FontWeight"
+                                                Value="Bold"/>
+                                        <Setter Property="FontSize"
+                                                Value="14"/>
+                                        <Setter Property="Padding"
+                                                Value="3,0,8,0"/>
+                                        <Setter Property="BorderBrush"
+                                                Value="#D0D7DD"/>
+                                        <Setter Property="BorderThickness"
+                                                Value="0,0,0,1"/>
+                                        <Setter Property="HorizontalContentAlignment"
+                                                Value="Left"/>
+                                </Style>
+
+                                <!-- Row style (hover highlight) -->
+                                <Style TargetType="DataGridRow">
+                                        <Setter Property="FontSize"
+                                                Value="14"/>
+                                        <Setter Property="Padding"
+                                                Value="4"/>
+                                        <Setter Property="BorderThickness"
+                                                Value="0,0,0,1"/>
+                                        <Setter Property="BorderBrush"
+                                                Value="#E0E6EB"/>
+                                        <Setter Property="Background"
+                                                Value="White"/>
+
+                                        <Style.Triggers>
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="True">
+                                                        <Setter Property="Background"
+                                                                Value="#E8F3FF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected"
+                                                         Value="True">
+                                                        <Setter Property="Background"
+                                                                Value="#CFE3FF"/>
+                                                        <Setter Property="Foreground"
+                                                                Value="Black"/>
+                                                </Trigger>
+                                        </Style.Triggers>
+                                </Style>
+
+                                <!-- Cell style -->
+                                <Style TargetType="DataGridCell">
+                                        <Setter Property="Height"
+                                                Value="20"/>
+                                        <Setter Property="BorderThickness"
+                                                Value="0"/>
+                                        <Setter Property="HorizontalContentAlignment"
+                                                Value="Left"/>
+                                        <Setter Property="HorizontalContentAlignment"
+                                                Value="Center"/>
+                                </Style>
+
+                        </DataGrid.Resources>
+
+                        <DataGrid.Columns>
+                                <DataGridTextColumn Header="Mã nhân viên"
+                                                    Binding="{Binding MaNV}"
+                                                    Width="120"/>
+                                <DataGridTextColumn Header="Họ tên"
+                                                    Binding="{Binding TenNV}"
+                                                    Width="180"/>
+                                <DataGridTextColumn Header="Phòng ban"
+                                                    Binding="{Binding TenPB}"
+                                                    Width="140"/>
+                                <DataGridTextColumn Header="Ngày"
+                                                    Binding="{Binding Ngay}"
+                                                    Width="90"/>
+                                <DataGridTextColumn Header="Giờ vào"
+                                                    Binding="{Binding GioVao}"
+                                                    Width="90"/>
+                                <DataGridTextColumn Header="Giờ ra"
+                                                    Binding="{Binding GioRa}"
+                                                    Width="90"/>
+                                <DataGridTextColumn Header="Ca Vào"
+                                                    Binding="{Binding TenCa}"
+                                                    Width="90"/>
+                                <DataGridTextColumn Header="Trạng thái"
+                                                    Binding="{Binding TrangThai}"
+                                                    Width="120"/>
+                        </DataGrid.Columns>
+                </DataGrid>
         </Grid>
-        <!-- TABLE -->
-        <DataGrid Grid.Row="3"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  AlternatingRowBackground="#FAFAFA"
-                  BorderThickness="0">
-
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Employee ID"
-                                    Binding="{Binding Id}"
-                                    Width="120"/>
-                <DataGridTextColumn Header="Name"
-                                    Binding="{Binding Name}"
-                                    Width="200"/>
-                <DataGridTextColumn Header="Date"
-                                    Binding="{Binding Date}"
-                                    Width="150"/>
-                <DataGridTextColumn Header="Check In"
-                                    Binding="{Binding CheckIn}"
-                                    Width="150"/>
-                <DataGridTextColumn Header="Check Out"
-                                    Binding="{Binding CheckOut}"
-                                    Width="150"/>
-                <DataGridTextColumn Header="Status"
-                                    Binding="{Binding Status}"
-                                    Width="150"/>
-            </DataGrid.Columns>
-        </DataGrid>
-    </Grid>
 </UserControl>

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace HRManagementApp.DAL
+namespace HRManagementApp.DAL.Report
 {
     public class PayrollDAL
     {
@@ -133,6 +133,127 @@ namespace HRManagementApp.DAL
             }
             return data;
         }
-    }
 
+        public double CalcMonthlyPayroll()
+        {
+            string query = "SELECT SUM(LuongThucNhan) AS TotalPayroll " +
+                            "FROM luong " +
+                            "WHERE (Thang = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) " +
+                            "AND Nam = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)))";
+
+            object result = Database.ExecuteScalar(query);
+
+            if (result == null || result == DBNull.Value)
+                return 0.0;
+
+            return Convert.ToDouble(result);
+        }
+
+        public int CountPayrollEmployees()
+        {
+            string query = @"
+                SELECT COUNT(DISTINCT MaNV)
+                FROM luong
+                WHERE (Thang = MONTH(CURRENT_DATE - INTERVAL 1 MONTH))
+                    AND (Nam = YEAR(CURRENT_DATE - INTERVAL 1 MONTH));
+            ";
+
+            object result = Database.ExecuteScalar(query);
+
+            return Convert.ToInt32(result);
+        }
+
+        public double CalcPrevMonthlyPayroll()
+        {
+            string query = "SELECT SUM(LuongThucNhan) AS TotalPayroll " +
+                            "FROM luong " +
+                            "WHERE (Thang = MONTH(DATE_SUB(CURDATE(), INTERVAL 2 MONTH)) " +
+                            "AND Nam = YEAR(DATE_SUB(CURDATE(), INTERVAL 2 MONTH)))";
+
+            object result = Database.ExecuteScalar(query);
+
+            if (result == null || result == DBNull.Value)
+                return 0.0;
+
+            return Convert.ToDouble(result);
+        }
+
+        public double CalcMonthlyPaidPayroll()
+        {
+            string query = "SELECT SUM(LuongThucNhan) AS PaidPayroll " +
+                            "FROM luong " +
+                            "WHERE (Thang = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) " +
+                            "AND Nam = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))) " +
+                            "AND TrangThai = 'Đã trả'";
+
+            object result = Database.ExecuteScalar(query);
+
+            if (result == null || result == DBNull.Value)
+                return 0.0;
+
+            return Convert.ToDouble(result);
+        }
+
+        public double[] GetDepartmentPayroll()
+        {
+            int month = DateTime.Now.Month;
+            int year = DateTime.Now.Year;
+
+            string query = @"
+                SELECT 
+                    pb.TenPB,
+                    IFNULL(SUM(l.LuongThucNhan), 0) AS TotalPayroll
+                FROM phongban pb
+                LEFT JOIN nhanvien nv ON pb.MaPB = nv.MaPB
+                LEFT JOIN luong l ON nv.MaNV = l.MaNV 
+                    AND l.Thang = @Thang AND l.Nam = @Nam
+                GROUP BY pb.MaPB, pb.TenPB
+                ORDER BY pb.MaPB;
+            ";
+
+            var parameters = new Dictionary<string, object>()
+            {
+                {"@Thang", month},
+                {"@Nam", year}
+            };
+
+            DataTable dt = Database.ExecuteQuery(query, parameters);
+
+            List<double> payrollList = new List<double>();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                payrollList.Add(Convert.ToDouble(row["TotalPayroll"]));
+            }
+
+            return payrollList.ToArray();
+        }
+
+        public double[] GetSalaryTrend()
+        {
+            double[] salaryTrend = new double[12];
+
+            string query = @"
+                SELECT Thang, SUM(LuongThucNhan) AS TotalSalary
+                FROM luong
+                GROUP BY Thang
+                ORDER BY Thang;
+            ";
+
+            DataTable dt = Database.ExecuteQuery(query);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                int month = Convert.ToInt32(row["Thang"]);
+                double totalSalary = Convert.ToDouble(row["TotalSalary"]);
+
+                if (month >= 1 && month <= 12)
+                {
+                    salaryTrend[month - 1] = totalSalary;
+                }
+            }
+
+            return salaryTrend;
+        }
+    }
 }

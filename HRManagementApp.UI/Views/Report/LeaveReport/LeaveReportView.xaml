@@ -1,48 +1,301 @@
 <UserControl x:Class="HRManagementApp.UI.Views.Report.LeaveReportView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Loaded="UserControl_Loaded">
 
-    <Grid Background="White" Margin="20">
+    <Grid Background="White"
+          Margin="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="0 0 0 15">
-            <TextBlock Text="Leave Report" FontSize="22" FontWeight="Bold" Foreground="#2C3E50"/>
+        <!-- TITLE -->
+        <StackPanel Grid.Row="0"
+                    Margin="0 0 0 15">
+            <TextBlock Text="Leave Report"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       Foreground="#2C3E50"/>
             <TextBlock Text="Nghỉ phép – ngày phép – lý do nghỉ"
-                       FontSize="14" Foreground="#7F8C8D"/>
+                       FontSize="14"
+                       Foreground="#7F8C8D"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 0 0 15">
-            <ComboBox Width="180">
-                <ComboBoxItem Content="All Leave Types"/>
-                <ComboBoxItem Content="Annual Leave"/>
-                <ComboBoxItem Content="Sick Leave"/>
-                <ComboBoxItem Content="Unpaid Leave"/>
-            </ComboBox>
+        <!-- SUMMARY SECTION -->
+        <Grid Grid.Row="1"
+              Margin="0 0 0 20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <Button Content="📄 Export"
-                    Width="120"
-                    Height="32"
-                    Background="#2E86AB"
-                    Foreground="White"/>
-        </StackPanel>
+            <!-- SUMMARY CARDS -->
+            <StackPanel Orientation="Horizontal">
 
-        <DataGrid Grid.Row="2"
+                <!-- CARD: Total Leaves -->
+                <Border Background="#E6F2FF"
+                        CornerRadius="12"
+                        Padding="15"
+                        Width="150"
+                        Margin="0 5 5 5">
+                    <StackPanel>
+                        <TextBlock Text="Nghỉ hôm nay"
+                                   FontWeight="SemiBold"
+                                   FontSize="14"
+                                   Foreground="#2468A8"/>
+                        <TextBlock x:Name="TbLeaveTotal"
+                                   Text="0"
+                                   FontSize="30"
+                                   FontWeight="Bold"
+                                   Margin="0,8,0,0"
+                                   Foreground="#123A63"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- CARD: Sick Leave -->
+                <Border Background="#FFF7D6"
+                        CornerRadius="12"
+                        Padding="15"
+                        Width="150"
+                        Margin="0 5 5 5">
+                    <StackPanel>
+                        <TextBlock Text="Nghỉ bệnh"
+                                   FontWeight="SemiBold"
+                                   FontSize="14"
+                                   Foreground="#A67C00"/>
+                        <TextBlock x:Name="TbSickLeave"
+                                   Text="0"
+                                   FontSize="30"
+                                   FontWeight="Bold"
+                                   Margin="0,8,0,0"
+                                   Foreground="#7A5A00"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- CARD: Annual Leave -->
+                <Border Background="#ECFFEC"
+                        CornerRadius="12"
+                        Padding="15"
+                        Width="150"
+                        Margin="0 5 5 5">
+                    <StackPanel>
+                        <TextBlock Text="Nghỉ phép năm"
+                                   FontWeight="SemiBold"
+                                   FontSize="14"
+                                   Foreground="#47C447"/>
+                        <TextBlock x:Name="TbAnnualLeave"
+                                   Text="0"
+                                   FontSize="30"
+                                   FontWeight="Bold"
+                                   Margin="0,8,0,0"
+                                   Foreground="#20A020"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- CARD: Unpaid Leave -->
+                <Border Background="#FFECEC"
+                        CornerRadius="12"
+                        Padding="15"
+                        Width="150"
+                        Margin="0 5 5 5">
+                    <StackPanel>
+                        <TextBlock Text="Từ chối"
+                                   FontWeight="SemiBold"
+                                   FontSize="14"
+                                   Foreground="#C44747"/>
+                        <TextBlock x:Name="TbUnpaidLeave"
+                                   Text="0"
+                                   FontSize="30"
+                                   FontWeight="Bold"
+                                   Margin="0,8,0,0"
+                                   Foreground="#A02020"/>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+
+            <!-- PIE CHART -->
+            <Border Grid.Column="1"
+                    Background="White"
+                    CornerRadius="12"
+                    Height="140">
+                <lvc:PieChart x:Name="ChartLeaveDonut"
+                              LegendPosition="Right"
+                              VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"
+                              MaxAngle="360"/>
+            </Border>
+
+        </Grid>
+
+        <!-- FILTER BAR -->
+        <Grid Grid.Row="2"
+              Margin="0 0 0 15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- NAME -->
+            <StackPanel Grid.Column="0"
+                        Orientation="Vertical">
+                <TextBlock Text="Tên nhân viên"
+                           Margin="0 0 0 5"/>
+                <TextBox x:Name="TbLeaveSearchName"
+                         Height="32"
+                         VerticalContentAlignment="Center"
+                         TextChanged="TbLeaveSearchName_TextChanged"
+                         Text="Tìm nhân viên..."/>
+            </StackPanel>
+
+            <!-- DEPARTMENT -->
+            <StackPanel Grid.Column="1"
+                        Orientation="Vertical">
+                <TextBlock Text="Phòng ban"
+                           Margin="0 0 0 5"/>
+                <ComboBox x:Name="CbLeaveDepartment"
+                          Height="32"
+                          VerticalContentAlignment="Center"
+                          SelectionChanged="CbLeaveDepartment_SelectionChanged"/>
+            </StackPanel>
+
+            <!-- DATE -->
+            <StackPanel Grid.Column="3"
+                        Orientation="Vertical">
+                <TextBlock Text="Ngày"
+                           Margin="0 0 0 5"/>
+                <DatePicker x:Name="DpLeaveDate"
+                            Height="32"
+                            VerticalContentAlignment="Center"
+                            SelectedDateChanged="DpLeaveDate_SelectedDateChanged"
+                            SelectedDate="{x:Static sys:DateTime.Today}"/>
+            </StackPanel>
+
+            <!-- STATUS -->
+            <StackPanel Grid.Column="2"
+                        Orientation="Vertical">
+                <TextBlock Text="Trạng thái"
+                           Margin="0 0 0 5"/>
+                <ComboBox x:Name="CbLeaveStatus"
+                          Height="32"
+                          SelectedIndex="0"
+                          VerticalContentAlignment="Center"
+                          SelectionChanged="CbLeaveStatus_SelectionChanged">
+                    <ComboBoxItem Content="Tất cả"/>
+                    <ComboBoxItem Content="Đã duyệt"/>
+                    <ComboBoxItem Content="Chưa duyệt"/>
+                    <ComboBoxItem Content="Từ chối"/>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- EXPORT -->
+            <StackPanel Grid.Column="4"
+                        Orientation="Vertical">
+                <TextBlock Text=""
+                           Margin="0 0 0 5"/>
+                <Button Content="📄 Export"
+                        Width="120"
+                        Height="32"
+                        Background="#2E86AB"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Click="BtnExportLeave_Click"/>
+            </StackPanel>
+
+        </Grid>
+
+        <!-- TABLE -->
+        <DataGrid x:Name="DgLeaveReport"
+                  Grid.Row="3"
+                  MinHeight="500"
                   AutoGenerateColumns="False"
-                  IsReadOnly="True">
+                  IsReadOnly="True"
+                  HeadersVisibility="Column"
+                  AlternatingRowBackground="#F2F7FF"
+                  GridLinesVisibility="None"
+                  RowHeight="30"
+                  FontSize="14"
+                  ColumnHeaderHeight="40"
+                  HorizontalGridLinesBrush="#E2E8F0"
+                  VerticalGridLinesBrush="#E2E8F0">
+
+            <!-- Header Style -->
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Left"/>
+                    <Setter Property="FontWeight"
+                            Value="SemiBold"/>
+                    <Setter Property="Background"
+                            Value="#EEF3FA"/>
+                    <Setter Property="BorderBrush"
+                            Value="#D0D7E1"/>
+                    <Setter Property="BorderThickness"
+                            Value="0 0 1 1"/>
+                    <Setter Property="Padding"
+                            Value="6 0"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+
+            <!-- Cell Style -->
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Padding"
+                            Value="8,0"/>
+                    <Setter Property="BorderThickness"
+                            Value="0"/>
+                    <Setter Property="VerticalAlignment"
+                            Value="Center"/>
+                    <Setter Property="HorizontalAlignment"
+                            Value="Left"/>
+                </Style>
+            </DataGrid.CellStyle>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Employee" Binding="{Binding Name}" Width="200"/>
-                <DataGridTextColumn Header="Leave Type" Binding="{Binding Type}" Width="150"/>
-                <DataGridTextColumn Header="From" Binding="{Binding From}" Width="150"/>
-                <DataGridTextColumn Header="To" Binding="{Binding To}" Width="150"/>
-                <DataGridTextColumn Header="Reason" Binding="{Binding Reason}" Width="200"/>
+
+                <DataGridTextColumn Header="Mã NV"
+                                    Binding="{Binding MaNV}"
+                                    Width="60"/>
+
+                <DataGridTextColumn Header="Họ tên"
+                                    Binding="{Binding TenNV}"
+                                    Width="140"/>
+
+                <DataGridTextColumn Header="Loại nghỉ"
+                                    Binding="{Binding LoaiNghi}"
+                                    Width="120"/>
+
+                <DataGridTextColumn Header="Từ ngày"
+                                    Binding="{Binding TuNgay, StringFormat=\{0:dd/MM/yyyy\}}"
+                                    Width="100"/>
+
+                <DataGridTextColumn Header="Đến ngày"
+                                    Binding="{Binding DenNgay, StringFormat=\{0:dd/MM/yyyy\}}"
+                                    Width="100"/>
+
+                <DataGridTextColumn Header="Số ngày"
+                                    Binding="{Binding SoNgay}"
+                                    Width="80"/>
+
+                <DataGridTextColumn Header="Lý do"
+                                    Binding="{Binding LyDo}"
+                                    Width="*"/>
+
+                <DataGridTextColumn Header="Trạng thái"
+                                    Binding="{Binding TrangThai}"
+                                    Width="150"/>
+
             </DataGrid.Columns>
 
         </DataGrid>
-    </Grid>
 
+    </Grid>
 </UserControl>

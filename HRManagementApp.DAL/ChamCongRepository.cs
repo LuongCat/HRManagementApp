@@ -9,7 +9,6 @@ public class ChamCongRepository
     {
         var listChamCong = new List<ChamCong>();
 
-        // 1. Câu lệnh SQL lấy tất cả bản ghi của nhân viên, sắp xếp ngày mới nhất lên đầu
         string query = @"
         SELECT MaCC, MaNV, Ngay, GioVao, GioRa, ThoiGianLam
         FROM chamcong

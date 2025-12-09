@@ -16,9 +16,11 @@
                     <Border Background="White" CornerRadius="12" 
                             Margin="0,0,20,20" Padding="25"
                             Width="350" MinHeight="280">
+
                         <Border.Effect>
                             <DropShadowEffect Color="#E0E0E0" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
                         </Border.Effect>
+
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>

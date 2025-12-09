@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 using System.Windows;
-using HRManagementApp.BLL.statistics;
+using HRManagementApp.BLL.Report;
 
 namespace HRManagementApp.UI.Views
 {

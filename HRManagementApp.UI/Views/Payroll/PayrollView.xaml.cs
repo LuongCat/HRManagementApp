@@ -13,6 +13,7 @@ namespace HRManagementApp.UI.Views
         private NhanVienService _nhanVienService;
         private PayrollResultService _payrollResultService;
         private LuongService _luongService;
+        private PhongBanService _phongBanService;
 
         // Dùng biến này để lưu danh sách gốc
         private List<PayrollResult> _allPayrollResults; 
@@ -26,6 +27,7 @@ namespace HRManagementApp.UI.Views
             _nhanVienService = new NhanVienService();
             _payrollResultService = new PayrollResultService();
             _luongService = new LuongService();
+            _phongBanService = new PhongBanService();
             _allPayrollResults = new List<PayrollResult>();
 
             // Đặt mặc định là tháng/năm hiện tại
@@ -37,8 +39,29 @@ namespace HRManagementApp.UI.Views
             txtYear.Text = _selectedYear.ToString();
 
             LoadPayrollData();
+            LoadComboBoxPhongBan();
         }
+        
+        private void LoadComboBoxPhongBan()
+        {
+            try 
+            {
+                var listPB = _phongBanService.GetListPhongBan();
+                
+                // Thêm mục mặc định "Tất cả"
+                var allItem = new PhongBan { MaPB = -1, TenPB = "--- Tất cả phòng ban ---" };
+                listPB.Insert(0, allItem);
 
+                cboPhongBan.ItemsSource = listPB;
+                cboPhongBan.SelectedIndex = 0; // Chọn mặc định là Tất cả
+            }
+            catch(Exception ex)
+            {
+                // Xử lý nếu chưa có PhongBanService
+                MessageBox.Show("Chưa tải được danh sách phòng ban: " + ex.Message);
+            }
+        }
+        
         private void LoadData_Click(object sender, RoutedEventArgs e)
         {
             if (int.TryParse(txtMonth.Text, out int m) && int.TryParse(txtYear.Text, out int y))
@@ -79,32 +102,51 @@ namespace HRManagementApp.UI.Views
                 _allPayrollResults.Add(result);
             }
 
-            // Gán dữ liệu vào Grid (Ban đầu hiển thị tất cả vì chưa tìm kiếm)
-            UpdateDataGridSource(_allPayrollResults);
-            
-            // Xóa text tìm kiếm cũ nếu có
-            txtSearch.Text = string.Empty; 
+            ApplyFilters();
+        }
+        // --- MỚI: Xử lý sự kiện khi chọn ComboBox ---
+        private void cboPhongBan_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyFilters();
         }
 
-        // --- MỚI: Hàm xử lý tìm kiếm ---
+        // --- CẬP NHẬT: Xử lý tìm kiếm gọi về hàm chung ---
         private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string keyword = txtSearch.Text.ToLower().Trim();
-
-            if (string.IsNullOrEmpty(keyword))
-            {
-                // Nếu ô tìm kiếm trống, hiển thị lại toàn bộ
-                UpdateDataGridSource(_allPayrollResults);
-            }
-            else
-            {
-                // Lọc theo tên nhân viên (không phân biệt hoa thường)
-                var filteredList = _allPayrollResults
-                                    .Where(x => x.TenNV.ToLower().Contains(keyword))
-                                    .ToList();
-                UpdateDataGridSource(filteredList);
-            }
+            ApplyFilters();
         }
+
+        // --- MỚI: Hàm Lọc trung tâm (Logic cốt lõi) ---
+        private void ApplyFilters()
+        {
+            // 1. Lấy dữ liệu gốc
+            var filteredList = _allPayrollResults.AsEnumerable();
+
+            // 2. Lọc theo Phòng ban (nếu không chọn "Tất cả" có MaPB = -1)
+            if (cboPhongBan.SelectedValue != null)
+            {
+                if (int.TryParse(cboPhongBan.SelectedValue.ToString(), out int selectedMaPB))
+                {
+                    if (selectedMaPB != -1) // -1 là tất cả
+                    {
+                        // Lưu ý: PayrollResult cần có thuộc tính MaPB
+                        filteredList = filteredList.Where(x => x.maPB == selectedMaPB);
+                    }
+                }
+            }
+
+            // 3. Lọc theo Tên (Search text)
+            string keyword = txtSearch.Text.ToLower().Trim();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                filteredList = filteredList.Where(x => x.TenNV.ToLower().Contains(keyword));
+            }
+
+            // 4. Hiển thị kết quả
+            UpdateDataGridSource(filteredList.ToList());
+        }
+
+       
 
         // Hàm phụ trợ để gán Source cho DataGrid an toàn
         private void UpdateDataGridSource(List<PayrollResult> data)

@@ -48,7 +48,7 @@ namespace HRManagementApp.UI.Views
             TxtTongLuongHeSo.Text = $"{result.luongchinh:N0} VNĐ"; 
             
             // Có thể hiển thị thêm ngày công để rõ ràng hơn (nếu UI có chỗ để)
-            // TxtNgayCong.Text = $"Công: {result.TongNgayCong}";
+             TxtNgayCong.Text = $"Công: {result.TongNgayCong}";
 
 
             // B. Phụ cấp (Hiển thị danh sách chi tiết để user biết gồm những khoản nào)

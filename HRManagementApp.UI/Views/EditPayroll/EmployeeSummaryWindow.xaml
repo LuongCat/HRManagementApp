@@ -47,7 +47,15 @@
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                         <TextBlock x:Name="TxtHoTen" Text="NGUYỄN VĂN A" FontSize="20" FontWeight="Bold" Foreground="#1F2937"/>
-                        <TextBlock x:Name="TxtMaNV" Text="Mã NV: 001" FontSize="14" Foreground="#6B7280" Margin="0,5,0,0"/>
+    
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock x:Name="TxtMaNV" Text="Mã NV: 001" FontSize="14" Foreground="#6B7280" Margin="0,0,20,0"/>
+        
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Ngày công: " FontSize="14" Foreground="#6B7280"/>
+                                <TextBlock x:Name="TxtNgayCong" Text="26" FontSize="14" FontWeight="Bold" Foreground="#059669"/>
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
                     
                     <Border Grid.Column="2" Background="#EFF6FF" CornerRadius="8" Padding="15,5">
@@ -73,8 +81,10 @@
                             <DataGrid x:Name="DgRoles" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" BorderThickness="0" GridLinesVisibility="Horizontal" Background="White" RowHeight="40">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Chức vụ" Binding="{Binding ChucVu.TenCV}" Width="*"/>
-                                    <DataGridTextColumn Header="HS Lương" Binding="{Binding HeSoLuongCoBan}" Width="80"/>
-                                    <DataGridTextColumn Header="HS PC" Binding="{Binding HeSoPhuCapKiemNhiem}" Width="80"/>
+                                    <DataGridTextColumn Header="Luong CB" Binding="{Binding ChucVu.LuongCB}" Width="80"/>
+                                    <DataGridTextColumn Header="Kiem Nhiem" Binding="{Binding ChucVu.TienPhuCapKiemNhiem}" Width="80"/>
+                                    <DataGridTextColumn Header="HS Lương" Binding="{Binding HeSoLuongCoBan}" Width="60"/>
+                                    <DataGridTextColumn Header="HS KN" Binding="{Binding HeSoPhuCapKiemNhiem}" Width="60"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                             
@@ -149,6 +159,7 @@
                             </DockPanel>
                         </StackPanel>
                     </Border>
+                    
                 </StackPanel>
             </Grid>
 

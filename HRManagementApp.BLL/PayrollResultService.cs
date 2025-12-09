@@ -25,7 +25,8 @@ public class PayrollResultService
             maNV = nhanVien.MaNV,
             TenNV = nhanVien.HoTen,
             Thang = Month,
-            Nam = Year
+            Nam = Year,
+            maPB = nhanVien.MaPB,
         };
 
         // ============================
@@ -34,7 +35,7 @@ public class PayrollResultService
         decimal? luongCoBan = 0;
         decimal? heSoLuongCoBan = 0;
         decimal? tongTienKiemNhiem = 0;
-
+        decimal? heSoKiemNhiem = 0;    
         // Kiểm tra null cho danh sách chức vụ
         if (nhanVien.DanhSachChucVu != null)
         {
@@ -43,18 +44,19 @@ public class PayrollResultService
                 if (vt.ChucVu != null)
                 {
                     heSoLuongCoBan += vt.HeSoLuongCoBan ?? 0;
-                    luongCoBan += vt.ChucVu.LuongCB;
+                    luongCoBan += vt.ChucVu.LuongCB * (vt.HeSoLuongCoBan ?? 0);
 
+                    heSoKiemNhiem += vt.HeSoPhuCapKiemNhiem ?? 0;
                     tongTienKiemNhiem +=
                         (vt.HeSoPhuCapKiemNhiem ?? 0)  * vt.ChucVu.TienPhuCapKiemNhiem;
                 }
             }
         }
-
-        result.LuongCoBan = luongCoBan;
         result.HeSoLuongCB = heSoLuongCoBan;
+        result.LuongCoBan = luongCoBan;
         result.TongTienKiemNhiem = tongTienKiemNhiem;
-
+        result.HeSoKiemNhiem = heSoKiemNhiem;
+        
         // ============================
         // 2. PHỤ CẤP (lọc theo tháng) - Thêm check null (?.)
         // ============================
@@ -118,7 +120,7 @@ public class PayrollResultService
         // ============================
         // 6. TÍNH LƯƠNG CUỐI
         // ============================
-        decimal? luongChinh = luongCoBan * heSoLuongCoBan + tongTienKiemNhiem;
+        decimal? luongChinh = luongCoBan + tongTienKiemNhiem;
         luongChinh = luongChinh / (26*8) * ketQuachamcong.SoGioDiLam  ; 
         
         result.luongchinh = luongChinh;

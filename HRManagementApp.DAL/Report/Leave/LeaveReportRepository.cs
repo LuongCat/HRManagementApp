@@ -48,8 +48,9 @@ namespace HRManagementApp.DAL.Report
             if (date.HasValue)
             {
                 query += @"
-            AND @date BETWEEN dt.NgayBatDau AND dt.NgayKetThuc
-        ";
+                    AND @date >= DATE(dt.NgayBatDau)
+                    AND @date <= DATE(dt.NgayKetThuc)
+                ";
                 parameters.Add("@date", date.Value.ToDateTime(TimeOnly.MinValue));
             }
 

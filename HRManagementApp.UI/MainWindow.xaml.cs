@@ -7,7 +7,7 @@ using HRManagementApp.BLL;
 using HRManagementApp.models;
 using HRManagementApp.UI.Views;
 using HRManagementApp.UI.Views.Leave;
-using HRManagementApp.UI.Views.Report; // Thêm namespace Report
+using HRManagementApp.Constants; // <--- 1. THÊM NAMESPACE NÀY
 
 namespace HRManagementApp.UI
 {
@@ -24,7 +24,7 @@ namespace HRManagementApp.UI
             ApplyPermissions();
             
             InitializeEventHandlers();
-            SetActiveButton(DashboardBtn);
+            SetActiveButton(DashboardBtn); // Set Dashboard as default active
             LoadSectionContent("dashboard");
         }
         
@@ -44,16 +44,20 @@ namespace HRManagementApp.UI
             // Hoặc kiểm tra chi tiết từng quyền trong UserSession.QuyenHan
             bool isAdmin = UserSession.VaiTro == "Admin";
             
-            if (isAdmin || UserSession.HasPermission("QuanLyNhanVien")){ EmployeesBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission("XemBaoCao")) { ReportsBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission("Attandance")) { AttendanceBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission("QuanLiDonTu")) { LeaveBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission("QuanTriHeThong"))
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QL_NHAN_VIEN))
+            { EmployeesBtn.Visibility = Visibility.Visible; }
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_XEM_BAO_CAO)) 
+            { ReportsBtn.Visibility = Visibility.Visible; }
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QL_CHAM_CONG)) 
+            { AttendanceBtn.Visibility = Visibility.Visible; }
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_DUYET_DON)) 
+            { LeaveBtn.Visibility = Visibility.Visible; }
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QT_HE_THONG))
             {
                 RoleBtn.Visibility = Visibility.Visible;
                 AccountBtn.Visibility = Visibility.Visible;
             }
-            if (isAdmin || UserSession.HasPermission("EditPayroll")) 
+            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QL_LUONG))
             {   
                 PayrollBtn.Visibility = Visibility.Visible;
                 EditPayrollBtn.Visibility = Visibility.Visible; 
@@ -73,6 +77,7 @@ namespace HRManagementApp.UI
 
         private void InitializeEventHandlers()
         {
+            // Navigation event handlers
             DashboardBtn.Click += (s, e) => NavigateTo("Dashboard", s as Button);
             EmployeesBtn.Click += (s, e) => NavigateTo("Employees", s as Button);
             AttendanceBtn.Click += (s, e) => NavigateTo("Attendance", s as Button);
@@ -84,12 +89,19 @@ namespace HRManagementApp.UI
             EditPayrollBtn.Click += (s, e) => NavigateTo("EditPayroll", s as Button);
             LogoutBtn.Click += LogoutBtn_Click; 
             AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
-            RoleBtn.Click += (s, e) => NavigateTo("Role", s as Button);
+            ChamCongBtn.Click += (s, e) => NavigateTo("ChamCong", s as Button);
+            InforBtn.Click += (s, e) => NavigateTo("Info", s as Button);
+            
+            MyPayslip.Click += (s, e) => NavigateTo("mypayslip", s as Button);
         }
 
         private void NavigateTo(string section, Button clickedButton)
         {
             SetActiveButton(clickedButton);
+
+            var headerTextBlock = FindName("HeaderText") as TextBlock;
+            var descTextBlock = FindName("DescriptionText") as TextBlock;
+
             LoadSectionContent(section);
         }
 
@@ -100,9 +112,10 @@ namespace HRManagementApp.UI
                 currentActiveButton.Background = Brushes.Transparent;
             }
 
+            // Set new active button
             if (activeButton != null)
             {
-                activeButton.Background = new SolidColorBrush(Color.FromRgb(26, 188, 156));
+                activeButton.Background = new SolidColorBrush(Color.FromRgb(26, 188, 156)); // #1ABC9C
                 currentActiveButton = activeButton;
             }
         }
@@ -111,91 +124,23 @@ namespace HRManagementApp.UI
         {
             switch (section.ToLower())
             {
-                case "dashboard":
-                    LoadDoashboardSection();
-                    break;
-                case "employees":
-                    LoadEmployeeSection();
-                    break;
-                case "attendance":
-                    LoadAttendanceSection();
-                    break;
-                case "payrolltag":
-                    LoadPayrollSection();
-                    break;
-                case "leave management":
-                    LoadLeaveSection();
-                    break;
-                case "reports":
-                    LoadReportsSection();
-                    break;
-                case "settings":
-                    LoadSettingsSection();
-                    break;
-                case "editpayroll":
-                    LoadEditPayrollSection();
-                    break;
-                case "account":
-                    LoadAccountsSection();
-                    break;
-                case "role":
-                    LoadRoleSection();
-                    break;
+                case "dashboard": ContentArea.Content = new Views.DashboardView(); break;
+                case "employees": ContentArea.Content = new Views.EmployeesManagementView(); break;
+                case "attendance": ContentArea.Content = new Views.AttendanceTagView(); break;
+                case "payrolltag": ContentArea.Content = new Views.PayrollTag(); break;
+                case "leave management": ContentArea.Content = new LeaveManagementView(); break;
+                case "reports": ContentArea.Content = new ReportView(); break;
+                case "settings": ContentArea.Content = new ForEmployeeManagementView(); break;
+                case "editpayroll": ContentArea.Content = new Views.EditPayroll(); break;
+                case "account": ContentArea.Content = new Views.AccountManagementView(); break;
+                case "roles": ContentArea.Content = new Views.RoleManagementView(); break;
+                case "chamcong": ContentArea.Content = new Views.ScanAttendanceView(); break;
+                case "info": ContentArea.Content = new Views.AccountInfoView(); break;
+                
+                case "mypayslip": ContentArea.Content = new Views.MyPayslipView(); break;
             }
         }
 
-        private void LoadEditPayrollSection()
-        {
-            ContentArea.Content = new Views.EditPayroll();
-        }
-        
-        
-        private void LoadDoashboardSection()
-        {
-            ContentArea.Content = new Views.DashboardView();
-        }
-        private void LoadEmployeeSection()
-        {
-            ContentArea.Content = new Views.EmployeesManagementView();
-        }
-
-        private void LoadAttendanceSection()
-        {
-            ContentArea.Content = new Views.AttendanceTagView();
-        }
-
-        private void LoadPayrollSection()
-        {
-            ContentArea.Content = new Views.PayrollTag();
-            // Salary calculations, pay slips, tax deductions, etc.
-        }
-
-        private void LoadLeaveSection()
-        {
-            // Khởi tạo và hiển thị View quản lý đơn từ
-            ContentArea.Content = new LeaveManagementView(); 
-        }
-
-        private void LoadReportsSection()
-        {
-            ContentArea.Content = new ReportView(); 
-        }
-
-        private void LoadSettingsSection()
-        {
-             ContentArea.Content = new ForEmployeeManagementView();
-        }
-        private void LoadAccountsSection()
-        {
-            ContentArea.Content = new Views.AccountManagementView();
-
-        }
-
-        private void LoadRoleSection()
-        {
-            ContentArea.Content = new Views.RoleManagementView();
-        }
-        
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?",

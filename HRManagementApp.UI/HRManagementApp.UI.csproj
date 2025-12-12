@@ -40,16 +40,29 @@
             <XamlRuntime>Wpf</XamlRuntime>
             <SubType>Designer</SubType>
         </Page>
+        <Page Update="Views\Attendance\AttendanceSummaryView.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc2" />
         <PackageReference Include="LiveChartsCore" Version="2.0.0-rc2" />
+        <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
+        <PackageReference Include="OpenCvSharp4.Extensions" Version="4.11.0.20250507" />
+        <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.11.0.20250507" />
+        <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.11.0.20250507" />
+        <PackageReference Include="QRCoder" Version="1.7.0" />
 
         <PackageReference Include="SkiaSharp" Version="2.88.6" />
         <PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.6" />
         <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.6" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.6" />
+        <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
+        <PackageReference Include="ZXing.Net" Version="0.16.11" />
+        <PackageReference Include="ZXing.Net.Bindings.Windows.Compatibility" Version="0.16.14" />
     </ItemGroup>
 
 </Project>

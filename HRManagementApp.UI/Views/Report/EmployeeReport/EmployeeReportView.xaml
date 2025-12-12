@@ -205,7 +205,9 @@
                          Height="32"
                          VerticalContentAlignment="Center"
                          TextChanged="TbEmployeeSearchName_TextChanged"
-                         Text="Tìm nhân viên..."/>
+                         Text="Tìm nhân viên..."
+                         GotKeyboardFocus="TextBox_GotKeyboardFocus" 
+                         PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
             </StackPanel>
 
             <!-- DEPARTMENT -->

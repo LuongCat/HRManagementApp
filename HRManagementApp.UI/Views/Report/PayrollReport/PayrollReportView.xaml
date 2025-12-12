@@ -3,298 +3,270 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
-             mc:Ignorable="d">
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WP"
+             xmlns:liveChartsCore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore"
+             xmlns:wpf="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:skiaSharpView="clr-namespace:LiveChartsCore.SkiaSharpView;assembly=LiveChartsCore.SkiaSharpView"
+             mc:Ignorable="d"
+             d:DesignHeight="800" d:DesignWidth="1100">
 
-        <UserControl.Resources>
-                <Style x:Key="FilterComboBox"
-                       TargetType="ComboBox">
-                        <Setter Property="Padding"
-                                Value="10,6"/>
-                        <Setter Property="FontSize"
-                                Value="14"/>
-                        <Setter Property="Background"
-                                Value="White"/>
-                        <Setter Property="BorderBrush"
-                                Value="#E2E8F0"/>
-                        <Setter Property="BorderThickness"
-                                Value="1"/>
-                        <Setter Property="VerticalContentAlignment"
-                                Value="Center"/>
-                </Style>
-        </UserControl.Resources>
+    <UserControl.Resources>
+        <Style x:Key="CardBorder" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0,0,15,15"/>
+        </Style>
+        
+        <Style TargetType="TabItem">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Border" BorderBrush="Transparent" BorderThickness="0,0,0,3" Margin="0,0,20,0">
+                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="10,5"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#2563EB"/>
+                                <Setter Property="Foreground" Value="#2563EB"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter Property="Foreground" Value="#64748B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
-        <Grid Margin="24">
-                <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+    <Grid Background="#F8FAFC" Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0"
-                            Margin="0,0,0,24">
-                        <TextBlock Text="Bảng Lương Nhân Viên"
-                                   FontSize="24"
-                                   FontWeight="Bold"
-                                   Foreground="#1E293B"/>
-                        <TextBlock Text="Xem chi tiết và xuất báo cáo lương hàng tháng"
-                                   FontSize="14"
-                                   Foreground="#64748B"
-                                   Margin="0,4,0,0"/>
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel>
+                <TextBlock Text="Quản Lý Lương Thưởng" FontSize="24" FontWeight="Bold" Foreground="#1E293B"/>
+                <TextBlock Text="Thống kê chi tiết và bảng lương hàng tháng" FontSize="14" Foreground="#64748B" Margin="0,4,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox x:Name="cboMonth" Width="100" Margin="0,0,8,0"
+                              SelectionChanged="Filter_SelectionChanged"/>
+                    <ComboBox x:Name="cboYear" Width="100"
+                              SelectionChanged="Filter_SelectionChanged"/>
                 </StackPanel>
+            </StackPanel>
+            
+        </Grid>
 
-                <!-- SUMMARY CARDS -->
-                <UniformGrid Grid.Row="1"
-                             Columns="4"
-                             Margin="0,0,0,20">
-
-                        <Border Background="#EEF2FF"
-                                Padding="20"
-                                CornerRadius="10"
-                                Margin="10">
-                                <StackPanel>
-                                        <TextBlock Text="Tổng Lương"
-                                                   FontWeight="Bold"
-                                                   FontSize="16"/>
-                                        <TextBlock x:Name="txtMonthlyPayroll"
-                                                   FontSize="22"
-                                                   FontWeight="Bold"
-                                                   Foreground="#4F46E5"/>
-                                </StackPanel>
-                        </Border>
-
-                        <Border Background="#F0FDFA"
-                                Padding="20"
-                                CornerRadius="10"
-                                Margin="10">
-                                <StackPanel>
-                                        <TextBlock Text="Lương Trung Bình"
-                                                   FontWeight="Bold"
-                                                   FontSize="16"/>
-                                        <TextBlock x:Name="txtAvgPayroll"
-                                                   FontSize="22"
-                                                   FontWeight="Bold"
-                                                   Foreground="#0D9488"/>
-                                </StackPanel>
-                        </Border>
-
-                        <Border Background="#FEF9C3"
-                                Padding="20"
-                                CornerRadius="10"
-                                Margin="10">
-                                <StackPanel>
-                                        <TextBlock Text="Biến Động Tháng"
-                                                   FontWeight="Bold"
-                                                   FontSize="16"/>
-                                        <TextBlock x:Name="txtPayrollChange"
-                                                   FontSize="22"
-                                                   FontWeight="Bold"
-                                                   Foreground="#CA8A04"/>
-                                </StackPanel>
-                        </Border>
-
-                        <Border Background="#FFE4E6"
-                                Padding="20"
-                                CornerRadius="10"
-                                Margin="10">
-                                <StackPanel>
-                                        <TextBlock Text="Số NV Nhận Lương"
-                                                   FontWeight="Bold"
-                                                   FontSize="16"/>
-                                        <TextBlock x:Name="txtPayrollEmployees"
-                                                   FontSize="22"
-                                                   FontWeight="Bold"
-                                                   Foreground="#E11D48"/>
-                                </StackPanel>
-                        </Border>
-
-                </UniformGrid>
-
-                <Grid Grid.Row="2"
-                      Margin="0,0,0,20">
-                        <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="300"/>
-                        </Grid.ColumnDefinitions>
-
-                        <lvc:CartesianChart x:Name="chartSalaryDept"
-                                            Grid.Column="0"
-                                            Height="200"/>
-
-                        <lvc:PieChart x:Name="chartPayrollDonut"
-                                      Grid.Column="1"
-                                      Height="200"
-                                      LegendPosition="Right"
-                                      Margin="0,0,0,20"
-                                      MaxAngle="360"/>
-                </Grid>
-
-                <lvc:CartesianChart x:Name="chartSalaryTrend"
-                                    Grid.Row="3"
-                                    Height="360"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"/>
-
-                <!-- PAYROLL TABLE SECTION -->
-                <Grid Background="White"
-                      Margin="24"
-                      Grid.Row="4">
+<TabControl Grid.Row="1" BorderThickness="0" Background="Transparent">
+            <TabItem Header="📊 Cơ Cấu Lương Thưởng">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="0,15,0,0">
                         <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <RowDefinition Height="350"/>  <RowDefinition Height="350"/>  </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0"
-                              Margin="0,0,0,20">
-                                <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                        <Grid Grid.Row="0" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Column="0"
-                                            Orientation="Horizontal">
-                                        <Border Background="#F8FAFC"
-                                                BorderBrush="#E2E8F0"
-                                                BorderThickness="1"
-                                                CornerRadius="8"
-                                                Padding="4">
-                                                <StackPanel Orientation="Horizontal">
-                                                        <ComboBox x:Name="cboMonth"
-                                                                  Width="100"
-                                                                  Margin="0,0,8,0"
-                                                                  Style="{StaticResource FilterComboBox}"
-                                                                  SelectionChanged="Filter_SelectionChanged"/>
-
-                                                        <ComboBox x:Name="cboYear"
-                                                                  Width="100"
-                                                                  Style="{StaticResource FilterComboBox}"
-                                                                  SelectionChanged="Filter_SelectionChanged"/>
-                                                </StackPanel>
-                                        </Border>
+                            <Border Grid.Column="0" Style="{StaticResource CardBorder}">
+                                <StackPanel>
+                                    <TextBlock Text="TỔNG QUỸ LƯƠNG" FontSize="12" Foreground="#64748B" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtTotalSalary" Text="0 đ" FontSize="26" Foreground="#2563EB" FontWeight="Bold" Margin="0,5,0,0"/>
                                 </StackPanel>
+                            </Border>
 
-                                <StackPanel Grid.Column="2"
-                                            Orientation="Horizontal">
-                                        <Button x:Name="btnExport"
-                                                Content="📥 Xuất Excel"
-                                                Click="BtnExport_Click"
-                                                Background="#10B981"
-                                                Foreground="White"
-                                                FontWeight="SemiBold"
-                                                FontSize="14"
-                                                Padding="16,8"
-                                                BorderThickness="0"
-                                                Cursor="Hand">
-                                                <Button.Resources>
-                                                        <Style TargetType="Border">
-                                                                <Setter Property="CornerRadius"
-                                                                        Value="6"/>
-                                                        </Style>
-                                                </Button.Resources>
-                                        </Button>
+                            <Border Grid.Column="1" Style="{StaticResource CardBorder}">
+                                <StackPanel>
+                                    <TextBlock Text="TỔNG THUẾ TNCN" FontSize="12" Foreground="#64748B" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtTotalTax" Text="0 đ" FontSize="26" Foreground="#DC2626" FontWeight="Bold" Margin="0,5,0,0"/>
                                 </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Style="{StaticResource CardBorder}" Margin="0,0,0,15">
+                                <StackPanel>
+                                    <TextBlock Text="TỔNG KHẤU TRỪ BH" FontSize="12" Foreground="#64748B" FontWeight="Bold"/>
+                                    <TextBlock x:Name="txtTotalDeduction" Text="0 đ" FontSize="26" Foreground="#F59E0B" FontWeight="Bold" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/> <ColumnDefinition Width="*"/> </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource CardBorder}">
+                                <Grid>
+                                    <TextBlock Text="Cơ Cấu Thu Nhập (Lương/Phụ Cấp)" FontSize="16" FontWeight="Bold" VerticalAlignment="Top"/>
+                                    <wpf:PieChart x:Name="chartIncomeStructure"
+                                                  LegendPosition="Bottom"
+                                                  
+                                                  Margin="0,30,0,0"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="0,0,0,15">
+                                <Grid>
+                                    <TextBlock Text="Phân Bổ Nhân Sự Theo Mức Lương" FontSize="16" FontWeight="Bold" VerticalAlignment="Top"/>
+                                    <wpf:CartesianChart x:Name="chartSalaryDist" Margin="0,30,0,0"/>
+
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/> <ColumnDefinition Width="*"/> </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource CardBorder}">
+                                <Grid>
+                                    <TextBlock Text="Thu Nhập Trung Bình Theo Phòng Ban" FontSize="16" FontWeight="Bold" VerticalAlignment="Top"/>
+                                    <wpf:CartesianChart x:Name="chartDeptAvg" Margin="0,30,0,0"/>
+                                </Grid>
+                            </Border>
+                            
+                            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="0,0,0,15">
+                                <Grid>
+                                    <TextBlock Text="Xu Hướng Lương Trung Bình Năm" FontSize="16" FontWeight="Bold" VerticalAlignment="Top"/>
+                                    <wpf:CartesianChart x:Name="chartYearlyTrend" Margin="0,30,0,0"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+                <TabItem Header="📋 Bảng Chi Tiết">
+                    <Grid Margin="0,15,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/> <ColumnDefinition Width="*"/>    <ColumnDefinition Width="Auto"/> </Grid.ColumnDefinitions>
+                            
+                            <Button x:Name="btnExport" Grid.Column="2"
+                                    Content="📥 Xuất Excel"
+                                    Click="BtnExport_Click"
+                                    Background="#10B981" Foreground="White"
+                                    FontWeight="SemiBold" FontSize="14"
+                                    Padding="16,8" BorderThickness="0" Cursor="Hand">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
                         </Grid>
 
                         <DataGrid x:Name="dgPayroll"
-                                  Grid.Row="2"
-                                  MinHeight="500"
+                                Grid.Row="2"
                                   AutoGenerateColumns="False"
-                                  IsReadOnly="True"
+                                IsReadOnly="True"
                                   HeadersVisibility="Column"
-                                  GridLinesVisibility="Horizontal"
+                                GridLinesVisibility="Horizontal"
                                   Background="White"
-                                  BorderThickness="1"
-                                  BorderBrush="#E2E8F0"
+                                BorderThickness="1"
+                                BorderBrush="#E2E8F0"
                                   RowHeight="48"
-                                  HorizontalAlignment="Stretch"
-                                  EnableRowVirtualization="True"
-                                  EnableColumnVirtualization="True"
-                                  AlternatingRowBackground="#F8FAFC">
+                                AlternatingRowBackground="#F8FAFC">
 
-                                <DataGrid.Resources>
-                                        <Style TargetType="DataGridColumnHeader">
-                                                <Setter Property="Background"
-                                                        Value="Transparent"/>
-                                                <Setter Property="Foreground"
-                                                        Value="#64748B"/>
-                                                <Setter Property="FontWeight"
-                                                        Value="SemiBold"/>
-                                                <Setter Property="Padding"
-                                                        Value="12,10"/>
-                                                <Setter Property="BorderThickness"
-                                                        Value="0,0,0,1"/>
-                                                <Setter Property="BorderBrush"
-                                                        Value="#E2E8F0"/>
-                                        </Style>
-                                        <Style TargetType="DataGridCell">
-                                                <Setter Property="Padding"
-                                                        Value="12,0"/>
-                                                <Setter Property="Template">
-                                                        <Setter.Value>
-                                                                <ControlTemplate TargetType="DataGridCell">
-                                                                        <Border Padding="{TemplateBinding Padding}"
-                                                                                Background="{TemplateBinding Background}">
-                                                                                <ContentPresenter VerticalAlignment="Center"/>
-                                                                        </Border>
-                                                                </ControlTemplate>
-                                                        </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="BorderThickness"
-                                                        Value="0"/>
-                                        </Style>
-                                </DataGrid.Resources>
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background"
+                                            Value="Transparent"/>
+                                    <Setter Property="Foreground"
+                                            Value="#64748B"/>
+                                    <Setter Property="FontWeight"
+                                            Value="SemiBold"/>
+                                    <Setter Property="Padding"
+                                            Value="12,10"/>
+                                    <Setter Property="BorderThickness"
+                                            Value="0,0,0,1"/>
+                                    <Setter Property="BorderBrush"
+                                            Value="#E2E8F0"/>
+                                </Style>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Padding"
+                                            Value="12,0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="DataGridCell">
+                                                <Border Padding="{TemplateBinding Padding}"
+                                                        Background="{TemplateBinding Background}">
+                                                    <ContentPresenter VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="BorderThickness"
+                                            Value="0"/>
+                                </Style>
+                            </DataGrid.Resources>
 
-                                <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Mã NV"
-                                                            Binding="{Binding MaNV}"
-                                                            Width="80"/>
-                                        <DataGridTextColumn Header="Họ Tên"
-                                                            Binding="{Binding EmployeeName}"
-                                                            Width="1.5*"/>
-                                        <DataGridTextColumn Header="Phòng Ban"
-                                                            Binding="{Binding Department}"
-                                                            Width="*"/>
-                                        <DataGridTextColumn Header="Công"
-                                                            Binding="{Binding WorkDays}"
-                                                            Width="60"/>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Mã NV"
+                                        Binding="{Binding MaNV}"
+                                        Width="80"/>
+                                <DataGridTextColumn Header="Họ Tên"
+                                        Binding="{Binding EmployeeName}"
+                                        Width="1.5*"/>
+                                <DataGridTextColumn Header="Phòng Ban"
+                                        Binding="{Binding Department}"
+                                        Width="*"/>
+                                <DataGridTextColumn Header="Công"
+                                        Binding="{Binding WorkDays}"
+                                        Width="60"/>
 
-                                        <DataGridTextColumn Header="Lương CB"
-                                                            Binding="{Binding BaseSalary, StringFormat={}{0:N0}}"
-                                                            Width="*"/>
-                                        <DataGridTextColumn Header="Phụ Cấp"
-                                                            Binding="{Binding TotalAllowance, StringFormat={}{0:N0}}"
-                                                            Width="*"/>
-                                        <DataGridTextColumn Header="Khấu Trừ"
-                                                            Binding="{Binding TotalDeduction, StringFormat={}{0:N0}}"
-                                                            Width="*"/>
+                                <DataGridTextColumn Header="Lương CB"
+                                        Binding="{Binding BaseSalary, StringFormat={}{0:N0}}"
+                                        Width="*"/>
+                                <DataGridTextColumn Header="Phụ Cấp"
+                                        Binding="{Binding TotalAllowance, StringFormat={}{0:N0}}"
+                                        Width="*"/>
+                                <DataGridTextColumn Header="Khấu Trừ"
+                                        Binding="{Binding TotalDeduction, StringFormat={}{0:N0}}"
+                                        Width="*"/>
 
-                                        <DataGridTextColumn Header="Thực Lãnh"
-                                                            Binding="{Binding NetPay, StringFormat={}{0:N0} đ}"
-                                                            Width="*"
-                                                            FontWeight="Bold"
-                                                            Foreground="#2563EB"/>
+                                <DataGridTextColumn Header="Thực Lãnh"
+                                        Binding="{Binding NetPay, StringFormat={}{0:N0} đ}"
+                                        Width="*"
+                                        FontWeight="Bold"
+                                        Foreground="#2563EB"/>
 
-                                        <DataGridTemplateColumn Header="Trạng Thái"
-                                                                Width="100">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                                <Border Background="{Binding StatusColor}"
-                                                                        CornerRadius="4"
-                                                                        Padding="8,4"
-                                                                        HorizontalAlignment="Left">
-                                                                        <TextBlock Text="{Binding Status}"
-                                                                                   Foreground="White"
-                                                                                   FontSize="11"
-                                                                                   FontWeight="SemiBold"/>
-                                                                </Border>
-                                                        </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                </DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Trạng Thái"
+                                        Width="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding StatusColor}"
+                                                    CornerRadius="4"
+                                                    Padding="8,4"
+                                                    HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding Status}"
+                                                        Foreground="White"
+                                                        FontSize="11"
+                                                        FontWeight="SemiBold"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
                         </DataGrid>
-                </Grid>
-        </Grid>
+                    </Grid>
+                </TabItem>
+        </TabControl>
+    </Grid>
 </UserControl>

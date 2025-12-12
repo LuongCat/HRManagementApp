@@ -153,7 +153,9 @@
                          Height="32"
                          VerticalContentAlignment="Center"
                          TextChanged="TbLeaveSearchName_TextChanged"
-                         Text="Tìm nhân viên..."/>
+                         Text="Tìm nhân viên..."
+                         GotKeyboardFocus="TextBox_GotKeyboardFocus" 
+                         PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
             </StackPanel>
 
             <!-- DEPARTMENT -->
@@ -263,47 +265,45 @@
 
                 <DataGridTextColumn Header="Mã NV"
                                     Binding="{Binding MaNV}"
-                                    Width="*"
-                                    MinWidth="80"/>
+                                    Width="100"/>
 
                 <DataGridTextColumn Header="Họ tên"
                                     Binding="{Binding TenNV}"
-                                    Width="*"
-                                    MinWidth="150"/>
+                                    Width="150"/>
 
                 <DataGridTextColumn Header="Loại nghỉ"
                                     Binding="{Binding LoaiNghi}"
-                                    Width="*"
-                                    MinWidth="80"/>
+                                    Width="150"/>
 
                 <DataGridTextColumn Header="Từ ngày"
                                     Binding="{Binding TuNgay, StringFormat=\{0:dd/MM/yyyy\}}"
-                                    Width="*"/>
+                                    Width="120"/>
 
                 <DataGridTextColumn Header="Đến ngày"
                                     Binding="{Binding DenNgay, StringFormat=\{0:dd/MM/yyyy\}}"
-                                    Width="*"/>
+                                    Width="120"/>
 
                 <DataGridTextColumn Header="Số ngày"
                                     Binding="{Binding SoNgay}"
-                                    Width="*"/>
-
+                                    Width="80"/>
+                
                 <DataGridTextColumn Header="Ngày gửi"
                                     Binding="{Binding NgayGui, StringFormat=\{0:dd/MM/yyyy\}}"
-                                    Width="*"/>
+                                    Width="120"/>
 
                 <DataGridTextColumn Header="Lý do"
                                     Binding="{Binding LyDo}"
-                                    Width="*"/>
+                                    Width="*"
+                                    MinWidth="200"/>
 
                 <DataGridTextColumn Header="Trạng thái"
                                     Binding="{Binding TrangThai}"
-                                    Width="*"/>
 
+                                    Width="150"/>
+                
                 <DataGridTextColumn Header="Người duyệt"
                                     Binding="{Binding NguoiDuyet}"
-                                    Width="*"/>
-
+                                    Width="150"/>
             </DataGrid.Columns>
 
         </DataGrid>

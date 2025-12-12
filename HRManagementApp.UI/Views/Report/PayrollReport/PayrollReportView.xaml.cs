@@ -5,10 +5,8 @@ using HRManagementApp.BLL;
 using Microsoft.Win32; // Cho SaveFileDialog
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.WPF;
-using LiveChartsCore.SkiaSharpView.Painting;
-using SkiaSharp;
-using HRManagementApp.BLL.Report;
+using LiveChartsCore.SkiaSharpView.Painting; // Để dùng SolidColorPaint
+using SkiaSharp; // Để dùng SKColors
 
 namespace HRManagementApp.UI.Views.Report
 {
@@ -23,7 +21,6 @@ namespace HRManagementApp.UI.Views.Report
             LoadComboBoxes();
             _isLoaded = true;
             LoadData(); // Load lần đầu
-            LoadOverview();
         }
 
         private void LoadComboBoxes()
@@ -64,15 +61,106 @@ namespace HRManagementApp.UI.Views.Report
 
             try
             {
-                var data = _bll.GetPayrollReport(month, year);
-                dgPayroll.ItemsSource = data;
+                // 1. Load DataGrid (Cũ)
+                var listData = _bll.GetPayrollReport(month, year);
+                dgPayroll.ItemsSource = listData;
+
+                // 2. Load Thống kê (Mới)
+                LoadDashboardStats(month, year);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
             }
+            
+            
         }
+        private void LoadDashboardStats(int month, int year)
+        {
+            // A. Load Cards Tổng
+            var stats = _bll.GetPayrollSummary(month, year);
+            txtTotalSalary.Text = stats.TongLuong.ToString("N0") + " đ";
+            txtTotalTax.Text = stats.TongThue.ToString("N0") + " đ";
+            txtTotalDeduction.Text = stats.TongKhauTru.ToString("N0") + " đ";
 
+            // B. Load Biểu đồ tròn (Cơ cấu thu nhập)
+            var incomeStruct = _bll.GetIncomeStructure(month, year);
+            chartIncomeStructure.Series = incomeStruct.Select(x =>
+                new PieSeries<double>
+                {
+                    Name = x.Label,
+                    Values = new double[] { x.Value },
+                    DataLabelsPaint = new SolidColorPaint(new SKColor(0, 0, 0)),
+                    DataLabelsSize = 14,
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Outer
+                }
+            ).ToArray();
+
+            // C. Load Biểu đồ miền (Phân bổ lương)
+            var salaryDist = _bll.GetSalaryDistribution(month, year);
+            chartSalaryDist.Series = new ISeries[]
+            {
+                new ColumnSeries<double>
+                {
+                    Name = "Số nhân viên",
+                    Values = salaryDist.Select(x => (double)x.Value).ToArray()
+                }
+            };
+
+            chartSalaryDist.XAxes = new[]
+            {
+                new Axis
+                {
+                    Labels = salaryDist.Select(x => x.Label).ToArray()
+                }
+            };
+
+
+            // D. Load Biểu đồ cột (Lương TB phòng ban)
+            var deptStats = _bll.GetAvgSalaryByDept(month, year);
+            chartDeptAvg.Series = new ISeries[]
+            {
+                new ColumnSeries<double>
+                {
+                    Name = "Lương TB",
+                    Values = deptStats.Select(x => (double)x.Value).ToArray(),
+                    Fill = new SolidColorPaint(SKColors.DodgerBlue)
+                }
+            };
+
+            chartDeptAvg.XAxes = new[]
+            {
+                new Axis
+                {
+                    Labels = deptStats.Select(x => x.Label).ToArray()
+                }
+            };
+
+
+            // E. Load Biểu đồ xu hướng (Đã có sẵn logic trong DAL cũ, tái sử dụng)
+            var monthlyStats = _bll.GetPayrollStatistics("Theo Tháng", month, year); // Gọi hàm Dictionary cũ
+            chartYearlyTrend.Series = new ISeries[]
+            {
+                new LineSeries<decimal>
+                {
+                    Name = "Tổng lương tháng",
+                    Values = monthlyStats.Values.ToArray(),
+                    GeometrySize = 10,
+                    GeometryFill = new SolidColorPaint(SKColors.DodgerBlue),
+                    GeometryStroke = new SolidColorPaint(SKColors.White, 2),
+                    Stroke = new SolidColorPaint(SKColors.DodgerBlue, 3)
+                }
+            };
+
+            chartYearlyTrend.XAxes = new[]
+            {
+                new Axis
+                {
+                    Labels = monthlyStats.Keys.ToArray()
+                }
+            };
+
+        }
         private void BtnExport_Click(object sender, RoutedEventArgs e)
         {
             int month = cboMonth.SelectedIndex + 1;
@@ -95,94 +183,6 @@ namespace HRManagementApp.UI.Views.Report
                 }
             }
         }
-
-        private void LoadOverview()
-        {
-            string[] monthLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-            double monthlyPayroll = _bll.GetMonthlyPayroll();
-            int payrollEmployees = _bll.GetMonthlyPayrollEmployees();
-
-            double avgPayroll = payrollEmployees == 0 ? 0 : monthlyPayroll / payrollEmployees;
-
-            double prevMonthlyPayroll = _bll.GetPrevMonthlyPayroll();
-            double payrollChange = monthlyPayroll - prevMonthlyPayroll;
-            double monthlyPaidPayroll = _bll.GetMonthlyPaidPayroll();
-
-            double paidPercent = monthlyPayroll == 0 ? 100 : monthlyPaidPayroll * 100 / monthlyPayroll;
-            double unpaidPercent = 100 - paidPercent;
-
-            DepartmentReportService departmentService = new DepartmentReportService();
-            string[] departmentNames = departmentService.GetDepartmentNames();
-            double[] departmentPayroll = _bll.GetDepartmentPayroll();
-
-            double[] salaryTrend = _bll.GetSalaryTrend();
-
-            txtMonthlyPayroll.Text = monthlyPayroll.ToString() + "K";
-            txtAvgPayroll.Text = avgPayroll.ToString() + "K";
-            txtPayrollChange.Text = payrollChange > 0 ? "+" +  payrollChange.ToString() + "K" : payrollChange.ToString() + "K";
-            txtPayrollEmployees.Text = payrollEmployees.ToString();
-
-            chartPayrollDonut.Series = new ISeries[]
-            {
-                new PieSeries<double>
-                {
-                    Name = "Đã trả",
-                    Values = new double[] { Math.Round(paidPercent,1) },
-                    InnerRadius = 0,
-                    Fill = new SolidColorPaint(SKColors.MediumSeaGreen),
-                    DataLabelsFormatter = p => $"{p.PrimaryValue}%"
-                },
-                new PieSeries<double>
-                {
-                    Name = "Chưa trả",
-                    Values = new double[] { Math.Round(unpaidPercent,1) },
-                    InnerRadius = 0,
-                    Fill = new SolidColorPaint(SKColors.IndianRed),
-                    DataLabelsFormatter = p => $"{p.PrimaryValue}%"
-                }
-            };
-
-            chartSalaryDept.Series = new ISeries[]
-            {
-                new ColumnSeries<double>
-                {
-                    Name = "Lương",
-                    Values = departmentPayroll,
-                    Fill = new SolidColorPaint(SKColors.SteelBlue)
-                }
-            };
-
-            chartSalaryDept.XAxes = new[]
-            {
-                new Axis
-                {
-                    Labels = departmentNames,
-                    LabelsRotation = 0,
-                    TextSize = 8
-                }
-            };
-
-            chartSalaryTrend.Series = new ISeries[]
-            {
-                new LineSeries<double>
-                {
-                    Values = salaryTrend,
-                    Stroke = new SolidColorPaint(SKColors.DodgerBlue) { StrokeThickness = 2 },
-                    Fill = null,
-                    GeometrySize = 8
-                }
-            };
-
-            chartSalaryTrend.XAxes = new[]
-            {
-                new Axis
-                {
-                    Labels = monthLabels,
-                    Padding = new LiveChartsCore.Drawing.Padding(0),
-                    MinStep = 1
-                }
-            };
-        }
+        
     }
 }

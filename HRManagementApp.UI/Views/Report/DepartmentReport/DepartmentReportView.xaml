@@ -157,7 +157,9 @@
                      BorderBrush="#CBD5E1"
                      BorderThickness="1"
                      TextChanged="TxtSearchDepartment_TextChanged"
-                     Text="Tìm phòng ban..."/>
+                     Text="Tìm phòng ban..."
+                     GotKeyboardFocus="TextBox_GotKeyboardFocus" 
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
 
             <!-- NÚT XUẤT EXCEL -->
             <Button x:Name="btnExportDepartment"

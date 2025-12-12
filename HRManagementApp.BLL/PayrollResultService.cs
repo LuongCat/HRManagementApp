@@ -25,7 +25,8 @@ public class PayrollResultService
             maNV = nhanVien.MaNV,
             TenNV = nhanVien.HoTen,
             Thang = Month,
-            Nam = Year
+            Nam = Year,
+            maPB = nhanVien.MaPB,
         };
 
         // ============================
@@ -34,7 +35,7 @@ public class PayrollResultService
         decimal? luongCoBan = 0;
         decimal? heSoLuongCoBan = 0;
         decimal? tongTienKiemNhiem = 0;
-
+        decimal? heSoKiemNhiem = 0;    
         // Kiểm tra null cho danh sách chức vụ
         if (nhanVien.DanhSachChucVu != null)
         {
@@ -43,18 +44,19 @@ public class PayrollResultService
                 if (vt.ChucVu != null)
                 {
                     heSoLuongCoBan += vt.HeSoLuongCoBan ?? 0;
-                    luongCoBan += vt.ChucVu.LuongCB;
+                    luongCoBan += vt.ChucVu.LuongCB * (vt.HeSoLuongCoBan ?? 0);
 
+                    heSoKiemNhiem += vt.HeSoPhuCapKiemNhiem ?? 0;
                     tongTienKiemNhiem +=
                         (vt.HeSoPhuCapKiemNhiem ?? 0)  * vt.ChucVu.TienPhuCapKiemNhiem;
                 }
             }
         }
-
-        result.LuongCoBan = luongCoBan;
         result.HeSoLuongCB = heSoLuongCoBan;
+        result.LuongCoBan = luongCoBan;
         result.TongTienKiemNhiem = tongTienKiemNhiem;
-
+        result.HeSoKiemNhiem = heSoKiemNhiem;
+        
         // ============================
         // 2. PHỤ CẤP (lọc theo tháng) - Thêm check null (?.)
         // ============================
@@ -112,13 +114,14 @@ public class PayrollResultService
         ketQuaNghi = _donTuService.GetSoNgayNghi(nhanVien.MaNV, Month, Year);
 
         ketQuachamcong.SoNgayDiLam += ketQuaNghi.NghiCoLuong;
+        ketQuachamcong.SoGioDiLam += 8* ketQuaNghi.NghiCoLuong;
         result.TongNgayCong = ketQuachamcong.SoNgayDiLam;
         
         // ============================
         // 6. TÍNH LƯƠNG CUỐI
         // ============================
-        decimal? luongChinh = luongCoBan * heSoLuongCoBan + tongTienKiemNhiem;
-        luongChinh = luongChinh / 26 * ketQuachamcong.SoNgayDiLam - luongChinh / 26 * 1/3*ketQuachamcong.DiemDiTre; 
+        decimal? luongChinh = luongCoBan + tongTienKiemNhiem;
+        luongChinh = luongChinh / (26*8) * ketQuachamcong.SoGioDiLam  ; 
         
         result.luongchinh = luongChinh;
         
@@ -129,20 +132,6 @@ public class PayrollResultService
             - tongKhauTru
             - tongThue;
 
-        
-        Luong luong = new Luong
-        {
-            MaLuong = result.maLuong,
-            MaNV = result.maNV,
-            TrangThai = result.TrangThai,
-            Thang = Month,
-            Nam = Year,
-            TongNgayCong = result.TongNgayCong,
-            TienLuong = luongChinh,
-            LuongThucNhan = result.LuongThucNhan,
-        };
-
-        
         
         return result;
     }

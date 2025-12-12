@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace HRManagementApp.DAL.Report
+namespace HRManagementApp.DAL
 {
     public class PayrollDAL
     {
@@ -133,127 +133,100 @@ namespace HRManagementApp.DAL.Report
             }
             return data;
         }
-
-        public double CalcMonthlyPayroll()
+        public PayrollStatsDTO GetPayrollSummary(int month, int year)
         {
-            string query = "SELECT SUM(LuongThucNhan) AS TotalPayroll " +
-                            "FROM luong " +
-                            "WHERE (Thang = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) " +
-                            "AND Nam = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)))";
-
-            object result = Database.ExecuteScalar(query);
-
-            if (result == null || result == DBNull.Value)
-                return 0.0;
-
-            return Convert.ToDouble(result);
-        }
-
-        public int CountPayrollEmployees()
-        {
-            string query = @"
-                SELECT COUNT(DISTINCT MaNV)
-                FROM luong
-                WHERE (Thang = MONTH(CURRENT_DATE - INTERVAL 1 MONTH))
-                    AND (Nam = YEAR(CURRENT_DATE - INTERVAL 1 MONTH));
-            ";
-
-            object result = Database.ExecuteScalar(query);
-
-            return Convert.ToInt32(result);
-        }
-
-        public double CalcPrevMonthlyPayroll()
-        {
-            string query = "SELECT SUM(LuongThucNhan) AS TotalPayroll " +
-                            "FROM luong " +
-                            "WHERE (Thang = MONTH(DATE_SUB(CURDATE(), INTERVAL 2 MONTH)) " +
-                            "AND Nam = YEAR(DATE_SUB(CURDATE(), INTERVAL 2 MONTH)))";
-
-            object result = Database.ExecuteScalar(query);
-
-            if (result == null || result == DBNull.Value)
-                return 0.0;
-
-            return Convert.ToDouble(result);
-        }
-
-        public double CalcMonthlyPaidPayroll()
-        {
-            string query = "SELECT SUM(LuongThucNhan) AS PaidPayroll " +
-                            "FROM luong " +
-                            "WHERE (Thang = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) " +
-                            "AND Nam = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))) " +
-                            "AND TrangThai = 'Đã trả'";
-
-            object result = Database.ExecuteScalar(query);
-
-            if (result == null || result == DBNull.Value)
-                return 0.0;
-
-            return Convert.ToDouble(result);
-        }
-
-        public double[] GetDepartmentPayroll()
-        {
-            int month = DateTime.Now.Month;
-            int year = DateTime.Now.Year;
-
-            string query = @"
+            var stats = new PayrollStatsDTO();
+            string query = $@"
                 SELECT 
-                    pb.TenPB,
-                    IFNULL(SUM(l.LuongThucNhan), 0) AS TotalPayroll
-                FROM phongban pb
-                LEFT JOIN nhanvien nv ON pb.MaPB = nv.MaPB
-                LEFT JOIN luong l ON nv.MaNV = l.MaNV 
-                    AND l.Thang = @Thang AND l.Nam = @Nam
-                GROUP BY pb.MaPB, pb.TenPB
-                ORDER BY pb.MaPB;
-            ";
-
-            var parameters = new Dictionary<string, object>()
-            {
-                {"@Thang", month},
-                {"@Nam", year}
-            };
-
-            DataTable dt = Database.ExecuteQuery(query, parameters);
-
-            List<double> payrollList = new List<double>();
-
-            foreach (DataRow row in dt.Rows)
-            {
-                payrollList.Add(Convert.ToDouble(row["TotalPayroll"]));
-            }
-
-            return payrollList.ToArray();
-        }
-
-        public double[] GetSalaryTrend()
-        {
-            double[] salaryTrend = new double[12];
-
-            string query = @"
-                SELECT Thang, SUM(LuongThucNhan) AS TotalSalary
-                FROM luong
-                GROUP BY Thang
-                ORDER BY Thang;
-            ";
+                    SUM(l.LuongThucNhan) as TongLuong,
+                    (SELECT COALESCE(SUM(SoTien),0) FROM thue t WHERE MONTH(t.ApDungTuNgay) <= {month} AND (t.ApDungDenNgay IS NULL OR MONTH(t.ApDungDenNgay) >= {month})) as TongThue,
+                    (SELECT COALESCE(SUM(SoTien),0) FROM khautru kt WHERE MONTH(kt.Ngay) = {month} AND YEAR(kt.Ngay) = {year}) as TongKhauTru
+                FROM luong l
+                WHERE l.Thang = {month} AND l.Nam = {year}";
 
             DataTable dt = Database.ExecuteQuery(query);
+            if (dt.Rows.Count > 0)
+            {
+                stats.TongLuong = dt.Rows[0]["TongLuong"] != DBNull.Value ? Convert.ToDecimal(dt.Rows[0]["TongLuong"]) : 0;
+                stats.TongThue = dt.Rows[0]["TongThue"] != DBNull.Value ? Convert.ToDecimal(dt.Rows[0]["TongThue"]) : 0;
+                stats.TongKhauTru = dt.Rows[0]["TongKhauTru"] != DBNull.Value ? Convert.ToDecimal(dt.Rows[0]["TongKhauTru"]) : 0;
+            }
+            return stats;
+        }
 
+        // 2. Biểu đồ tròn: Cơ cấu thu nhập (Lương CB vs Phụ Cấp vs Thưởng)
+        public List<ChartDataDTO> GetIncomeStructure(int month, int year)
+        {
+            // Đơn giản hóa: Lấy Tổng Lương CB và Tổng Phụ Cấp của tháng đó
+            var list = new List<ChartDataDTO>();
+            string query = $@"
+                SELECT 
+                    SUM(cv.LuongCB) as TongLuongCB,
+                    (SELECT COALESCE(SUM(SoTien),0) FROM phucap_nhanvien pc 
+                     WHERE pc.ApDungTuNgay <= LAST_DAY('{year}-{month}-01')) as TongPhuCap
+                FROM luong l
+                JOIN nhanvien_chucvu nvcv ON l.MaNV = nvcv.MaNV
+                JOIN chucvu cv ON nvcv.MaCV = cv.MaCV
+                WHERE l.Thang = {month} AND l.Nam = {year}";
+
+            DataTable dt = Database.ExecuteQuery(query);
+            if (dt.Rows.Count > 0)
+            {
+                list.Add(new ChartDataDTO { Label = "Lương Cơ Bản", Value = Convert.ToDouble(dt.Rows[0]["TongLuongCB"]) });
+                list.Add(new ChartDataDTO { Label = "Các Phụ Cấp", Value = Convert.ToDouble(dt.Rows[0]["TongPhuCap"]) });
+            }
+            return list;
+        }
+
+        // 3. Biểu đồ miền: Phân bổ mức lương (Số người theo khoảng lương)
+        public List<ChartDataDTO> GetSalaryDistribution(int month, int year)
+        {
+            var list = new List<ChartDataDTO>();
+            string query = $@"
+                SELECT 
+                    CASE 
+                        WHEN LuongThucNhan < 10000000 THEN '< 10 Triệu'
+                        WHEN LuongThucNhan BETWEEN 10000000 AND 20000000 THEN '10 - 20 Triệu'
+                        WHEN LuongThucNhan > 20000000 THEN '> 20 Triệu'
+                    END as MucLuong,
+                    COUNT(*) as SoLuong
+                FROM luong
+                WHERE Thang = {month} AND Nam = {year}
+                GROUP BY MucLuong";
+
+            DataTable dt = Database.ExecuteQuery(query);
             foreach (DataRow row in dt.Rows)
             {
-                int month = Convert.ToInt32(row["Thang"]);
-                double totalSalary = Convert.ToDouble(row["TotalSalary"]);
-
-                if (month >= 1 && month <= 12)
-                {
-                    salaryTrend[month - 1] = totalSalary;
-                }
+                list.Add(new ChartDataDTO { 
+                    Label = row["MucLuong"].ToString(), 
+                    Value = Convert.ToDouble(row["SoLuong"]) 
+                });
             }
+            return list;
+        }
 
-            return salaryTrend;
+        // 4. Biểu đồ cột/miền: Thu nhập trung bình theo phòng ban
+        public List<ChartDataDTO> GetAvgSalaryByDept(int month, int year)
+        {
+            var list = new List<ChartDataDTO>();
+            string query = $@"
+                SELECT pb.TenPB, AVG(l.LuongThucNhan) as LuongTB
+                FROM luong l
+                JOIN nhanvien nv ON l.MaNV = nv.MaNV
+                JOIN phongban pb ON nv.MaPB = pb.MaPB
+                WHERE l.Thang = {month} AND l.Nam = {year}
+                GROUP BY pb.TenPB";
+
+            DataTable dt = Database.ExecuteQuery(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(new ChartDataDTO { 
+                    Label = row["TenPB"].ToString(), 
+                    Value = Convert.ToDouble(row["LuongTB"]) 
+                });
+            }
+            return list;
         }
     }
+
 }

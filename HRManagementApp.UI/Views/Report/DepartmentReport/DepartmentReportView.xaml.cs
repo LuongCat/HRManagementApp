@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using HRManagementApp.BLL.Report;
 using HRManagementApp.models;
 using System.IO;
+using System.Windows.Input;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -203,6 +204,22 @@ namespace HRManagementApp.UI.Views.Report
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi xuất Excel: " + ex.Message);
+            }
+        }
+        
+        private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.SelectAll();
+        }
+
+        private void TextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if (!tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true;
+                tb.Focus();
             }
         }
     }

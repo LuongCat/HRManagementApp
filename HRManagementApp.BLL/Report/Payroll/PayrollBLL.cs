@@ -1,4 +1,4 @@
-using HRManagementApp.DAL.Report;
+using HRManagementApp.DAL;
 using HRManagementApp.models;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System.Linq;
 using System.IO;
-namespace HRManagementApp.BLL.Report
+namespace HRManagementApp.BLL
 {
     public class PayrollBLL
     {
@@ -104,35 +104,12 @@ namespace HRManagementApp.BLL.Report
                     return new Dictionary<string, decimal>();
             }
         }
-
-        public double GetMonthlyPayroll()
-        {
-            return dal.CalcMonthlyPayroll();
-        }
-
-        public int GetMonthlyPayrollEmployees()
-        {
-            return dal.CountPayrollEmployees();
-        }
-
-        public double GetPrevMonthlyPayroll()
-        {
-            return dal.CalcPrevMonthlyPayroll();
-        }
-
-        public double GetMonthlyPaidPayroll()
-        {
-            return dal.CalcMonthlyPaidPayroll();
-        }
-
-        public double[] GetDepartmentPayroll()
-        {
-            return dal.GetDepartmentPayroll();
-        }
-
-        public double[] GetSalaryTrend()
-        {
-            return dal.GetSalaryTrend();
-        }
+        
+        // Thêm vào PayrollBLL
+        public PayrollStatsDTO GetPayrollSummary(int month, int year) => dal.GetPayrollSummary(month, year);
+        public List<ChartDataDTO> GetIncomeStructure(int month, int year) => dal.GetIncomeStructure(month, year);
+        public List<ChartDataDTO> GetSalaryDistribution(int month, int year) => dal.GetSalaryDistribution(month, year);
+        public List<ChartDataDTO> GetAvgSalaryByDept(int month, int year) => dal.GetAvgSalaryByDept(month, year);
     }
+
 }

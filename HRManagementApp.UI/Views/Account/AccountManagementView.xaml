@@ -302,7 +302,9 @@
                                                                    Foreground="#94A3B8"
                                                                    FontSize="14"
                                                                    VerticalAlignment="Center"
-                                                                   Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                                   Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                                   GotKeyboardFocus="TextBox_GotKeyboardFocus" 
+                                                                   PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
                                                         <ScrollViewer x:Name="PART_ContentHost"/>
                                                     </Grid>
                                                 </ControlTemplate>

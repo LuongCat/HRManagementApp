@@ -11,7 +11,7 @@ namespace HRManagementApp.UI.Views
     public partial class DeductionManagementWindow : Window
     {
         private NhanVien _targetEmployee;
-        
+        private LuongService _luongService;
         // TODO: Inject Service Khấu Trừ
         private KhauTruService _khauTruService;
 
@@ -20,6 +20,7 @@ namespace HRManagementApp.UI.Views
             InitializeComponent();
             _targetEmployee = employee;
             _khauTruService = new KhauTruService();
+            _luongService = new LuongService();
             // Header Info
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
 
@@ -99,8 +100,22 @@ namespace HRManagementApp.UI.Views
             
             // Giả lập
             _targetEmployee.KhauTrus.Add(newItem);
+            
+            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, newItem.Ngay);
 
-            MessageBox.Show("Thêm khoản khấu trừ thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (isUnlocked)
+            {
+                MessageBox.Show($"thêm khấu trừ thành công! Bảng lương tháng {newItem.Ngay:MM/yyyy} đã được mở chốt để tính lại.", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
+                MessageBox.Show("thêm khấu trừ thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            
+            
             LoadData();
             BtnClear_Click(null, null);
         }
@@ -118,7 +133,19 @@ namespace HRManagementApp.UI.Views
 
             // TODO: Service Call -> _khauTruService.Update(selected);
 
-            MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, selected.Ngay);
+
+            if (isUnlocked)
+            {
+                MessageBox.Show($"sửa khấu trừ thành công! Bảng lương tháng {selected.Ngay:MM/yyyy} đã được mở chốt để tính lại.", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
+                MessageBox.Show("sửa khấu trừ thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
             LoadData(); // Reload Grid
             BtnClear_Click(null, null);
         }
@@ -136,7 +163,19 @@ namespace HRManagementApp.UI.Views
                 // Giả lập
                 _targetEmployee.KhauTrus.Remove(selected);
 
-                MessageBox.Show("Đã xóa khoản trừ!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+                bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, selected.Ngay);
+
+                if (isUnlocked)
+                {
+                    MessageBox.Show($"xóa khấu trừ thành công! Bảng lương tháng {selected.Ngay:MM/yyyy} đã được mở chốt để tính lại.", 
+                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
+                    MessageBox.Show("xóa khấu trừ thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
                 LoadData();
                 BtnClear_Click(null, null);
             }

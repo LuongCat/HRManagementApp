@@ -302,7 +302,7 @@
 
                         <Button Style="{StaticResource SidebarButtonStyle}" Name="RoleBtn">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="🪪" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="🔧" FontSize="16" Margin="0,0,10,0"/>
                                 <TextBlock Text="Role"/>
                             </StackPanel>
                         </Button>
@@ -324,17 +324,12 @@
                         <Button Style="{StaticResource SidebarButtonStyle}" Name="ChamCongBtn">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>
-                                <TextBlock Text="Chấm Công"/>
+                                <TextBlock Text="ScanChamCong"/>
                             </StackPanel>
                         </Button>
-
-                        <Button Style="{StaticResource SidebarButtonStyle}" Name="InforBtn">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
-                                <TextBlock Text="Thông tin"/>
-                            </StackPanel>
-                        </Button>
-
+                       
+                        
+                        
                         <Button Style="{StaticResource SidebarButtonStyle}" Name="SettingsBtn">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>
@@ -353,6 +348,20 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="📈" FontSize="16" Margin="0,0,10,0"/>
                                 <TextBlock Text="Reports"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="MyPayslip">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Lương của tôi"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="InforBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Thông tin"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>

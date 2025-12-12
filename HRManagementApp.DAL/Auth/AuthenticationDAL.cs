@@ -91,5 +91,40 @@ namespace HRManagementApp.DAL
 
             return false;
         }
+        
+        public bool ChangePassword(int maTK, string oldPassword, string newPassword)
+        {
+            // 1. Kiểm tra xem mật khẩu cũ có đúng không
+            string checkQuery = "SELECT MaTK FROM taikhoan WHERE MaTK = @MaTK AND MatKhau = @OldPass";
+    
+            var checkParams = new Dictionary<string, object>
+            {
+                { "@MaTK", maTK },
+                { "@OldPass", oldPassword }
+            };
+
+            DataTable dt = Database.ExecuteQuery(checkQuery, checkParams);
+
+            // Nếu không tìm thấy dòng nào => Mật khẩu cũ sai
+            if (dt.Rows.Count == 0)
+            {
+                return false; 
+            }
+
+            // 2. Thực hiện cập nhật mật khẩu mới
+            string updateQuery = "UPDATE taikhoan SET MatKhau = @NewPass WHERE MaTK = @MaTK";
+    
+            var updateParams = new Dictionary<string, object>
+            {
+                { "@NewPass", newPassword },
+                { "@MaTK", maTK }
+            };
+
+            // Gọi hàm thực thi lệnh UPDATE (trả về số dòng bị ảnh hưởng)
+            // Lưu ý: Class Database của bạn cần có hàm ExecuteNonQuery
+            int result = Database.ExecuteNonQuery(updateQuery, updateParams);
+
+            return result > 0;
+        }
     }
 }

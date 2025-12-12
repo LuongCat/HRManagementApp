@@ -140,47 +140,21 @@ namespace HRManagementApp.UI.Views
         }
         
         /// Thêm chức vụ mới (Cập nhật)
+        /// Thêm chức vụ mới (Code đã sửa)
         private void BtnThemCV_Click(object sender, RoutedEventArgs e)
         {
             var addWindow = new AddPositionWindow();
-
+            
             if (addWindow.ShowDialog() == true && addWindow.IsSaved)
             {
-                try
-                {
-                    // Tạo đối tượng ChucVu mới
-                    var newChucVu = new ChucVu
-                    {
-                        TenCV = addWindow.TenChucVu,
-                        LuongCB = addWindow.LuongCoBan,
-                        PhuCap = addWindow.PhuCap,
-                        TienPhuCapKiemNhiem = addWindow.PhuCapKiemNhiem,
-                        IsActive = addWindow.TrangThai
-                    };
+               
+                MessageBox.Show("Thêm chức vụ mới thành công!", "Thông báo",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    // Gọi service để thêm mới
-                    bool success = _chucVuService.InsertChucVu(newChucVu);
-
-                    if (success)
-                    {
-                        MessageBox.Show("Thêm chức vụ mới thành công!", "Thông báo",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-
-                        // Refresh danh sách
-                        LoadPositions();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Thêm chức vụ thất bại!", "Lỗi",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Lỗi khi thêm chức vụ: {ex.Message}", "Lỗi",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                
+                LoadPositions();
             }
+            
         }
 
 

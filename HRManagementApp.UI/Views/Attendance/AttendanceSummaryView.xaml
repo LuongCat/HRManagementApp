@@ -239,14 +239,14 @@
                         </DataGridTextColumn>
                         
                         <!-- Tổng ngày công -->
-                        <DataGridTemplateColumn Header="Tổng ngày công" Width="150">
+                        <DataGridTemplateColumn Header="Số ngày chấm công" Width="150">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border Background="#ECFDF5" 
                                             CornerRadius="6" 
                                             Padding="12,6"
                                             HorizontalAlignment="Center">
-                                        <TextBlock Text="{Binding TongNgayCong}" 
+                                        <TextBlock Text="{Binding SoNgayChamCong}" 
                                                    Foreground="#059669" 
                                                    FontWeight="Bold"
                                                    FontSize="15"
@@ -257,14 +257,32 @@
                         </DataGridTemplateColumn>
 
                         <!-- Điểm phạt -->
-                        <DataGridTemplateColumn Header="Điểm phạt trễ" Width="150">
+                        <DataGridTemplateColumn Header="số ngày đi trễ" Width="150">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border Background="#FEF2F2" 
                                             CornerRadius="6" 
                                             Padding="12,6"
                                             HorizontalAlignment="Center">
-                                        <TextBlock Text="{Binding DiemPhat}" 
+                                        <TextBlock Text="{Binding SoNgayDiTre}" 
+                                                   Foreground="#DC2626" 
+                                                   FontWeight="Bold"
+                                                   FontSize="15"
+                                                   HorizontalAlignment="Center"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        
+                        <DataGridTemplateColumn Header="số ngày vắng" Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="#FEF2F2" 
+                                            CornerRadius="6" 
+                                            Padding="12,6"
+                                            HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding SoNgayVang}" 
                                                    Foreground="#DC2626" 
                                                    FontWeight="Bold"
                                                    FontSize="15"

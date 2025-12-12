@@ -215,4 +215,47 @@ public class PhongBanReponsitory
             return false;
         }
     }
+    
+    
+    
+    /// <summary>
+    /// Lấy số lượng nhân viên trong phòng ban theo mã phòng ban
+    /// </summary>
+    /// <param name="maPB">Mã phòng ban</param>
+    /// <returns>Số lượng nhân viên. Trả về -1 nếu có lỗi.</returns>
+    public int CountEmployeesInDepartment(int maPB)
+    {
+        string query = @"
+            SELECT COUNT(*) 
+            FROM NhanVien
+            WHERE MaPB = @MaPB
+        ";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaPB", maPB }
+        };
+
+        try
+        {
+            DataTable data = Database.ExecuteQuery(query, parameters);
+
+            // Kiểm tra và chuyển đổi kết quả
+            if (data.Rows.Count > 0 && data.Rows[0][0] != DBNull.Value)
+            {
+                // COUNT(*) luôn trả về một giá trị kiểu số nguyên
+                return Convert.ToInt32(data.Rows[0][0]);
+            }
+
+            // Nếu không có kết quả (dù COUNT(*) luôn trả về 0 hoặc 1 dòng), 
+            // ta vẫn có thể coi là 0 nếu logic DB đảm bảo.
+            return 0; 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi khi lấy số nhân viên trong phòng ban {maPB}: {ex.Message}");
+            // Trả về một giá trị âm để báo hiệu lỗi
+            return -1; 
+        }
+    }
 }

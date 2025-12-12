@@ -11,6 +11,7 @@ namespace HRManagementApp.UI.Views
     public partial class RoleManagementWindow : Window
     {
         private NhanVien _targetEmployee;
+        private LuongService _luongService;
         
         // Giả lập Service - Hãy thay thế bằng Service thật của bạn
         private VaiTroNhanVienService _vaiTroNhanVienService; 
@@ -22,6 +23,7 @@ namespace HRManagementApp.UI.Views
             _targetEmployee = employee;
             _vaiTroNhanVienService = new VaiTroNhanVienService();
             _chucVuService = new ChucVuService();
+            _luongService = new LuongService();
             
             // Hiển thị tên nhân viên lên header
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
@@ -124,7 +126,20 @@ namespace HRManagementApp.UI.Views
             // Giả lập thêm vào list
             _targetEmployee.DanhSachChucVu.Add(newRole);
             
-            MessageBox.Show("Thêm vai trò thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, DateTime.Today);
+
+            if (isUnlocked)
+            {
+                MessageBox.Show($"thêm vai trò thành công! Bảng lương tháng {DateTime.Today} đã được mở chốt để tính lại.", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
+                MessageBox.Show("thêm vai trò thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            
             LoadEmployeeRoles();
             BtnClear_Click(null, null);
         }
@@ -143,7 +158,20 @@ namespace HRManagementApp.UI.Views
             // TODO: Gọi Service để Update DB
             _vaiTroNhanVienService.UpdateVaiTroNhanVien(selectedRole);
 
-            MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            
+            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, DateTime.Today);
+
+            if (isUnlocked)
+            {
+                MessageBox.Show($"sửa vai trò thành công! Bảng lương tháng {DateTime.Today} đã được mở chốt để tính lại.", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                // Chỉ thông báo sửa thành công, không nhắc gì tới lương vì chưa có bảng lương
+                MessageBox.Show("sửa vai trò thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
             LoadEmployeeRoles(); // Refresh Grid
             BtnClear_Click(null, null);
         }
@@ -161,7 +189,20 @@ namespace HRManagementApp.UI.Views
                  _vaiTroNhanVienService.DeleteVaiTroNhanVien(selectedRole.MaNV, selectedRole.MaCV);
                  
 
-                MessageBox.Show("Đã xóa vai trò!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+               
+                 // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+                 bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, DateTime.Today);
+
+                 if (isUnlocked)
+                 {
+                     MessageBox.Show($"xóa vai trò thành công! Bảng lương tháng {DateTime.Today} đã được mở chốt để tính lại.", 
+                         "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                 }
+                 else
+                 {
+                     // Chỉ thông báo xóa thành công, không nhắc gì tới lương vì chưa có bảng lương
+                     MessageBox.Show("xóa vai trò thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                 }
                 LoadEmployeeRoles();
                 BtnClear_Click(null, null);
             }

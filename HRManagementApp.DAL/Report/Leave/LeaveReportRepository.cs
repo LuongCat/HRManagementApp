@@ -53,6 +53,7 @@ namespace HRManagementApp.DAL.Report
                     AND DATE(@date) >= DATE(dt.NgayBatDau)
                     AND DATE(@date) <= DATE(dt.NgayKetThuc)
                 ";
+
                 parameters.Add("@date", date.Value.ToDateTime(TimeOnly.MinValue));
             }
 
@@ -63,7 +64,7 @@ namespace HRManagementApp.DAL.Report
                 parameters.Add("@status", status);
             }
 
-            query += " ORDER BY dt.NgayGui";
+            query += @" ORDER BY dt.NgayGui";
 
             return Database.ExecuteQuery(query, parameters);
         }

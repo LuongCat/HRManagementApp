@@ -84,6 +84,7 @@ namespace HRManagementApp.UI
             EditPayrollBtn.Click += (s, e) => NavigateTo("EditPayroll", s as Button);
             LogoutBtn.Click += LogoutBtn_Click; 
             AccountBtn.Click += (s, e) => NavigateTo("Account", s as Button);
+            RoleBtn.Click += (s, e) => NavigateTo("Role", s as Button);
         }
 
         private void NavigateTo(string section, Button clickedButton)
@@ -110,19 +111,91 @@ namespace HRManagementApp.UI
         {
             switch (section.ToLower())
             {
-                case "dashboard": ContentArea.Content = new Views.DashboardView(); break;
-                case "employees": ContentArea.Content = new Views.EmployeesManagementView(); break;
-                case "attendance": ContentArea.Content = new Views.AttendanceTagView(); break;
-                case "payrolltag": ContentArea.Content = new Views.PayrollTag(); break;
-                case "leave management": ContentArea.Content = new LeaveManagementView(); break;
-                case "reports": ContentArea.Content = new ReportView(); break;
-                case "settings": ContentArea.Content = new ForEmployeeManagementView(); break;
-                case "editpayroll": ContentArea.Content = new Views.EditPayroll(); break;
-                case "account": ContentArea.Content = new Views.AccountManagementView(); break;
-                case "roles": ContentArea.Content = new RoleManagementView(); break;
+                case "dashboard":
+                    LoadDoashboardSection();
+                    break;
+                case "employees":
+                    LoadEmployeeSection();
+                    break;
+                case "attendance":
+                    LoadAttendanceSection();
+                    break;
+                case "payrolltag":
+                    LoadPayrollSection();
+                    break;
+                case "leave management":
+                    LoadLeaveSection();
+                    break;
+                case "reports":
+                    LoadReportsSection();
+                    break;
+                case "settings":
+                    LoadSettingsSection();
+                    break;
+                case "editpayroll":
+                    LoadEditPayrollSection();
+                    break;
+                case "account":
+                    LoadAccountsSection();
+                    break;
+                case "role":
+                    LoadRoleSection();
+                    break;
             }
         }
 
+        private void LoadEditPayrollSection()
+        {
+            ContentArea.Content = new Views.EditPayroll();
+        }
+        
+        
+        private void LoadDoashboardSection()
+        {
+            ContentArea.Content = new Views.DashboardView();
+        }
+        private void LoadEmployeeSection()
+        {
+            ContentArea.Content = new Views.EmployeesManagementView();
+        }
+
+        private void LoadAttendanceSection()
+        {
+            ContentArea.Content = new Views.AttendanceTagView();
+        }
+
+        private void LoadPayrollSection()
+        {
+            ContentArea.Content = new Views.PayrollTag();
+            // Salary calculations, pay slips, tax deductions, etc.
+        }
+
+        private void LoadLeaveSection()
+        {
+            // Khởi tạo và hiển thị View quản lý đơn từ
+            ContentArea.Content = new LeaveManagementView(); 
+        }
+
+        private void LoadReportsSection()
+        {
+            ContentArea.Content = new ReportView(); 
+        }
+
+        private void LoadSettingsSection()
+        {
+             ContentArea.Content = new ForEmployeeManagementView();
+        }
+        private void LoadAccountsSection()
+        {
+            ContentArea.Content = new Views.AccountManagementView();
+
+        }
+
+        private void LoadRoleSection()
+        {
+            ContentArea.Content = new Views.RoleManagementView();
+        }
+        
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?",

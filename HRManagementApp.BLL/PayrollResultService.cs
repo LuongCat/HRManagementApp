@@ -91,11 +91,10 @@ public class PayrollResultService
         // ============================
         var luongRecord = nhanVien.Luongs?
             .FirstOrDefault(l => l.Thang == Month && l.Nam == Year);
-
-        int maLuong = 0;
+        
         if (luongRecord != null)
         {
-             maLuong = luongRecord.MaLuong;
+            result.maLuong = luongRecord.MaLuong; 
             result.TrangThai = luongRecord.TrangThai; 
         }
         else
@@ -121,7 +120,7 @@ public class PayrollResultService
         decimal? luongChinh = luongCoBan * heSoLuongCoBan + tongTienKiemNhiem;
         luongChinh = luongChinh / 26 * ketQuachamcong.SoNgayDiLam - luongChinh / 26 * 1/3*ketQuachamcong.DiemDiTre; 
         
-        
+        result.luongchinh = luongChinh;
         
         //viết hàm lưu các hệ số cần thiết vào bảng lương ở đây 
         result.LuongThucNhan =
@@ -143,13 +142,7 @@ public class PayrollResultService
             LuongThucNhan = result.LuongThucNhan,
         };
 
-        if (maLuong != 0)
-        {
-            _luongService.UpdateSalary(luong);
-        }else
-        {
-            _luongService.AddSalary(luong);
-        }
+        
         
         return result;
     }

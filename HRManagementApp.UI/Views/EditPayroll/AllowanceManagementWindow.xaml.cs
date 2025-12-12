@@ -14,12 +14,14 @@ namespace HRManagementApp.UI.Views
         
         // TODO: Inject Service phụ cấp
          private PhuCapService _phuCapService;
+         private LuongService _luongService;
 
         public AllowanceManagementWindow(NhanVien employee)
         {
             InitializeComponent();
             _targetEmployee = employee;
             _phuCapService = new PhuCapService();
+            _luongService = new LuongService();
             // Hiển thị info
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
 
@@ -77,6 +79,40 @@ namespace HRManagementApp.UI.Views
         // ==========================
         // CRUD ACTIONS
         // ==========================
+        
+        
+        
+        private void UnLockSalary(DateTime date)
+        {
+            try
+            {
+                int month = date.Month;
+                int year = date.Year;
+
+                // Tìm bảng lương của tháng đó
+                var luong = _luongService.GetSalaryByMonthYear(_targetEmployee.MaNV, month, year);
+                
+                if (luong != null)
+                {
+                    Console.WriteLine(luong.ChotLuong);
+                    _luongService.UpdateChotLuong(luong.MaLuong, "chưa chốt");
+                    _luongService.UpdateTrangThai(luong.MaLuong, "Chưa trả"); 
+                    
+                    // (Optional) Thông báo nhẹ cho người dùng biết
+                     MessageBox.Show($"Bảng lương tháng {month}/{year} đã được mở chốt để tính lại.", "Thông báo hệ thống");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi mở chốt lương: " + ex.Message);
+            }
+        }
+        
+        
+        
+        
+        
+        
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             if (!ValidateInput()) return;
@@ -96,6 +132,8 @@ namespace HRManagementApp.UI.Views
             
             // Giả lập
             _targetEmployee.PhuCaps.Add(newItem);
+            
+            UnLockSalary(newItem.ApDungTuNgay);
 
             MessageBox.Show("Thêm phụ cấp thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             LoadData();
@@ -106,7 +144,10 @@ namespace HRManagementApp.UI.Views
         {
             if (DgAllowances.SelectedItem is not PhuCapNhanVien selected) return;
             if (!ValidateInput()) return;
-
+            
+            // Lưu lại ngày cũ trước khi sửa để mở chốt cả tháng cũ (nếu user đổi ngày áp dụng sang tháng khác)
+            DateTime oldDate = selected.ApDungTuNgay;
+            
             // Update Value
             selected.TenPhuCap = TxtTenPhuCap.Text.Trim();
             selected.SoTien = decimal.Parse(TxtSoTien.Text);
@@ -115,6 +156,12 @@ namespace HRManagementApp.UI.Views
 
             // TODO: Service Call ->
             _phuCapService.UpdatePhuCap(selected);
+            UnLockSalary(selected.ApDungTuNgay);
+            // Nếu tháng cũ khác tháng mới, mở chốt cả tháng cũ
+            if (oldDate.Month != selected.ApDungTuNgay.Month || oldDate.Year != selected.ApDungTuNgay.Year)
+            {
+                UnLockSalary(oldDate);
+            }
 
             MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             LoadData();
@@ -132,6 +179,7 @@ namespace HRManagementApp.UI.Views
 
                 // Giả lập
                 _targetEmployee.PhuCaps.Remove(selected);
+                UnLockSalary(selected.ApDungTuNgay);
 
                 MessageBox.Show("Đã xóa phụ cấp!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                 LoadData();

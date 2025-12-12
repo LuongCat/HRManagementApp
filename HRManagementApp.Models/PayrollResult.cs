@@ -19,6 +19,8 @@ public class PayrollResult
     public decimal TongThue { get; set; }
     
     public int? TongNgayCong { get; set; }
+    
+    public decimal? luongchinh {get; set;}
     public decimal? LuongThucNhan { get; set; }
     
     public string TrangThai { get; set; }

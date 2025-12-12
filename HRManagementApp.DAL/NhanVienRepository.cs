@@ -322,9 +322,9 @@ namespace HRManagementApp.DAL
                 // 1. Insert nhân viên
                 string insertNV = @"
                     INSERT INTO NhanVien
-                    (HoTen, NgaySinh, SoCCCD, DienThoai, GioiTinh, NgayVaoLam, TrangThai)
+                    (HoTen, NgaySinh,MaPB, SoCCCD, DienThoai, GioiTinh, NgayVaoLam, TrangThai)
                     VALUES
-                    (@HoTen, @NgaySinh, @SoCCCD, @DienThoai, @GioiTinh, @NgayVaoLam, @TrangThai);
+                    (@HoTen, @NgaySinh,@MaPB,@SoCCCD, @DienThoai, @GioiTinh, @NgayVaoLam, @TrangThai);
                     SELECT LAST_INSERT_ID();
                 ";
 
@@ -333,6 +333,7 @@ namespace HRManagementApp.DAL
                     { "@HoTen", nv.HoTen },
                     { "@NgaySinh", (object?)nv.NgaySinh ?? DBNull.Value },
                     { "@SoCCCD", (object?)nv.SoCCCD ?? DBNull.Value },
+                    { "@MaPB", nv.MaPB },
                     { "@DienThoai", (object?)nv.DienThoai ?? DBNull.Value },
                     { "@GioiTinh", nv.GioiTinh },
                     { "@NgayVaoLam", (object?)nv.NgayVaoLam ?? DBNull.Value },
@@ -349,27 +350,25 @@ namespace HRManagementApp.DAL
                 // 2. Insert mapping Chức Vụ + Phòng Ban
                 foreach (var cv in nv.ChucVu)
                 {
-                    foreach (var pb in nv.PhongBan)
+                    
+                    string insertMap = @"
+                        INSERT INTO NhanVien_ChucVu
+                        (MaNV, MaCV, HeSoPhuCapKiemNhiem, LoaiChucVu, GhiChu)
+                        VALUES
+                        (@MaNV, @MaCV, @HeSo, @Loai, @GhiChu)
+                    ";
+
+                    var paramMap = new Dictionary<string, object>
                     {
-                        string insertMap = @"
-                            INSERT INTO NhanVien_ChucVu
-                            (MaNV, MaCV, MaPB, HeSoPhuCapKiemNhiem, LoaiChucVu, GhiChu)
-                            VALUES
-                            (@MaNV, @MaCV, @MaPB, @HeSo, @Loai, @GhiChu)
-                        ";
+                        { "@MaNV", newMaNV },
+                        { "@MaCV", cv.MaCV },
+                        { "@HeSo", 0 },
+                        { "@Loai", "Chính thức" },
+                        { "@GhiChu", "" }
+                    };
 
-                        var paramMap = new Dictionary<string, object>
-                        {
-                            { "@MaNV", newMaNV },
-                            { "@MaCV", cv.MaCV },
-                            { "@MaPB", pb.MaPB },
-                            { "@HeSo", 0 },
-                            { "@Loai", "Chính thức" },
-                            { "@GhiChu", "" }
-                        };
-
-                        Database.ExecuteNonQueryTransaction(insertMap, paramMap, conn, tran);
-                    }
+                    Database.ExecuteNonQueryTransaction(insertMap, paramMap, conn, tran);
+                    
                 }
 
                 tran.Commit();

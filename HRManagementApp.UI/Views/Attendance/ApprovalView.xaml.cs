@@ -28,7 +28,7 @@ namespace HRManagementApp.UI.Views
             if (model != null)
             {
                 // Lấy Role thực tế từ Session
-                int currentRole = UserSession.CurrentRoleID;
+                String currentRole = UserSession.VaiTro;
 
                 // Mở cửa sổ chi tiết
                 var detailWin = new ApprovalDetailWindow(model, currentRole);

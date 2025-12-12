@@ -12,4 +12,6 @@ public class Luong
     public decimal? LuongThucNhan { get; set; }
     
     public string TrangThai { get; set; } // Enum: "Chưa trả", "Đã trả"
+    
+    public string ChotLuong { get; set; }// Enum đã chốt , chưa chốt 
 }

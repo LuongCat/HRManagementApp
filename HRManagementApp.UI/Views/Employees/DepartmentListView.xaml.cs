@@ -60,12 +60,19 @@ namespace HRManagementApp.UI.Views
 
         private string GetTruongPhong(int maPB)
         {
-            return "Chưa có trưởng phòng";
+
+            var truongphong= _phongBanService.GetDeparmentHead(maPB);
+            if (truongphong == null)
+            {
+                return "Chưa có trưởng phòng";
+            }
+
+            return truongphong.HoTen;
         }
 
         private int GetSoNhanVien(int maPB)
         {
-            return 0;
+            return _phongBanService.CountEmployeesInDepartment(maPB);
         }
 
         private void BtnView_Click(object sender, RoutedEventArgs e)

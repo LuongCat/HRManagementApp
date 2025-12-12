@@ -22,7 +22,7 @@ namespace HRManagementApp.models
 
         // Kiêm nhiệm
         public bool CoKiemNhiem { get; set; }
-        public double HeSoKiemNhiem { get; set; }
+        public decimal HeSoKiemNhiem { get; set; }
         public decimal TienKiemNhiem { get; set; }
 
         // Phần Khấu Trừ

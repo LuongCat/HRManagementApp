@@ -9,7 +9,6 @@ public class ChamCongRepository
     {
         var listChamCong = new List<ChamCong>();
 
-        // 1. Câu lệnh SQL lấy tất cả bản ghi của nhân viên, sắp xếp ngày mới nhất lên đầu
         string query = @"
         SELECT MaCC, MaNV, Ngay, GioVao, GioRa, ThoiGianLam
         FROM chamcong
@@ -122,7 +121,7 @@ public class ChamCongRepository
         return listChamCong;
     }
 
-    public List<ChamCong> GetAllAttendancByMonthYear(int Day ,int Month, int Year)
+    public List<ChamCong> GetAllAttendancByMonthYear(int Day, int Month, int Year)
     {
         var listChamCong = new List<ChamCong>();
         string query = @"
@@ -139,10 +138,10 @@ public class ChamCongRepository
             { "@Thang", Month },
             { "@Nam", Year },
             { "@Ngay", Day },
-        }; 
-        
+        };
+
         DataTable data = Database.ExecuteQuery(query, parameters);
-        
+
         if (data != null && data.Rows.Count > 0)
         {
             foreach (DataRow row in data.Rows)
@@ -167,7 +166,7 @@ public class ChamCongRepository
                     GioRa = row["GioRa"] != DBNull.Value
                         ? (TimeSpan)row["GioRa"]
                         : (TimeSpan?)null,
-                    
+
                     // Xử lý Thời gian làm (Cột tự tính)
                     ThoiGianLam = row["ThoiGianLam"] != DBNull.Value
                         ? (TimeSpan)row["ThoiGianLam"]
@@ -177,80 +176,51 @@ public class ChamCongRepository
                 listChamCong.Add(item);
             }
         }
-        
+
         return listChamCong;
     }
-    
-    
-    
-    
+
+
     public KetQuaChamCong GetChamCongStatistics(int maNV, int thang, int nam)
     {
         var ketQua = new KetQuaChamCong();
-        
+
         string query = @"
         SELECT ThoiGianLam
         FROM chamcong
         WHERE MaNV = @MaNV 
           AND MONTH(Ngay) = @Thang 
           AND YEAR(Ngay) = @Nam
-          AND ThoiGianLam IS NOT NULL;";
+          AND ThoiGianLam IS NOT NULL;
+    ";
 
         var parameters = new Dictionary<string, object>
         {
             { "@MaNV", maNV },
             { "@Thang", thang },
-            { "@Nam", nam } 
+            { "@Nam", nam }
         };
 
-      
         DataTable data = Database.ExecuteQuery(query, parameters);
 
-        // 3. Xử lý tính toán
         if (data != null && data.Rows.Count > 0)
         {
             foreach (DataRow row in data.Rows)
             {
-                if (row["ThoiGianLam"] == DBNull.Value) continue;
+                TimeSpan gio = (TimeSpan)row["ThoiGianLam"];
+                decimal soGio = (decimal)gio.TotalHours;
 
-                // MySQL TIME -> C# TimeSpan
-                TimeSpan thoiGianLam = (TimeSpan)row["ThoiGianLam"];
-                double soGio = thoiGianLam.TotalHours;
-
-                // --- LOGIC TÍNH CÔNG & ĐI TRỄ ---
-
-                // Trường hợp 1: Dưới 4 tiếng -> KHÔNG TÍNH CÔNG
-                if (soGio < 4)
-                {
-                    continue; // Bỏ qua ngày này
-                }
-
-                // Trường hợp 2: Từ 4 đến dưới 5 tiếng -> TÍNH CÔNG, PHẠT +2
-                else if (soGio >= 4 && soGio < 5)
-                {
-                    ketQua.SoNgayDiLam++;
-                    ketQua.DiemDiTre += 2;
-                }
-
-                // Trường hợp 3: Từ 5 đến dưới 6 tiếng -> TÍNH CÔNG, PHẠT +1
-                else if (soGio >= 5 && soGio < 6)
-                {
-                    ketQua.SoNgayDiLam++;
-                    ketQua.DiemDiTre += 1;
-                }
-
-                // Trường hợp 4: Trên 6 tiếng -> TÍNH CÔNG, KHÔNG PHẠT
-                else
-                {
-                    ketQua.SoNgayDiLam++;
-                }
+                ketQua.SoGioDiLam += soGio;
             }
         }
 
+        // Quy ước: 1 ngày công = 8 giờ
+        ketQua.SoNgayDiLam = (int)ketQua.SoGioDiLam / 8;
+
         return ketQua;
     }
-    
-    
+
+
     // =========================================================
     // PHẦN 2: BỔ SUNG THÊM - SỬA - XÓA (CRUD)
     // =========================================================
@@ -266,6 +236,7 @@ public class ChamCongRepository
         {
             return MapDataRowToChamCong(data.Rows[0]);
         }
+
         return null;
     }
 
@@ -334,57 +305,185 @@ public class ChamCongRepository
             ThoiGianLam = row["ThoiGianLam"] != DBNull.Value ? (TimeSpan)row["ThoiGianLam"] : (TimeSpan?)null
         };
     }
-    
-    
 
-// 1. Lấy thông tin chấm công của ngày hôm nay (để biết đang Vào hay Ra)
-    public ChamCong GetChamCongToday(int maNV)
+
+    public ChamCong GetTodayRecord(int maNV)
     {
-        string query = @"
-        SELECT * FROM chamcong 
-        WHERE MaNV = @MaNV 
-        AND Ngay = CURDATE() 
-        LIMIT 1"; // Chỉ lấy bản ghi hôm nay
+        string query = "SELECT * FROM chamcong WHERE MaNV = @MaNV AND Ngay = CURRENT_DATE() LIMIT 1";
+        var param = new Dictionary<string, object> { { "@MaNV", maNV } };
 
-        var parameters = new Dictionary<string, object> { { "@MaNV", maNV } };
-        DataTable data = Database.ExecuteQuery(query, parameters);
-
-        if (data != null && data.Rows.Count > 0)
+        DataTable dt = Database.ExecuteQuery(query, param);
+        if (dt.Rows.Count > 0)
         {
-            DataRow row = data.Rows[0];
-            return new ChamCong
-            {
-                MaCC = Convert.ToInt32(row["MaCC"]),
-                MaNV = Convert.ToInt32(row["MaNV"]),
-                Ngay = row["Ngay"] != DBNull.Value ? Convert.ToDateTime(row["Ngay"]) : null,
-                GioVao = row["GioVao"] != DBNull.Value ? (TimeSpan)row["GioVao"] : null,
-                GioRa = row["GioRa"] != DBNull.Value ? (TimeSpan)row["GioRa"] : null,
-                ThoiGianLam = row["ThoiGianLam"] != DBNull.Value ? (TimeSpan)row["ThoiGianLam"] : null
-            };
+            return MapDataRow(dt.Rows[0]);
         }
-        return null; // Chưa chấm công hôm nay
+
+        return null;
     }
 
-// 2. Hàm Check In (Chấm công vào)
     public bool CheckIn(int maNV)
     {
-        // Insert dòng mới với Giờ Vào là giờ hiện tại (CURTIME)
-        string query = @"INSERT INTO chamcong (MaNV, Ngay, GioVao) VALUES (@MaNV, CURDATE(), CURTIME())";
-    
-        var parameters = new Dictionary<string, object> { { "@MaNV", maNV } };
-    
-        // Giả sử class Database có hàm ExecuteNonQuery trả về số dòng bị ảnh hưởng
-        return Database.ExecuteNonQuery(query, parameters) > 0; 
+        // Insert bản ghi mới với Giờ vào là hiện tại, Giờ ra là NULL
+        string query = @"INSERT INTO chamcong (MaNV, Ngay, GioVao, GioRa) 
+                             VALUES (@MaNV, CURRENT_DATE(), CURRENT_TIME(), NULL)";
+
+        var param = new Dictionary<string, object> { { "@MaNV", maNV } };
+        return Database.ExecuteNonQuery(query, param) > 0;
     }
 
-// 3. Hàm Check Out (Chấm công ra)
     public bool CheckOut(int maCC)
     {
-        // Update dòng hiện tại với Giờ Ra là giờ hiện tại
-        string query = @"UPDATE chamcong SET GioRa = CURTIME() WHERE MaCC = @MaCC";
-    
-        var parameters = new Dictionary<string, object> { { "@MaCC", maCC } };
-    
-        return Database.ExecuteNonQuery(query, parameters) > 0;
+        string query = "UPDATE chamcong SET GioRa = CURRENT_TIME() WHERE MaCC = @MaCC";
+        var param = new Dictionary<string, object> { { "@MaCC", maCC } };
+        return Database.ExecuteNonQuery(query, param) > 0;
+    }
+
+    public List<ChamCong> GetByMonth(int maNV, int month, int year)
+    {
+        List<ChamCong> list = new List<ChamCong>();
+        string query = @"SELECT *, 
+                             TIMEDIFF(GioRa, GioVao) as ThoiGianLamTinhToan 
+                             FROM chamcong 
+                             WHERE MaNV = @MaNV AND MONTH(Ngay) = @Month AND YEAR(Ngay) = @Year
+                             ORDER BY Ngay ASC";
+
+        var param = new Dictionary<string, object>
+        {
+            { "@MaNV", maNV },
+            { "@Month", month },
+            { "@Year", year }
+        };
+
+        DataTable dt = Database.ExecuteQuery(query, param);
+        foreach (DataRow row in dt.Rows)
+        {
+            var cc = MapDataRow(row);
+            // Nếu DB chưa có cột ảo ThoiGianLam thì lấy từ tính toán
+            if (row["ThoiGianLamTinhToan"] != DBNull.Value)
+            {
+                cc.ThoiGianLam = (TimeSpan)row["ThoiGianLamTinhToan"];
+            }
+
+            list.Add(cc);
+        }
+
+        return list;
+    }
+
+    public List<ChamCong> GetByDate(int maNV, DateTime date)
+    {
+        List<ChamCong> list = new List<ChamCong>();
+        string query = "SELECT * FROM chamcong WHERE MaNV = @MaNV AND Ngay = @Ngay";
+        var param = new Dictionary<string, object>
+        {
+            { "@MaNV", maNV },
+            { "@Ngay", date.ToString("yyyy-MM-dd") }
+        };
+        DataTable dt = Database.ExecuteQuery(query, param);
+        foreach (DataRow row in dt.Rows) list.Add(MapDataRow(row));
+        return list;
+    }
+
+    private ChamCong MapDataRow(DataRow row)
+    {
+        return new ChamCong
+        {
+            MaCC = Convert.ToInt32(row["MaCC"]),
+            MaNV = Convert.ToInt32(row["MaNV"]),
+            Ngay = row["Ngay"] != DBNull.Value ? Convert.ToDateTime(row["Ngay"]) : null,
+            GioVao = row["GioVao"] != DBNull.Value ? (TimeSpan)row["GioVao"] : null,
+            GioRa = row["GioRa"] != DBNull.Value ? (TimeSpan)row["GioRa"] : null,
+            ThoiGianLam = row["ThoiGianLam"] != DBNull.Value ? (TimeSpan)row["ThoiGianLam"] : null
+        };
+    }
+
+
+    public AttendanceMonthlyResult GetAttendanceStatistics(int maNV, int thang, int nam)
+    {
+        AttendanceMonthlyResult result = new AttendanceMonthlyResult();
+
+        // 1. Cấu hình ngày bắt đầu và kết thúc tháng
+        DateTime startDate = new DateTime(nam, thang, 1);
+        DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+
+        // 2. Câu truy vấn SQL
+        // LƯU Ý QUAN TRỌNG: Đã sửa 'SELECT cc.Ngay' thành 'SELECT days.Ngay' 
+        // để lấy được ngày kể cả khi nhân viên không chấm công.
+        string query = @"
+    SELECT 
+        days.Ngay, 
+        cc.GioVao,
+        cc.GioRa,
+        cal.GioBatDau
+    FROM (
+        SELECT DATE(@StartDate + INTERVAL (a.a + 10*b.a + 100*c.a) DAY) AS Ngay
+        FROM 
+            (SELECT 0 a UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 
+                    UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+            (SELECT 0 a UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 
+                    UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b,
+            (SELECT 0 a UNION SELECT 1 UNION SELECT 2) c
+    ) AS days
+    LEFT JOIN chamcong cc 
+        ON cc.Ngay = days.Ngay AND cc.MaNV = @MaNV
+    LEFT JOIN (SELECT GioBatDau FROM calam LIMIT 1) cal 
+        ON 1=1
+    WHERE days.Ngay BETWEEN @StartDate AND @EndDate;
+    ";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaNV", maNV },
+            { "@StartDate", startDate },
+            { "@EndDate", endDate }
+        };
+
+        // Thực thi truy vấn
+        DataTable dt = Database.ExecuteQuery(query, parameters);
+
+        // 3. Biến đếm
+        int soChamCong = 0;
+        int soDiTre = 0;
+        int soVang = 0;
+
+        // 4. Duyệt từng ngày trong tháng
+        foreach (DataRow row in dt.Rows)
+        {
+            // Lấy thông tin ngày hiện tại (Quan trọng để kiểm tra Chủ nhật)
+            DateTime ngayHienTai = Convert.ToDateTime(row["Ngay"]);
+
+            TimeSpan? gioVao = row["GioVao"] != DBNull.Value ? (TimeSpan?)row["GioVao"] : null;
+            TimeSpan? caBatDau = row["GioBatDau"] != DBNull.Value ? (TimeSpan?)row["GioBatDau"] : null;
+
+            // --- TRƯỜNG HỢP 1: KHÔNG CÓ DỮ LIỆU CHẤM CÔNG ---
+            if (!gioVao.HasValue)
+            {
+                // Nếu là Chủ nhật -> Bỏ qua, không tính là vắng
+                if (ngayHienTai.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    continue;
+                }
+
+                // Nếu là ngày thường mà không chấm -> Tính vắng
+                soVang++;
+                continue;
+            }
+
+            // --- TRƯỜNG HỢP 2: CÓ CHẤM CÔNG ---
+            soChamCong++;
+
+            // Kiểm tra đi trễ (Trễ nếu vào sau giờ bắt đầu + 15 phút)
+            if (caBatDau.HasValue && gioVao.Value > caBatDau.Value.Add(TimeSpan.FromMinutes(15)))
+            {
+                soDiTre++;
+            }
+        }
+
+        // 5. Gán kết quả
+        result.SoNgayChamCong = soChamCong;
+        result.SoNgayDiTre = soDiTre;
+        result.SoNgayVang = soVang;
+
+        return result;
     }
 }

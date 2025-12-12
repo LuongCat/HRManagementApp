@@ -84,4 +84,25 @@ public static class Database
         conn.Open();
         return cmd.ExecuteScalar();
     }
+    
+    
+    // Hàm ExecuteScalar có hỗ trợ tham số (Overload)
+    public static object ExecuteScalar(string query, Dictionary<string, object> parameters)
+    {
+        using var conn = GetConnection();
+        using var cmd = new MySqlCommand(query, conn);
+
+        // Duyệt qua Dictionary và thêm tham số vào Command
+        if (parameters != null)
+        {
+            foreach (var param in parameters)
+            {
+                // Kiểm tra null để tránh lỗi DB, nếu null thì truyền DBNull.Value
+                cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+            }
+        }
+    
+        conn.Open();
+        return cmd.ExecuteScalar();
+    }
 }

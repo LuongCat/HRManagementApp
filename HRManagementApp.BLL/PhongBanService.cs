@@ -52,4 +52,9 @@ public class PhongBanService
     {
         return _phongBanReponsitory.GetDeparmentHead(maPB);
     }
+
+    public int CountEmployeesInDepartment(int maPB)
+    {
+        return _phongBanReponsitory.CountEmployeesInDepartment(maPB);
+    }
 }

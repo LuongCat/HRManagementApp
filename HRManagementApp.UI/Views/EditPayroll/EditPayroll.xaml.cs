@@ -145,7 +145,7 @@ namespace HRManagementApp.UI.Views
             if (employee != null)
             {
                 // Mở cửa sổ tổng hợp
-                var summaryWindow = new EmployeeSummaryWindow(employee);
+                var summaryWindow = new EmployeeSummaryWindow(employee,12,2025);
                 summaryWindow.ShowDialog();
             }
         }

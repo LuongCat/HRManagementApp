@@ -1,6 +1,8 @@
 namespace HRManagementApp.DAL;
+
 using HRManagementApp.models;
 using System.Data;
+
 public class LuongRepository
 {
     public List<Luong> GetAllSalary()
@@ -11,21 +13,12 @@ public class LuongRepository
         List<Luong> list = new List<Luong>();
         foreach (DataRow row in dt.Rows)
         {
-            list.Add(new Luong
-            {
-                MaLuong = int.Parse(row["MaLuong"].ToString()),
-                MaNV = int.Parse(row["MaNV"].ToString()),
-                Thang = int.Parse(row["Thang"].ToString()),
-                Nam = int.Parse(row["Nam"].ToString()),
-                TongNgayCong = int.Parse(row["TongNgayCong"].ToString()),
-                TienLuong = decimal.Parse(row["TienLuong"].ToString()),
-                LuongThucNhan = decimal.Parse(row["LuongThucNhan"].ToString()),
-                TrangThai = row["TrangThai"].ToString()
-            });
+            list.Add(MapDataRowToLuong(row));
         }
 
         return list;
     }
+
     // Lấy theo mã nhân viên
     public List<Luong> GetSalaryByMaNV(int maNV)
     {
@@ -36,20 +29,30 @@ public class LuongRepository
         List<Luong> list = new List<Luong>();
         foreach (DataRow row in dt.Rows)
         {
-            list.Add(new Luong
-            {
-                MaLuong = int.Parse(row["MaLuong"].ToString()),
-                MaNV = int.Parse(row["MaNV"].ToString()),
-                Thang = int.Parse(row["Thang"].ToString()),
-                Nam = int.Parse(row["Nam"].ToString()),
-                TongNgayCong = int.Parse(row["TongNgayCong"].ToString()),
-                TienLuong = decimal.Parse(row["TienLuong"].ToString()),
-                LuongThucNhan = decimal.Parse(row["LuongThucNhan"].ToString()),
-                TrangThai = row["TrangThai"].ToString()
-            });
+            list.Add(MapDataRowToLuong(row));
         }
 
         return list;
+    }
+    
+    // Tạo hàm ánh xạ riêng để tái sử dụng
+    private Luong MapDataRowToLuong(DataRow row)
+    {
+        return new Luong
+        {
+            MaLuong = Convert.ToInt32(row["MaLuong"]),
+            MaNV = Convert.ToInt32(row["MaNV"]),
+            Thang = Convert.ToInt32(row["Thang"]),
+            Nam = Convert.ToInt32(row["Nam"]),
+            
+            // Xử lý các thuộc tính nullable
+            TongNgayCong = row["TongNgayCong"] != DBNull.Value ? (int?)Convert.ToInt32(row["TongNgayCong"]) : null,
+            TienLuong = row["TienLuong"] != DBNull.Value ? (decimal?)Convert.ToDecimal(row["TienLuong"]) : null,
+            LuongThucNhan = row["LuongThucNhan"] != DBNull.Value ? (decimal?)Convert.ToDecimal(row["LuongThucNhan"]) : null,
+            
+            TrangThai = row["TrangThai"]?.ToString() ?? "Chưa trả",
+            ChotLuong = row["ChotLuong"]?.ToString() ?? "Chưa chốt",
+        };
     }
 
     public Luong GetSalaryByMonthYear(int maNV, int thang, int nam)
@@ -82,28 +85,61 @@ public class LuongRepository
             TongNgayCong = int.Parse(row["TongNgayCong"].ToString()),
 
             // Nếu một số cột có thể NULL trong DB, dùng TryParse để tránh lỗi
-            TienLuong = row["LuongCoBan"] != DBNull.Value ? decimal.Parse(row["LuongCoBan"].ToString()) : 0,
-            LuongThucNhan = row["LuongThucNhan"] != DBNull.Value ? decimal.Parse(row["LuongThucNhan"].ToString()) : 0
+            TienLuong = row["TienLuong"] != DBNull.Value ? decimal.Parse(row["TienLuong"].ToString()) : 0,
+            LuongThucNhan = row["LuongThucNhan"] != DBNull.Value ? decimal.Parse(row["LuongThucNhan"].ToString()) : 0,
+            ChotLuong = row["ChotLuong"].ToString(),
         };
     }
 
-    
+
     // Thêm mới
     public bool AddSalary(Luong luong)
     {
-        string query = @"INSERT INTO luong (MaNV, Thang, Nam, TongNgayCong,TienLuong,LuongThucNhan, TrangThai)
-                         VALUES (@MaNV, @Thang, @Nam, @TongNgayCong, @TienLuong,@LuongThucNhan, @TrangThai)";
+        string query = @"INSERT INTO luong (MaNV, Thang, Nam, TongNgayCong,TienLuong,LuongThucNhan, TrangThai,ChotLuong)
+                         VALUES (@MaNV, @Thang, @Nam, @TongNgayCong, @TienLuong,@LuongThucNhan, @TrangThai, @ChotLuong)";
         var parameters = new Dictionary<string, object>
         {
-            {"@MaNV", luong.MaNV },
-            {"@Thang", luong.Thang },
-            {"@Nam", luong.Nam },
-            {"@TongNgayCong", luong.TongNgayCong },
-            {"@TienLuong", luong.TienLuong },
-            {"@LuongThucNhan", luong.LuongThucNhan },
-            {"@TrangThai", luong.TrangThai }
+            { "@MaNV", luong.MaNV },
+            { "@Thang", luong.Thang },
+            { "@Nam", luong.Nam },
+            { "@TongNgayCong", luong.TongNgayCong },
+            { "@TienLuong", luong.TienLuong },
+            { "@LuongThucNhan", luong.LuongThucNhan },
+            { "@TrangThai", luong.TrangThai },
+            { "@ChotLuong", string.IsNullOrEmpty(luong.ChotLuong) ? "Chưa chốt" : luong.ChotLuong }
         };
         return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
+    public int AddSalaryReturnID(Luong luong)
+    {
+        // Câu lệnh SQL bao gồm cả SELECT LAST_INSERT_ID() ở cuối
+        string query = @"
+        INSERT INTO luong (MaNV, Thang, Nam, TongNgayCong, TienLuong, LuongThucNhan, TrangThai, ChotLuong)
+        VALUES (@MaNV, @Thang, @Nam, @TongNgayCong, @TienLuong, @LuongThucNhan, @TrangThai, @ChotLuong);
+        SELECT LAST_INSERT_ID();"; 
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaNV", luong.MaNV },
+            { "@Thang", luong.Thang },
+            { "@Nam", luong.Nam },
+            { "@TongNgayCong", luong.TongNgayCong ?? 0 },
+            { "@TienLuong", luong.TienLuong ?? 0 },
+            { "@LuongThucNhan", luong.LuongThucNhan ?? 0 },
+            { "@TrangThai", string.IsNullOrEmpty(luong.TrangThai) ? "Chưa trả" : luong.TrangThai },
+            { "@ChotLuong", string.IsNullOrEmpty(luong.ChotLuong) ? "Chưa chốt" : luong.ChotLuong }
+        };
+
+        // Gọi hàm ExecuteScalar mới viết
+        object result = Database.ExecuteScalar(query, parameters);
+
+        // Chuyển đổi kết quả về int an toàn
+        if (result != null && result != DBNull.Value)
+        {
+            return Convert.ToInt32(result);
+        }
+    
+        return 0; // Thất bại
     }
 
     // Sửa
@@ -111,18 +147,19 @@ public class LuongRepository
     {
         string query = @"UPDATE luong
                          SET MaNV=@MaNV, Thang=@Thang, Nam=@Nam, TongNgayCong=@TongNgayCong,TienLuong=@TienLuong ,
-                             LuongThucNhan=@LuongThucNhan, TrangThai=@TrangThai
+                             LuongThucNhan=@LuongThucNhan, TrangThai=@TrangThai ,ChotLuong = @ChotLuong
                          WHERE MaLuong=@MaLuong";
         var parameters = new Dictionary<string, object>
         {
-            {"@MaNV", luong.MaNV },
-            {"@Thang", luong.Thang },
-            {"@Nam", luong.Nam },
-            {"@TongNgayCong", luong.TongNgayCong },
-            {"@TienLuong", luong.TienLuong },
-            {"@LuongThucNhan", luong.LuongThucNhan },
-            {"@TrangThai", luong.TrangThai },
-            {"@MaLuong", luong.MaLuong }
+            { "@MaNV", luong.MaNV },
+            { "@Thang", luong.Thang },
+            { "@Nam", luong.Nam },
+            { "@TongNgayCong", luong.TongNgayCong },
+            { "@TienLuong", luong.TienLuong },
+            { "@LuongThucNhan", luong.LuongThucNhan },
+            { "@TrangThai", luong.TrangThai },
+            { "@MaLuong", luong.MaLuong },
+            { "@ChotLuong", luong.ChotLuong }
         };
         return Database.ExecuteNonQuery(query, parameters) > 0;
     }
@@ -133,6 +170,142 @@ public class LuongRepository
         string query = "DELETE FROM luong WHERE MaLuong=@MaLuong";
         var parameters = new Dictionary<string, object> { { "@MaLuong", maLuong } };
         return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
+
+
+    // ==========================================
+    // CÁC HÀM MỚI THÊM THEO YÊU CẦU
+    // ==========================================
+
+    /// <summary>
+    /// Thay đổi trạng thái thanh toán lương (VD: "Đã thanh toán", "Chưa thanh toán")
+    /// </summary>
+    public bool UpdateTrangThai(int maLuong, string trangThaiMoi)
+    {
+        string query = "UPDATE Luong SET TrangThai = @TrangThai WHERE MaLuong = @MaLuong";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@TrangThai", trangThaiMoi },
+            { "@MaLuong", maLuong }
+        };
+
+        return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
+
+    /// <summary>
+    /// Thay đổi trạng thái chốt lương (VD: "Đã chốt", "Chưa chốt")
+    /// </summary>
+    public bool UpdateChotLuong(int maLuong, string trangThaiChot)
+    {
+        string query = "UPDATE Luong SET ChotLuong = @ChotLuong WHERE MaLuong = @MaLuong";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@ChotLuong", trangThaiChot },
+            { "@MaLuong", maLuong }
+        };
+
+        return Database.ExecuteNonQuery(query, parameters) > 0;
+    }
+
+    /// <summary>
+    /// Lấy trạng thái chốt lương hiện tại của nhân viên trong tháng/năm cụ thể
+    /// </summary>
+    /// <returns>Chuỗi trạng thái (VD: "Đã chốt") hoặc null nếu không tìm thấy bảng lương</returns>
+    public string GetChotLuongStatus(int maNV, int thang, int nam)
+    {
+        string query = "SELECT ChotLuong FROM Luong WHERE MaNV = @MaNV AND Thang = @Thang AND Nam = @Nam";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@MaNV", maNV },
+            { "@Thang", thang },
+            { "@Nam", nam }
+        };
+
+        DataTable dt = Database.ExecuteQuery(query, parameters);
+
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            // Kiểm tra DBNull để tránh lỗi
+            if (dt.Rows[0]["ChotLuong"] != DBNull.Value)
+            {
+                return dt.Rows[0]["ChotLuong"].ToString();
+            }
+        }
+
+        return null; // Trả về null nếu chưa có bảng lương hoặc giá trị null
+    }
+
+    /// <summary>
+    /// (Tùy chọn) Lấy trạng thái chốt lương theo Mã Lương trực tiếp
+    /// </summary>
+    public string GetChotLuongStatusByMaLuong(int maLuong)
+    {
+        string query = "SELECT ChotLuong FROM Luong WHERE MaLuong = @MaLuong";
+        var parameters = new Dictionary<string, object> { { "@MaLuong", maLuong } };
+
+        DataTable dt = Database.ExecuteQuery(query, parameters);
+
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            return dt.Rows[0]["ChotLuong"]?.ToString();
+        }
+
+        return null;
+    }
+    
+    /// <summary>
+    /// Lấy tổng quan lương trong một tháng/năm cụ thể.
+    /// </summary>
+    public PayrollSummary GetPayrollSummary(int thang, int nam)
+    {
+        // Sử dụng COALESCE/IFNULL trong SQL để đảm bảo SUM(NULL) vẫn trả về 0
+        string salaryQuery = @"
+            SELECT 
+                COALESCE(SUM(CASE WHEN l.TrangThai = 'Đã trả' THEN l.LuongThucNhan ELSE 0 END), 0) AS Paid,
+                COALESCE(SUM(CASE WHEN l.TrangThai = 'Chưa trả' THEN l.LuongThucNhan ELSE 0 END), 0) AS Unpaid,
+                COALESCE(SUM(l.LuongThucNhan), 0) AS Total
+            FROM Luong l
+            WHERE l.Thang = @Thang AND l.Nam = @Nam
+        ";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@Thang", thang },
+            { "@Nam", nam }
+        };
+
+        DataTable dtSalary = Database.ExecuteQuery(salaryQuery, parameters);
+        
+        var summary = new PayrollSummary();
+
+        if (dtSalary.Rows.Count > 0)
+        {
+            DataRow row = dtSalary.Rows[0];
+            
+            // Kết quả từ COALESCE(SUM(), 0) trong SQL đã đảm bảo không là DBNull, 
+            // nhưng ta vẫn kiểm tra an toàn (nếu DB engine không hỗ trợ COALESCE)
+            summary.TotalSalary = row["Total"] != DBNull.Value ? Convert.ToDecimal(row["Total"]) : 0M;
+            summary.PaidSalary = row["Paid"] != DBNull.Value ? Convert.ToDecimal(row["Paid"]) : 0M;
+            summary.UnpaidSalary = row["Unpaid"] != DBNull.Value ? Convert.ToDecimal(row["Unpaid"]) : 0M;
+        }
+
+        // Lấy Tổng số nhân viên (không cần thay đổi)
+        string employeeQuery = "SELECT COUNT(*) FROM NhanVien";
+        object countResult = Database.ExecuteScalar(employeeQuery); 
+        
+        if (countResult != null && countResult != DBNull.Value)
+        {
+            summary.TotalEmployees = Convert.ToInt32(countResult);
+        }
+        else
+        {
+            summary.TotalEmployees = 0;
+        }
+        
+        return summary;
     }
     
     

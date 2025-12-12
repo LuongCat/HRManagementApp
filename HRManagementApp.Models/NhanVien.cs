@@ -14,6 +14,19 @@ public class NhanVien
     public int? MaPB { get; set; }
     public List< PhongBan> PhongBan { get; set; } = new();
     public List<ChucVu> ChucVu { get; set; } = new();
+
+    public List<CaLam> CaLams { get; set; } = new();
+    public string CaLamDisplay
+    {
+        get
+        {
+            if (CaLams == null || CaLams.Count == 0)
+                return "Chưa phân công";
+            
+            // Kết quả sẽ là: "Ca Sáng, Ca Chiều, Ca Đêm"
+            return string.Join(", ", CaLams.Select(c => c.TenCa));
+        }
+    }
     
     public List<VaiTroNhanVien> DanhSachChucVu { get; set; } = new();
 

@@ -83,7 +83,7 @@
             UPDATE nhanvien_chucvu
             SET 
                 LoaiChucVu = @LoaiChucVu,
-                TienPhuCapKiemNhiem = @TienPhuCapKiemNhiem,
+                HeSoPhuCapKiemNhiem = @HeSoPhuCapKiemNhiem,
                 HeSoLuongCoBan = @HeSoLuongCoBan,
                 GhiChu = @GhiChu
             WHERE MaNV = @MaNV AND MaCV = @MaCV;
@@ -96,7 +96,7 @@
                   
 
                     { "@LoaiChucVu", vtnv.LoaiChucVu },
-                    { "@TienPhuCapKiemNhiem", vtnv.HeSoPhuCapKiemNhiem ?? 0 },
+                    { "@HeSoPhuCapKiemNhiem", vtnv.HeSoPhuCapKiemNhiem ?? 0 },
                     {"@HeSoLuongCoBan", vtnv.HeSoLuongCoBan ?? 1 },
                     { "@GhiChu", string.IsNullOrEmpty(vtnv.GhiChu) ? DBNull.Value : vtnv.GhiChu }
                 };

@@ -60,6 +60,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
+                    
                     <Button x:Name="BtnChucVu" Content="Chức vụ" 
                             Background="Transparent" Foreground="#6B7280"
                             BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
@@ -79,6 +80,47 @@
                             </Style>
                         </Button.Style>
                     </Button>
+                    
+                    <Button x:Name="BtnCaLam" Content="QuanLyCaLam" 
+                            Background="Transparent" Foreground="#6B7280"
+                            BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
+                            Cursor="Hand" Click="BtnCaLam_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
+                    <Button x:Name="BtnEditCaLam" Content="CaLam" 
+                            Background="Transparent" Foreground="#6B7280"
+                            BorderThickness="0" Padding="20,10" FontSize="14" FontWeight="SemiBold"
+                            Cursor="Hand" Click="BtnEditCaLam_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
                 </StackPanel>
             </Border>
         </StackPanel>

@@ -222,6 +222,7 @@ namespace HRManagementApp.DAL
 
             return ketQua;
         }
+
         private int CountWorkingDays(DateTime start, DateTime end)
         {
             int count = 0;
@@ -233,7 +234,25 @@ namespace HRManagementApp.DAL
                     count++;
                 }
             }
+
             return count;
+        }
+        private DonTu MapDataRow(DataRow row)
+        {
+            return new DonTu
+            {
+                MaDon = Convert.ToInt32(row["MaDon"]),
+                MaNV = Convert.ToInt32(row["MaNV"]),
+                MaLoaiDon = Convert.ToInt32(row["MaLoaiDon"]),
+                NgayBatDau = Convert.ToDateTime(row["NgayBatDau"]),
+                NgayKetThuc = Convert.ToDateTime(row["NgayKetThuc"]),
+                LyDo = row["LyDo"].ToString(),
+                TrangThai = row["TrangThai"].ToString(),
+                NgayGui = Convert.ToDateTime(row["NgayGui"]),
+                NguoiDuyet = row["NguoiDuyet"] != DBNull.Value ? row["NguoiDuyet"].ToString() : "",
+                HoTenNhanVien = row.Table.Columns.Contains("HoTen") ? row["HoTen"].ToString() : "",
+                TenLoaiDon = row.Table.Columns.Contains("TenLoaiDon") ? row["TenLoaiDon"].ToString() : ""
+            };
         }
     }
 }

@@ -133,6 +133,100 @@ namespace HRManagementApp.DAL
             }
             return data;
         }
+        public PayrollStatsDTO GetPayrollSummary(int month, int year)
+        {
+            var stats = new PayrollStatsDTO();
+            string query = $@"
+                SELECT 
+                    SUM(l.LuongThucNhan) as TongLuong,
+                    (SELECT COALESCE(SUM(SoTien),0) FROM thue t WHERE MONTH(t.ApDungTuNgay) <= {month} AND (t.ApDungDenNgay IS NULL OR MONTH(t.ApDungDenNgay) >= {month})) as TongThue,
+                    (SELECT COALESCE(SUM(SoTien),0) FROM khautru kt WHERE MONTH(kt.Ngay) = {month} AND YEAR(kt.Ngay) = {year}) as TongKhauTru
+                FROM luong l
+                WHERE l.Thang = {month} AND l.Nam = {year}";
+
+            DataTable dt = Database.ExecuteQuery(query);
+            if (dt.Rows.Count > 0)
+            {
+                stats.TongLuong = dt.Rows[0]["TongLuong"] != DBNull.Value ? Convert.ToDecimal(dt.Rows[0]["TongLuong"]) : 0;
+                stats.TongThue = dt.Rows[0]["TongThue"] != DBNull.Value ? Convert.ToDecimal(dt.Rows[0]["TongThue"]) : 0;
+                stats.TongKhauTru = dt.Rows[0]["TongKhauTru"] != DBNull.Value ? Convert.ToDecimal(dt.Rows[0]["TongKhauTru"]) : 0;
+            }
+            return stats;
+        }
+
+        // 2. Biểu đồ tròn: Cơ cấu thu nhập (Lương CB vs Phụ Cấp vs Thưởng)
+        public List<ChartDataDTO> GetIncomeStructure(int month, int year)
+        {
+            // Đơn giản hóa: Lấy Tổng Lương CB và Tổng Phụ Cấp của tháng đó
+            var list = new List<ChartDataDTO>();
+            string query = $@"
+                SELECT 
+                    SUM(cv.LuongCB) as TongLuongCB,
+                    (SELECT COALESCE(SUM(SoTien),0) FROM phucap_nhanvien pc 
+                     WHERE pc.ApDungTuNgay <= LAST_DAY('{year}-{month}-01')) as TongPhuCap
+                FROM luong l
+                JOIN nhanvien_chucvu nvcv ON l.MaNV = nvcv.MaNV
+                JOIN chucvu cv ON nvcv.MaCV = cv.MaCV
+                WHERE l.Thang = {month} AND l.Nam = {year}";
+
+            DataTable dt = Database.ExecuteQuery(query);
+            if (dt.Rows.Count > 0)
+            {
+                list.Add(new ChartDataDTO { Label = "Lương Cơ Bản", Value = Convert.ToDouble(dt.Rows[0]["TongLuongCB"]) });
+                list.Add(new ChartDataDTO { Label = "Các Phụ Cấp", Value = Convert.ToDouble(dt.Rows[0]["TongPhuCap"]) });
+            }
+            return list;
+        }
+
+        // 3. Biểu đồ miền: Phân bổ mức lương (Số người theo khoảng lương)
+        public List<ChartDataDTO> GetSalaryDistribution(int month, int year)
+        {
+            var list = new List<ChartDataDTO>();
+            string query = $@"
+                SELECT 
+                    CASE 
+                        WHEN LuongThucNhan < 10000000 THEN '< 10 Triệu'
+                        WHEN LuongThucNhan BETWEEN 10000000 AND 20000000 THEN '10 - 20 Triệu'
+                        WHEN LuongThucNhan > 20000000 THEN '> 20 Triệu'
+                    END as MucLuong,
+                    COUNT(*) as SoLuong
+                FROM luong
+                WHERE Thang = {month} AND Nam = {year}
+                GROUP BY MucLuong";
+
+            DataTable dt = Database.ExecuteQuery(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(new ChartDataDTO { 
+                    Label = row["MucLuong"].ToString(), 
+                    Value = Convert.ToDouble(row["SoLuong"]) 
+                });
+            }
+            return list;
+        }
+
+        // 4. Biểu đồ cột/miền: Thu nhập trung bình theo phòng ban
+        public List<ChartDataDTO> GetAvgSalaryByDept(int month, int year)
+        {
+            var list = new List<ChartDataDTO>();
+            string query = $@"
+                SELECT pb.TenPB, AVG(l.LuongThucNhan) as LuongTB
+                FROM luong l
+                JOIN nhanvien nv ON l.MaNV = nv.MaNV
+                JOIN phongban pb ON nv.MaPB = pb.MaPB
+                WHERE l.Thang = {month} AND l.Nam = {year}
+                GROUP BY pb.TenPB";
+
+            DataTable dt = Database.ExecuteQuery(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(new ChartDataDTO { 
+                    Label = row["TenPB"].ToString(), 
+                    Value = Convert.ToDouble(row["LuongTB"]) 
+                });
+            }
+            return list;
+        }
     }
 
 }

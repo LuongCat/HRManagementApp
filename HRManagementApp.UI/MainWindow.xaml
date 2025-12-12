@@ -84,6 +84,147 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- ========================== -->
+        <!-- MODERN SCROLLBAR RESOURCES -->
+        <!-- ========================== -->
+
+        <!-- 1. Style cho cục trượt (Thumb) -->
+        <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border x:Name="rectangle"
+                                Background="#94A3B8"
+                                CornerRadius="4"
+                                Height="{TemplateBinding Height}"
+                                SnapsToDevicePixels="True"
+                                Width="{TemplateBinding Width}"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="rectangle" Property="Background" Value="#64748B"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="true">
+                                <Setter TargetName="rectangle" Property="Background" Value="#475569"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 2. Style cho nút ẩn PageUp/PageDown (để làm nền trong suốt) -->
+        <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 3. Style cho thanh cuộn (ScrollBar) - Bỏ mũi tên, làm mỏng -->
+        <Style x:Key="ModernScrollBar" TargetType="{x:Type ScrollBar}">
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Width" Value="6"/> <!-- Độ rộng thanh cuộn -->
+            <Setter Property="MinWidth" Value="6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid x:Name="Bg" SnapsToDevicePixels="true">
+                            <Track x:Name="PART_Track"
+                                   IsDirectionReversed="true"
+                                   IsEnabled="{TemplateBinding IsEnabled}">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ScrollBarPageButton}"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ScrollBarPageButton}"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource ScrollBarThumb}"/>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 4. Style cho ScrollViewer (Áp dụng hiệu ứng ẩn/hiện) -->
+        <Style x:Key="ModernScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollViewer">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                  Grid.Column="0"
+                                                  Grid.Row="0"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  CanContentScroll="{TemplateBinding CanContentScroll}"/>
+                            
+                            <!-- Thanh cuộn dọc: Mặc định Opacity = 0 (Ẩn) -->
+                            <ScrollBar x:Name="PART_VerticalScrollBar"
+                                     Grid.Column="1"
+                                     Grid.Row="0"
+                                     Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                     ViewportSize="{Binding ViewportHeight, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                     Maximum="{Binding ScrollableHeight, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                     Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                     Orientation="Vertical"
+                                     Style="{StaticResource ModernScrollBar}"
+                                     Opacity="0"/>
+                        </Grid>
+                        
+                        <!-- Hiệu ứng Fade In/Out -->
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="PART_VerticalScrollBar"
+                                                       Storyboard.TargetProperty="Opacity"
+                                                       To="1"
+                                                       Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="PART_VerticalScrollBar"
+                                                       Storyboard.TargetProperty="Opacity"
+                                                       To="0"
+                                                       Duration="0:0:0.3"
+                                                       BeginTime="0:0:0.5"/> <!-- Chờ 0.5s rồi mới ẩn -->
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid Background="{StaticResource BackgroundColor}">
@@ -94,109 +235,151 @@
 
         <!-- Sidebar -->
         <Border Grid.Column="0" Background="{StaticResource SidebarColor}">
-            <StackPanel>
-                <!-- Logo/Header -->
-                <Border Background="{StaticResource PrimaryColor}" Padding="20,25">
-                    <StackPanel>
-                        <TextBlock Text="HR Management" Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBlock Text="System" Foreground="White" FontSize="14" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                    </StackPanel>
-                </Border>
+            <!-- CẤU TRÚC MỚI: Grid chia 3 phần -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <!-- Header + User Info (Cố định) -->
+                    <RowDefinition Height="*"/>    <!-- Menu (Co dãn, Có Scroll) -->
+                    <RowDefinition Height="Auto"/> <!-- Logout (Cố định dưới đáy) -->
+                </Grid.RowDefinitions>
 
-                <!-- User Info -->
-                <Border Padding="20,15" Background="#34495E">
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="40" Height="40" Fill="{StaticResource AccentColor}"/>
-                        <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Admin User" Foreground="White" FontWeight="SemiBold"/>
-                            <TextBlock Text="HR Manager" Foreground="#BDC3C7" FontSize="11"/>
+                <!-- 1. Header & User Info -->
+                <StackPanel Grid.Row="0">
+                    <!-- Logo/Header -->
+                    <Border Background="{StaticResource PrimaryColor}" Padding="20,25">
+                        <StackPanel>
+                            <TextBlock Text="HR Management" Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="System" Foreground="White" FontSize="14" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
+                    </Border>
 
-                <!-- Navigation Menu -->
-                <StackPanel Margin="0,20,0,0">
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="DashboardBtn">
+                    <!-- User Info -->
+                    <Border Padding="20,15" Background="#34495E">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📊" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="Dashboard"/>
+                            <Ellipse Width="40" Height="40" Fill="{StaticResource AccentColor}"/>
+                            <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="txtUserName" Text="Guest" Foreground="White" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="txtUserRole" Text="Employee" Foreground="#BDC3C7" FontSize="11"/>
+                            </StackPanel>
                         </StackPanel>
-                    </Button>
-
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="EmployeesBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="👥" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="Employees"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="AttendanceBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="⏰" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="Attendance"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="AccountBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="💰" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="Account"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="RoleBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="💰" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="Role"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="PayrollBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="💰" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="Payroll"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="LeaveBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📅" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="Leave Management"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="ReportsBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📈" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="Reports"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="SettingsBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="SubmitApplication"/>
-                        </StackPanel>
-                    </Button>
-                    
-                    <Button Style="{StaticResource SidebarButtonStyle}" Name="EditPayrollBtn">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🛠️" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="EditPayroll"/>
-                        </StackPanel>
-                    </Button>
-                    
+                    </Border>
                 </StackPanel>
 
-                <!-- Logout Button -->
-                <Button Style="{StaticResource SidebarButtonStyle}" Name="LogoutBtn" VerticalAlignment="Bottom" Margin="0,50,0,20" Background="{StaticResource SecondaryColor}">
+                <!-- 2. Navigation Menu (Có ScrollViewer) -->
+                <!-- VerticalScrollBarVisibility="Auto" : Chỉ hiện thanh cuộn khi nội dung quá dài -->
+                <ScrollViewer Grid.Row="1" 
+                              VerticalScrollBarVisibility="Auto" 
+                              HorizontalScrollBarVisibility="Disabled"
+                              Style="{StaticResource ModernScrollViewer}">
+                    <StackPanel Margin="0,10,0,10">
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="DashboardBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📊" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Dashboard"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="EmployeesBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👥" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Employees"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="AttendanceBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="⏰" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Attendance"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="AccountBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Account"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="RoleBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔧" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Role"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="PayrollBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💰" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Payroll"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="LeaveBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📅" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Leave Management"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="ChamCongBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="ScanChamCong"/>
+                            </StackPanel>
+                        </Button>
+                       
+                        
+                        
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="SettingsBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Chấm Công"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="EditPayrollBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🛠️" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="EditPayroll"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="ReportsBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📈" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Reports"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="MyPayslip">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Lương của tôi"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <Button Style="{StaticResource SidebarButtonStyle}" Name="InforBtn">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👤" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Thông tin"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- 3. Logout Button (Cố định dưới đáy) -->
+                <Button Grid.Row="2" 
+                        Style="{StaticResource SidebarButtonStyle}" 
+                        Name="LogoutBtn" 
+                        Margin="0,10,0,20" 
+                        Background="{StaticResource SecondaryColor}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="🚪" FontSize="16" Margin="0,0,10,0"/>
                         <TextBlock Text="Logout"/>
                     </StackPanel>
                 </Button>
                 
-            </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Main Content Area -->

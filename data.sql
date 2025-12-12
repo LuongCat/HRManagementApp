@@ -25,7 +25,6 @@ CREATE TABLE `nhanvien` (
                             `MaPB` int default null ,
                             PRIMARY KEY (`MaNV`),
                             UNIQUE KEY `SoCCCD` (`SoCCCD`)
-
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ADD FK sau khi cả 2 bảng đã tồn tại (tránh vòng tham chiếu)
@@ -57,17 +56,6 @@ CREATE TABLE `chucvu` (
                           `HoatDong` ENUM('Active', 'inActive') DEFAULT "Active",
                           PRIMARY KEY (`MaCV`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-
-CREATE TABLE `loaidon` (
-                           `MaLoaiDon` int NOT NULL AUTO_INCREMENT,
-                           `TenLoaiDon` varchar(100) NOT NULL,
-                           `MoTa` varchar(50) DEFAULT NULL,
-                           `CoLuong` ENUM('Yes', 'No') DEFAULT "Yes",
-                           PRIMARY KEY (`MaLoaiDon`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 
 
 CREATE TABLE `quyenhan` (
@@ -119,6 +107,15 @@ CREATE TABLE `chamcong` (
                             CONSTRAINT `chamcong_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `loaidon` (
+                           `MaLoaiDon` int NOT NULL AUTO_INCREMENT,
+                           `TenLoaiDon` varchar(100) NOT NULL,
+                           `MoTa` varchar(50) DEFAULT NULL,
+                           `CoLuong` ENUM('Yes', 'No') DEFAULT "Yes",
+                           PRIMARY KEY (`MaLoaiDon`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 CREATE TABLE `dontu` (
                          `MaDon` int NOT NULL AUTO_INCREMENT,
                          `MaNV` int NOT NULL,
@@ -136,6 +133,8 @@ CREATE TABLE `dontu` (
                          CONSTRAINT `dontu_ibfk_2` FOREIGN KEY (`MaLoaiDon`) REFERENCES `loaidon` (`MaLoaiDon`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+
 CREATE TABLE `luong` (
                          `MaLuong` int NOT NULL AUTO_INCREMENT,
                          `MaNV` int NOT NULL,
@@ -145,12 +144,13 @@ CREATE TABLE `luong` (
                          `TienLuong` decimal(18,2) DEFAULT 0,
                          `LuongThucNhan` decimal(18,2) DEFAULT 0,
                          `TrangThai` ENUM('Chưa trả', 'Đã trả') DEFAULT 'Chưa trả',
+                         `ChotLuong` enum('Chưa chốt','Đã chốt')  default 'Chưa chốt',
                          PRIMARY KEY (`MaLuong`),
                          KEY `MaNV` (`MaNV`),
                          CONSTRAINT `luong_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ============================================
+-- ============================================vaitro_quyenhan
 -- 3. BẢNG LIÊN KẾT N-N
 -- ============================================
 

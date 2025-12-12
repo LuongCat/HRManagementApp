@@ -13,8 +13,6 @@ namespace HRManagementApp.UI.Views
 
             // Kích hoạt tab mặc định khi mở trang
             DefaultReport.IsChecked = true;
-            // Load nội dung mặc định luôn để người dùng không thấy trống
-            ReportContentArea.Content = new AnalyticsReportView();
         }
 
         private void ReportMenu_Checked(object sender, RoutedEventArgs e)
@@ -38,8 +36,6 @@ namespace HRManagementApp.UI.Views
             // Load View tương ứng
             switch (clickedBtn.Tag.ToString())
             {
-                case "Analytics":
-                    break;
                 case "Attendance":
                     ReportContentArea.Content = new AttendanceReportView();
                     break;

@@ -128,11 +128,7 @@
                     <StackPanel x:Name="ReportMenuPanel"
                                 Orientation="Horizontal">
                         <ToggleButton x:Name="DefaultReport"
-                                      Content="📊 Tổng quan"
-                                      Tag="Analytics"
-                                      Checked="ReportMenu_Checked"
-                                      Style="{StaticResource TabButtonStyle}"/>
-                        <ToggleButton Content="📅 Chấm công"
+                                      Content="📅 Chấm công"
                                       Tag="Attendance"
                                       Checked="ReportMenu_Checked"
                                       Style="{StaticResource TabButtonStyle}"/>
@@ -158,16 +154,16 @@
         </Border>
 
         <Grid Grid.Row="2"
-                Margin="32,0,32,32">
+              Margin="32,0,32,32">
             <Border Background="White"
                     CornerRadius="16"
                     Margin="2">
                 <Border.Effect>
                     <DropShadowEffect Color="Black"
-                            Direction="270"
-                            ShadowDepth="2"
-                            BlurRadius="12"
-                            Opacity="0.05"/>
+                                      Direction="270"
+                                      ShadowDepth="2"
+                                      BlurRadius="12"
+                                      Opacity="0.05"/>
                 </Border.Effect>
             </Border>
 
@@ -176,9 +172,14 @@
                     BorderBrush="{StaticResource BorderColor}"
                     BorderThickness="1">
 
-                <ContentControl x:Name="ReportContentArea"
-                                Margin="0"
-                                ClipToBounds="True"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Margin="0"
+                              Padding="0">
+                    <ContentControl x:Name="ReportContentArea"
+                                    Margin="0"
+                                    ClipToBounds="True"/>
+                </ScrollViewer>
             </Border>
         </Grid>
 

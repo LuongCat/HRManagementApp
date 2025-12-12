@@ -3,13 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
-             
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
-             d:DesignHeight="800" d:DesignWidth="1200">
+             d:DesignWidth="1200"
+             d:DesignHeight="800"
+             Loaded="UserControl_Loaded">
 
+    <!-- ====================== RESOURCES ====================== -->
     <UserControl.Resources>
+
+        <!-- Dashboard Card -->
         <Style x:Key="DashboardCard" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="12"/>
@@ -18,134 +22,348 @@
             <Setter Property="BorderBrush" Value="#E2E8F0"/>
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
+
+        <!-- Card Title -->
         <Style x:Key="CardTitle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#64748B"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
+
+        <!-- Card Value -->
         <Style x:Key="CardValue" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#1E293B"/>
             <Setter Property="FontSize" Value="32"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="#1E293B"/>
         </Style>
+
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Background="White" Margin="24">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> <RowDefinition Height="20"/>   <RowDefinition Height="400"/>  </Grid.RowDefinitions>
+    <!-- ====================== ROOT GRID ====================== -->
+    <Grid Background="White" Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Margin="0,0,0,24">
-                <TextBlock Text="Tổng Quan Nhân Sự" FontSize="24" FontWeight="Bold" Foreground="#1E293B"/>
-                <TextBlock Text="Thống kê dữ liệu chấm công và trạng thái nhân sự hôm nay." FontSize="14" Foreground="#64748B" Margin="0,4,0,0"/>
+        <!-- ====================== TITLE ====================== -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,24">
+            <TextBlock Text="Báo Cáo Nhân Sự"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Foreground="#1E293B"/>
+            <TextBlock Text="Tổng quan nhân viên và phân tích cơ cấu nhân sự."
+                       FontSize="14"
+                       Foreground="#64748B"
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- ====================== TOP CARDS ====================== -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Total Employees -->
+            <Border Grid.Column="0" Style="{StaticResource DashboardCard}">
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="Tổng Nhân Viên"
+                                   Style="{StaticResource CardTitle}"/>
+                        <TextBlock Text="👥"
+                                   HorizontalAlignment="Right"
+                                   FontSize="20"
+                                   Opacity="0.5"/>
+                    </Grid>
+                    <TextBlock x:Name="txtTotalEmp"
+                               Style="{StaticResource CardValue}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- New Employees This Month -->
+            <Border Grid.Column="1" Style="{StaticResource DashboardCard}">
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="Nhân Viên Mới (Tháng Này)"
+                                   Style="{StaticResource CardTitle}"/>
+                        <TextBlock Text="🆕"
+                                   HorizontalAlignment="Right"
+                                   FontSize="20"
+                                   Opacity="0.6"/>
+                    </Grid>
+                    <TextBlock x:Name="txtNewEmp"
+                               Style="{StaticResource CardValue}"
+                               Foreground="#10B981"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Quit Employees -->
+            <Border Grid.Column="2" Style="{StaticResource DashboardCard}">
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="Độ Tuổi Trung Bình"
+                                   Style="{StaticResource CardTitle}"/>
+                        <TextBlock Text="📊"
+                                   HorizontalAlignment="Right"
+                                   FontSize="20"
+                                   Opacity="0.6"/>
+                    </Grid>
+                    <TextBlock x:Name="txtAverageAge"
+                               Style="{StaticResource CardValue}"
+                               Foreground="#EF4444"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ====================== CHART ROW ====================== -->
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="1.3*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- AGE CHART -->
+            <Border Grid.Column="0"
+                    Background="White"
+                    CornerRadius="12"
+                    Padding="20"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Phân Bổ Độ Tuổi Nhân Viên"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#1E293B"
+                               Margin="0,0,0,20"/>
+
+                    <lvc:CartesianChart Grid.Row="1"
+                                        Series="{Binding AgeSeries}"
+                                        XAxes="{Binding AgeXAxes}"
+                                        YAxes="{Binding AgeYAxes}"
+                                        TooltipPosition="Top"/>
+                </Grid>
+            </Border>
+
+            <!-- GENDER PIE CHART -->
+            <Border Grid.Column="2"
+                    Background="White"
+                    CornerRadius="12"
+                    Padding="20"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Tỷ Lệ Nam / Nữ"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#1E293B"
+                               Margin="0,0,0,20"/>
+
+                    <lvc:PieChart Grid.Row="1"
+                                  Series="{Binding GenderSeries}"
+                                  LegendPosition="Bottom"
+                                  InitialRotation="-90"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- FILTER BAR -->
+        <Grid Grid.Row="4"
+              Margin="0 0 0 15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- NAME -->
+            <StackPanel Grid.Column="0"
+                        Orientation="Vertical">
+                <TextBlock Text="Tên nhân viên"
+                           Margin="0 0 0 5"/>
+                <TextBox x:Name="TbEmployeeSearchName"
+                         Height="32"
+                         VerticalContentAlignment="Center"
+                         TextChanged="TbEmployeeSearchName_TextChanged"
+                         Text="Tìm nhân viên..."
+                         GotKeyboardFocus="TextBox_GotKeyboardFocus" 
+                         PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
             </StackPanel>
 
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+            <!-- DEPARTMENT -->
+            <StackPanel Grid.Column="1"
+                        Orientation="Vertical">
+                <TextBlock Text="Phòng ban"
+                           Margin="0 0 0 5"/>
+                <ComboBox x:Name="CbEmployeeDepartment"
+                          Height="32"
+                          VerticalContentAlignment="Center"
+                          SelectionChanged="CbEmployeeDepartment_SelectionChanged"
+                          />
+            </StackPanel>
 
-                <Border Grid.Column="0" Style="{StaticResource DashboardCard}">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="Tổng Nhân Viên" Style="{StaticResource CardTitle}"/>
-                            <TextBlock Text="👥" HorizontalAlignment="Right" FontSize="20" Opacity="0.5"/>
-                        </Grid>
-                        <TextBlock x:Name="txtTotalEmp" Text="0" Style="{StaticResource CardValue}"/>
-                        <TextBlock x:Name="txtActiveEmp" Text="Đang làm việc: 0" FontSize="12" Foreground="#10B981" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
+            <!-- GENDER -->
+            <StackPanel Grid.Column="2"
+                        Orientation="Vertical">
+                <TextBlock Text="Giới tính"
+                           Margin="0 0 0 5"/>
+                <ComboBox x:Name="CbEmployeeGender"
+                            Height="32"
+                            SelectedIndex="0"
+                            VerticalContentAlignment="Center"
+                            SelectionChanged="CbEmployeeGender_SelectionChanged">
+                    <ComboBoxItem Content="Tất cả"/>
+                    <ComboBoxItem Content="Nam"/>
+                    <ComboBoxItem Content="Nữ"/> 
+                </ComboBox>   
+            </StackPanel>
 
-                <Border Grid.Column="1" Style="{StaticResource DashboardCard}">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="Đi Muộn Hôm Nay" Style="{StaticResource CardTitle}"/>
-                            <TextBlock Text="⚠️" HorizontalAlignment="Right" FontSize="20" Opacity="0.8"/>
-                        </Grid>
-                        <TextBlock x:Name="txtLate" Text="0" Style="{StaticResource CardValue}" Foreground="#F59E0B"/>
-                        <TextBlock Text="Cần nhắc nhở" FontSize="12" Foreground="#94A3B8" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
+            <!-- Position -->
+            <StackPanel Grid.Column="3"
+                        Orientation="Vertical">
+                <TextBlock Text="Chức vụ"
+                           Margin="0 0 0 5"/>
+                <ComboBox x:Name="CbEmployeePosition"
+                            Height="32"
+                            VerticalContentAlignment="Center"
+                            SelectionChanged="CbEmployeePosition_SelectionChanged"/> 
+            </StackPanel>
 
-                <Border Grid.Column="2" Style="{StaticResource DashboardCard}">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="Vắng Mặt Hôm Nay" Style="{StaticResource CardTitle}"/>
-                            <TextBlock Text="🚫" HorizontalAlignment="Right" FontSize="20" Opacity="0.5"/>
-                        </Grid>
-                        <TextBlock x:Name="txtAbsent" Text="0" Style="{StaticResource CardValue}" Foreground="#EF4444"/>
-                        <TextBlock Text="Chưa check-in" FontSize="12" Foreground="#94A3B8" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
+            <!-- STATUS -->
+            <StackPanel Grid.Column="4"
+                        Orientation="Vertical">
+                <TextBlock Text="Trạng thái"
+                           Margin="0 0 0 5"/>
+                <ComboBox x:Name="CbEmployeeStatus"
+                          Height="32"
+                          SelectedIndex="1"
+                          VerticalContentAlignment="Center"
+                          SelectionChanged="CbEmployeeStatus_SelectionChanged">
+                    <ComboBoxItem Content="Tất cả"/>
+                    <ComboBoxItem Content="Còn làm việc"/>
+                    <ComboBoxItem Content="Nghỉ việc"/>
+                </ComboBox>
+            </StackPanel>
 
-                <Border Grid.Column="3" Style="{StaticResource DashboardCard}">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="Đơn Chờ Duyệt" Style="{StaticResource CardTitle}"/>
-                            <TextBlock Text="📄" HorizontalAlignment="Right" FontSize="20" Opacity="0.5"/>
-                        </Grid>
-                        <TextBlock x:Name="txtPending" Text="0" Style="{StaticResource CardValue}" Foreground="#3B82F6"/>
-                        <TextBlock Text="Cần xử lý ngay" FontSize="12" Foreground="#94A3B8" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
-                
-                <Border Grid.Column="4" Style="{StaticResource DashboardCard}" Margin="0">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="Tỷ Lệ Có Mặt" Style="{StaticResource CardTitle}"/>
-                            <TextBlock Text="📈" HorizontalAlignment="Right" FontSize="20" Opacity="0.5"/>
-                        </Grid>
-                        <TextBlock x:Name="txtRate" Text="0%" Style="{StaticResource CardValue}" Foreground="#10B981"/>
-                        <TextBlock Text="So với tổng nhân viên" FontSize="12" Foreground="#94A3B8" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
+            <!-- EXPORT -->
+            <StackPanel Grid.Column="5"
+                        Orientation="Vertical">
+                <TextBlock Text=""
+                           Margin="0 0 0 5"/>
+                <Button Content="📄 Export"
+                        Width="120"
+                        Height="32"
+                        Background="#2E86AB"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Click="BtnExportEmployee_Click"/>
+            </StackPanel>
 
-            <Grid Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.5*"/>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-
-                <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="20" BorderBrush="#E2E8F0" BorderThickness="1">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="Phân Bổ Nhân Sự &amp; Trạng Thái" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,20"/>
-                        
-                        <lvc:CartesianChart Grid.Row="1" 
-                                            Series="{Binding MainSeries}" 
-                                            XAxes="{Binding XAxes}"
-                                            YAxes="{Binding YAxes}"
-                                            TooltipPosition="Top">
-                        </lvc:CartesianChart>
-                    </Grid>
-                </Border>
-
-                <Border Grid.Column="2" Background="White" CornerRadius="12" Padding="20" BorderBrush="#E2E8F0" BorderThickness="1">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="Tỷ Lệ Chấm Công Hôm Nay" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,20"/>
-
-                        <lvc:PieChart Grid.Row="1" 
-                                      Series="{Binding PieSeries}" 
-                                      LegendPosition="Bottom"
-                                      InitialRotation="-90">
-                        </lvc:PieChart>
-                    </Grid>
-                </Border>
-            </Grid>
         </Grid>
-    </ScrollViewer>
+
+        <!-- ====================== EMPLOYEE DATAGRID ====================== -->
+        <DataGrid x:Name="DgEmployeeReport"
+                  Grid.Row="5"
+                  MinHeight="500"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  HeadersVisibility="Column"
+                  AlternatingRowBackground="#F2F7FF"
+                  GridLinesVisibility="None"
+                  RowHeight="30"
+                  FontSize="14"
+                  ColumnHeaderHeight="40"
+                  HorizontalGridLinesBrush="#E2E8F0"
+                  VerticalGridLinesBrush="#E2E8F0">
+
+            <!-- Header Style -->
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Background" Value="#EEF3FA"/>
+                    <Setter Property="BorderBrush" Value="#D0D7E1"/>
+                    <Setter Property="BorderThickness" Value="0 0 1 1"/>
+                    <Setter Property="Padding" Value="6 0"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+
+            <!-- Cell Style -->
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Padding" Value="8,0"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </DataGrid.CellStyle>
+
+            <!-- Columns -->
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="Mã NV"
+                                    Width="70"
+                                    Binding="{Binding MaNV}"/>
+
+                <DataGridTextColumn Header="Họ tên"
+                                    Width="160"
+                                    Binding="{Binding HoTen}"/>
+
+                <DataGridTextColumn Header="Giới tính"
+                                    Width="90"
+                                    Binding="{Binding GioiTinh}"/>
+
+                <DataGridTextColumn Header="Ngày sinh"
+                                    Width="110"
+                                    Binding="{Binding NgaySinh, StringFormat={}{0:dd/MM/yyyy}}"/>
+
+                <DataGridTextColumn Header="CCCD"
+                                    Width="140"
+                                    Binding="{Binding SoCCCD}"/>
+
+                <DataGridTextColumn Header="Điện thoại"
+                                    Width="130"
+                                    Binding="{Binding DienThoai}"/>
+
+                <DataGridTextColumn Header="Phòng ban"
+                                    Width="150"
+                                    Binding="{Binding PhongBan}"/>
+
+                <DataGridTextColumn Header="Chức vụ"
+                                    Width="150"
+                                    Binding="{Binding ChucVu}"/>
+
+                <DataGridTextColumn Header="Ngày vào làm"
+                                    Width="130"
+                                    Binding="{Binding NgayVaoLam, StringFormat={}{0:dd/MM/yyyy}}"/>
+
+                <DataGridTextColumn Header="Trạng thái"
+                                    Width="130"
+                                    Binding="{Binding TrangThai}"/>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+
 </UserControl>

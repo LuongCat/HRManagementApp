@@ -13,7 +13,7 @@ namespace HRManagementApp.UI.Views
     {
         private NhanVienService _nvService = new NhanVienService();
         private ChamCongRepository _ccRepo = new ChamCongRepository();
-        
+        private ChamCongService _ccService = new ChamCongService();
         public AttendanceSummaryView()
         {
             InitializeComponent();
@@ -45,15 +45,17 @@ namespace HRManagementApp.UI.Views
             foreach (var nv in listNV)
             {
                 // Gọi hàm tính toán bạn đã viết trong ChamCongRepository
-                KetQuaChamCong stat = _ccRepo.GetChamCongStatistics(nv.MaNV, m, y);
+                AttendanceMonthlyResult attendanceMonthlyResult = _ccService.GetAttendanceStatistics(nv.MaNV, m, y);
 
                 summaryList.Add(new EmployeeAttendanceSummary
                 {
                     MaNV = nv.MaNV,
                     HoTen = nv.HoTen,
                     PhongBan = nv.PhongBanDisplay, // Hoặc nv.PhongBan?.TenPB
-                    TongNgayCong = stat.SoNgayDiLam,
-                    DiemPhat = stat.DiemDiTre
+                    
+                    SoNgayChamCong = attendanceMonthlyResult.SoNgayChamCong,
+                    SoNgayDiTre = attendanceMonthlyResult.SoNgayDiTre,
+                    SoNgayVang = attendanceMonthlyResult.SoNgayVang,
                 });
             }
 
@@ -86,7 +88,8 @@ namespace HRManagementApp.UI.Views
         public string PhongBan { get; set; } // Nếu có
         
         // Kết quả tổng hợp
-        public int TongNgayCong { get; set; }
-        public int DiemPhat { get; set; }
+        public int SoNgayChamCong { get; set; }
+        public int SoNgayDiTre { get; set; }
+        public int SoNgayVang { get; set; }
     }
 }

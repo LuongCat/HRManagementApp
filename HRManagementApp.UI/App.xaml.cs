@@ -1,13 +1,28 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
-namespace HRManagementApp.UI;
+﻿using System.Windows;
+using HRManagementApp.UI;
+using HRManagementApp.BLL;
+using HRManagementApp.models;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
-public partial class App : Application
+namespace HRManagementApp
 {
-    
+    public partial class App : Application
+    {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            try 
+            {
+                SynsPermissionBLL sysBLL = new SynsPermissionBLL();
+                sysBLL.SynsPermissionSystem();
+            }
+            catch (System.Exception ex)
+            {
+                // Ghi log lỗi nếu database chưa kết nối được (tránh crash app)
+                MessageBox.Show("Không thể đồng bộ quyền hạn: " + ex.Message);
+            }
+            // Khởi chạy màn hình đăng nhập trước
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
+        }
+    }
 }
-

@@ -154,7 +154,9 @@
                                  FontSize="14"
                                  VerticalContentAlignment="Center"
                                  Text="Tìm nhân viên..."
-                                 TextChanged="TbAttendanceReportSearchName_TextChanged"/>
+                                 TextChanged="TbAttendanceReportSearchName_TextChanged"
+                                 GotKeyboardFocus="TextBox_GotKeyboardFocus" 
+                                 PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
 
                         <DatePicker x:Name="DpAttendanceReportDate"
                                     Grid.Column="1"
@@ -281,28 +283,36 @@
                         <DataGrid.Columns>
                                 <DataGridTextColumn Header="Mã nhân viên"
                                                     Binding="{Binding MaNV}"
-                                                    Width="120"/>
+                                                    MinWidth="120"
+                                                    Width="*"/>
                                 <DataGridTextColumn Header="Họ tên"
                                                     Binding="{Binding TenNV}"
-                                                    Width="180"/>
+                                                    MinWidth="180"
+                                                    Width="*"/>
                                 <DataGridTextColumn Header="Phòng ban"
                                                     Binding="{Binding TenPB}"
-                                                    Width="140"/>
+                                                    MinWidth="140"
+                                                    Width="*"/>
                                 <DataGridTextColumn Header="Ngày"
                                                     Binding="{Binding Ngay}"
-                                                    Width="90"/>
+                                                    MinWidth="90"
+                                                    Width="*"/>
                                 <DataGridTextColumn Header="Giờ vào"
                                                     Binding="{Binding GioVao}"
-                                                    Width="90"/>
+                                                    MinWidth="90"
+                                                    Width="*"/>
                                 <DataGridTextColumn Header="Giờ ra"
                                                     Binding="{Binding GioRa}"
-                                                    Width="90"/>
+                                                    MinWidth="90"
+                                                    Width="*"/>
                                 <DataGridTextColumn Header="Ca Vào"
                                                     Binding="{Binding TenCa}"
-                                                    Width="90"/>
+                                                    MinWidth="90"
+                                                    Width="*"/>
                                 <DataGridTextColumn Header="Trạng thái"
                                                     Binding="{Binding TrangThai}"
-                                                    Width="120"/>
+                                                    MinWidth="120"
+                                                    Width="*"/>
                         </DataGrid.Columns>
                 </DataGrid>
         </Grid>

@@ -13,6 +13,7 @@ using HRManagementApp.models;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System.IO;
+using System.Windows.Input;
 
 namespace HRManagementApp.UI.Views.Report
 {
@@ -340,6 +341,22 @@ namespace HRManagementApp.UI.Views.Report
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi xuất Excel: " + ex.Message);
+            }
+        }
+        
+        private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.SelectAll();
+        }
+
+        private void TextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if (!tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true;
+                tb.Focus();
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using HRManagementApp.BLL;
 using HRManagementApp.models;
@@ -402,7 +403,22 @@ namespace HRManagementApp.UI.Views
             }
         }
 
-        
+        private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.SelectAll();
+        }
+
+        private void TextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Cần kiểm tra xem TextBox đã có focus chưa
+            TextBox tb = (TextBox)sender;
+            if (!tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true; // Ngăn chặn hành vi mặc định (đặt con trỏ)
+                tb.Focus(); // Gọi focus để kích hoạt sự kiện GotKeyboardFocus ở trên
+            }
+        }
         
 
     }

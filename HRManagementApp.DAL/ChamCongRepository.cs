@@ -402,31 +402,34 @@ public class ChamCongRepository
     {
         AttendanceMonthlyResult result = new AttendanceMonthlyResult();
 
-        // Lấy ca làm mặc định
-        string query = @"
-        SELECT 
-            cc.Ngay,
-            cc.GioVao,
-            cc.GioRa,
-            cal.GioBatDau
-        FROM (
-            SELECT DATE(@StartDate + INTERVAL (a.a + 10*b.a + 100*c.a) DAY) AS Ngay
-            FROM 
-                (SELECT 0 a UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 
-                        UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
-                (SELECT 0 a UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 
-                        UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b,
-                (SELECT 0 a UNION SELECT 1 UNION SELECT 2) c
-        ) AS days
-        LEFT JOIN chamcong cc 
-            ON cc.Ngay = days.Ngay AND cc.MaNV = @MaNV
-        LEFT JOIN (SELECT GioBatDau FROM calam LIMIT 1) cal 
-            ON 1=1
-        WHERE days.Ngay BETWEEN @StartDate AND @EndDate;
-    ";
-
+        // 1. Cấu hình ngày bắt đầu và kết thúc tháng
         DateTime startDate = new DateTime(nam, thang, 1);
         DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+
+        // 2. Câu truy vấn SQL
+        // LƯU Ý QUAN TRỌNG: Đã sửa 'SELECT cc.Ngay' thành 'SELECT days.Ngay' 
+        // để lấy được ngày kể cả khi nhân viên không chấm công.
+        string query = @"
+    SELECT 
+        days.Ngay, 
+        cc.GioVao,
+        cc.GioRa,
+        cal.GioBatDau
+    FROM (
+        SELECT DATE(@StartDate + INTERVAL (a.a + 10*b.a + 100*c.a) DAY) AS Ngay
+        FROM 
+            (SELECT 0 a UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 
+                    UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+            (SELECT 0 a UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 
+                    UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b,
+            (SELECT 0 a UNION SELECT 1 UNION SELECT 2) c
+    ) AS days
+    LEFT JOIN chamcong cc 
+        ON cc.Ngay = days.Ngay AND cc.MaNV = @MaNV
+    LEFT JOIN (SELECT GioBatDau FROM calam LIMIT 1) cal 
+        ON 1=1
+    WHERE days.Ngay BETWEEN @StartDate AND @EndDate;
+    ";
 
         var parameters = new Dictionary<string, object>
         {
@@ -435,34 +438,48 @@ public class ChamCongRepository
             { "@EndDate", endDate }
         };
 
+        // Thực thi truy vấn
         DataTable dt = Database.ExecuteQuery(query, parameters);
 
+        // 3. Biến đếm
         int soChamCong = 0;
         int soDiTre = 0;
         int soVang = 0;
 
+        // 4. Duyệt từng ngày trong tháng
         foreach (DataRow row in dt.Rows)
         {
+            // Lấy thông tin ngày hiện tại (Quan trọng để kiểm tra Chủ nhật)
+            DateTime ngayHienTai = Convert.ToDateTime(row["Ngay"]);
+
             TimeSpan? gioVao = row["GioVao"] != DBNull.Value ? (TimeSpan?)row["GioVao"] : null;
             TimeSpan? caBatDau = row["GioBatDau"] != DBNull.Value ? (TimeSpan?)row["GioBatDau"] : null;
 
-            // ⛔ Không chấm công → tính vắng
+            // --- TRƯỜNG HỢP 1: KHÔNG CÓ DỮ LIỆU CHẤM CÔNG ---
             if (!gioVao.HasValue)
             {
+                // Nếu là Chủ nhật -> Bỏ qua, không tính là vắng
+                if (ngayHienTai.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    continue;
+                }
+
+                // Nếu là ngày thường mà không chấm -> Tính vắng
                 soVang++;
                 continue;
             }
 
-            // ✔ Có chấm công
+            // --- TRƯỜNG HỢP 2: CÓ CHẤM CÔNG ---
             soChamCong++;
 
-            // ⏰ Đi trễ khi giờ vào > giờ bắt đầu + 15 phút
+            // Kiểm tra đi trễ (Trễ nếu vào sau giờ bắt đầu + 15 phút)
             if (caBatDau.HasValue && gioVao.Value > caBatDau.Value.Add(TimeSpan.FromMinutes(15)))
             {
                 soDiTre++;
             }
         }
 
+        // 5. Gán kết quả
         result.SoNgayChamCong = soChamCong;
         result.SoNgayDiTre = soDiTre;
         result.SoNgayVang = soVang;

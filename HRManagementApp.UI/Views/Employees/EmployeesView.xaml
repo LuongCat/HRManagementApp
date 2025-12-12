@@ -85,7 +85,9 @@
                                                     <TextBlock Text="Tìm kiếm theo tên, mã NV, phòng ban..." 
                                                                Foreground="#9CA3AF" FontSize="14"
                                                                VerticalAlignment="Center"
-                                                               Visibility="{Binding Text, ElementName=TxtSearch, Converter={StaticResource TextToVisibilityConverter}}"/>
+                                                               Visibility="{Binding Text, ElementName=TxtSearch, Converter={StaticResource TextToVisibilityConverter}}"
+                                                               GotKeyboardFocus="TextBox_GotKeyboardFocus" 
+                                                               PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
                                                     <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
                                                 </Grid>
                                             </ControlTemplate>

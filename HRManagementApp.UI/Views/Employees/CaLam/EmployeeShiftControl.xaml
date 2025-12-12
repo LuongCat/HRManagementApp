@@ -1,0 +1,71 @@
+<UserControl x:Class="HRManagementApp.UI.Views.EmployeeShiftControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="600">
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Padding="10" Background="#F0F0F0" BorderBrush="#DDD" BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Đang quản lý ca làm cho: " FontWeight="Bold" FontSize="14"/>
+                <TextBlock x:Name="TxtTenNhanVien" Text="..." FontSize="14" Foreground="Blue" Margin="5,0,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                <TextBlock Text="Chọn ca làm để thêm:" Margin="0,0,0,5" FontStyle="Italic"/>
+                <ComboBox x:Name="CboAvailableShifts" 
+                          DisplayMemberPath="TenCa" 
+                          SelectedValuePath="MaCa"
+                          Padding="5" Height="30"/>
+            </StackPanel>
+            
+            <Button Grid.Column="1" x:Name="BtnAddShift" 
+                    Content="➕ Thêm Ca Này" 
+                    Click="BtnAddShift_Click"
+                    Height="30" Padding="15,0" 
+                    VerticalAlignment="Bottom"
+                    Background="#4CAF50" Foreground="White" FontWeight="Bold"/>
+        </Grid>
+
+        <GroupBox Grid.Row="2" Header="Danh sách ca làm hiện tại" Margin="10,0,10,10">
+            <DataGrid x:Name="DgvAssignedShifts" 
+                      AutoGenerateColumns="False" 
+                      CanUserAddRows="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      BorderThickness="1" BorderBrush="#DDD">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mã Ca" Binding="{Binding MaCa}" Width="60"/>
+                    <DataGridTextColumn Header="Tên Ca" Binding="{Binding TenCa}" Width="150" FontWeight="Bold"/>
+                    
+                    <DataGridTextColumn Header="Giờ Bắt Đầu" Binding="{Binding GioBatDau, StringFormat=hh\\:mm}" Width="100"/>
+                    <DataGridTextColumn Header="Giờ Kết Thúc" Binding="{Binding GioKetThuc, StringFormat=hh\\:mm}" Width="100"/>
+                    
+                    <DataGridTextColumn Header="Trạng Thái" Binding="{Binding TrangThai}" Width="*"/>
+
+                    <DataGridTemplateColumn Header="Thao tác" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Gỡ bỏ" 
+                                        Click="BtnRemoveShift_Click" 
+                                        Tag="{Binding MaCa}"
+                                        Background="#FF5252" Foreground="White" BorderThickness="0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+    </Grid>
+</UserControl>

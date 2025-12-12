@@ -37,7 +37,28 @@ namespace HRManagementApp.UI.Views
             SetActiveTab(BtnChucVu);
             LoadPositionView();
         }
-
+        
+        private void BtnCaLam_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveTab(BtnCaLam);
+            LoadShiftManagementView();
+        }
+        private void BtnEditCaLam_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveTab(BtnEditCaLam);
+            LoadEditCaLamView();
+            
+        }
+        private void LoadEditCaLamView()
+        {
+            MainContent.Content = new ShiftListView();
+        }
+        private void LoadShiftManagementView()
+        {
+            // Đây là UserControl chúng ta sẽ tạo ở Phần 2 bên dưới
+            MainContent.Content = new ShiftManagementView(); 
+        }
+        
         // ✅ Load view Danh sách nhân viên
         private void LoadEmployeesView()
         {
@@ -63,7 +84,8 @@ namespace HRManagementApp.UI.Views
             ResetTabButton(BtnDanhSach);
             ResetTabButton(BtnPhongBan);
             ResetTabButton(BtnChucVu);
-
+            ResetTabButton(BtnCaLam);
+            ResetTabButton(BtnEditCaLam);
             // Set tab được chọn thành active (nền đen, chữ trắng)
             activeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F2937"));
             activeButton.Foreground = Brushes.White;

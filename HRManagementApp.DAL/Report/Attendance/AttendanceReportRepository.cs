@@ -72,6 +72,8 @@ namespace HRManagementApp.DAL.Report
                     END = @status";
                 parameters.Add("@status", status);
             }
+            
+            query += @" ORDER BY cc.GioVao";
 
             return Database.ExecuteQuery(query, parameters);
         }

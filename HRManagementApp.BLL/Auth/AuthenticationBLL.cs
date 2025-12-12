@@ -1,6 +1,8 @@
 ﻿using HRManagementApp.DAL;
 using HRManagementApp.models;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace HRManagementApp.BLL
 {
@@ -24,8 +26,8 @@ namespace HRManagementApp.BLL
                 return false;
             }
 
-            // Gọi DAL kiểm tra
-            bool isSuccess = dal.Login(username, password);
+            string haspassword = HashPassword(password);
+            bool isSuccess = dal.Login(username, haspassword);
 
             if (!isSuccess)
             {
@@ -44,9 +46,25 @@ namespace HRManagementApp.BLL
         {
 
             // Gọi DAL kiểm tra
+            string haspassword = HashPassword(oldPass);
             bool isSuccess = dal.ChangePassword(UserID,newPass,oldPass);
             
             return isSuccess;
+        }
+        public string HashPassword(string password)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] inputBytes = Encoding.ASCII.GetBytes(password);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+                
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2")); // Chuyển sang chuỗi Hex in hoa
+                }
+                return sb.ToString();
+            }
         }
     }
 }

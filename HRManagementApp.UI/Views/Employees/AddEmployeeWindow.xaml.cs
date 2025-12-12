@@ -123,7 +123,7 @@ namespace HRManagementApp.UI.Views
                 GioiTinh = GetGioiTinh(),
                 SoCCCD = TxtCCCD.Text.Trim(),
                 DienThoai = TxtDienThoai.Text.Trim(),
-                
+                MaPB = _phongBan.MaPB,
                 PhongBan = phongBans,
                 ChucVu = chucVus,
                 

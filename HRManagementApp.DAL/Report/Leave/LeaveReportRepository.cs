@@ -19,8 +19,10 @@ namespace HRManagementApp.DAL.Report
                     dt.NgayBatDau,
                     dt.NgayKetThuc,
                     TIMESTAMPDIFF(DAY, dt.NgayBatDau, dt.NgayKetThuc) + 1 AS SoNgay,
+                    dt.NgayGui,
                     dt.LyDo,
-                    dt.TrangThai
+                    dt.TrangThai,
+                    dt.NguoiDuyet
                 FROM dontu dt
                 JOIN nhanvien nv ON dt.MaNV = nv.MaNV
                 JOIN phongban pb ON nv.MaPB = pb.MaPB
@@ -48,7 +50,8 @@ namespace HRManagementApp.DAL.Report
             if (date.HasValue)
             {
                 query += @"
-            AND @date BETWEEN dt.NgayBatDau AND dt.NgayKetThuc
+            AND DATE(@date) >= DATE(dt.NgayBatDau)
+                    AND DATE(@date) <= DATE(dt.NgayKetThuc)
         ";
                 parameters.Add("@date", date.Value.ToDateTime(TimeOnly.MinValue));
             }
@@ -59,6 +62,8 @@ namespace HRManagementApp.DAL.Report
                 query += " AND dt.TrangThai = @status";
                 parameters.Add("@status", status);
             }
+
+            query += @" ORDER BY dt.NgayGui";
 
             return Database.ExecuteQuery(query, parameters);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using HRManagementApp.BLL.Report;
 using HRManagementApp.models;
 using LiveChartsCore;
@@ -223,6 +224,22 @@ namespace HRManagementApp.UI.Views.Report
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi xuất Excel: " + ex.Message);
+            }
+        }
+        
+        private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.SelectAll();
+        }
+
+        private void TextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if (!tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true;
+                tb.Focus();
             }
         }
     }

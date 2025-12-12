@@ -31,8 +31,10 @@ namespace HRManagementApp.BLL.Report
                     TuNgay = row["NgayBatDau"] == DBNull.Value ? DateTime.MinValue : (DateTime)row["NgayBatDau"],
                     DenNgay = row["NgayKetThuc"] == DBNull.Value ? DateTime.MinValue : (DateTime)row["NgayKetThuc"],
                     SoNgay = row["SoNgay"] == DBNull.Value ? 0 : Convert.ToInt32(row["SoNgay"]),
+                    NgayGui = row["NgayGui"] == DBNull.Value ? DateTime.MinValue : (DateTime)row["NgayGui"],
                     LyDo = row["LyDo"]?.ToString(),
-                    TrangThai = row["TrangThai"]?.ToString()
+                    TrangThai = row["TrangThai"]?.ToString(),
+                    NguoiDuyet = row["NguoiDuyet"]?.ToString()
                 };
 
                 list.Add(item);

@@ -53,9 +53,7 @@ namespace HRManagementApp.BLL
                     
                 }
                 catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show($"Lỗi Server (Mã {ex.Message}): {ex.Message}\n\nHãy chạy Visual Studio bằng 'Run as Administrator'.");
-                    System.Diagnostics.Debug.WriteLine("Server Error: " + ex.Message);
+                { 
                 }
             });
         }
@@ -217,7 +215,8 @@ namespace HRManagementApp.BLL
 
         private string GetLocalIPAddress()
         {
-            return "192.168.1.101";
+             
+            return "192.168.31.36";;
         }
     }
 }

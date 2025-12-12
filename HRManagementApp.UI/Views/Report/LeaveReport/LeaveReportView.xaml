@@ -263,27 +263,34 @@
 
                 <DataGridTextColumn Header="Mã NV"
                                     Binding="{Binding MaNV}"
-                                    Width="60"/>
+                                    Width="*"
+                                    MinWidth="80"/>
 
                 <DataGridTextColumn Header="Họ tên"
                                     Binding="{Binding TenNV}"
-                                    Width="140"/>
+                                    Width="*"
+                                    MinWidth="150"/>
 
                 <DataGridTextColumn Header="Loại nghỉ"
                                     Binding="{Binding LoaiNghi}"
-                                    Width="120"/>
+                                    Width="*"
+                                    MinWidth="80"/>
 
                 <DataGridTextColumn Header="Từ ngày"
                                     Binding="{Binding TuNgay, StringFormat=\{0:dd/MM/yyyy\}}"
-                                    Width="100"/>
+                                    Width="*"/>
 
                 <DataGridTextColumn Header="Đến ngày"
                                     Binding="{Binding DenNgay, StringFormat=\{0:dd/MM/yyyy\}}"
-                                    Width="100"/>
+                                    Width="*"/>
 
                 <DataGridTextColumn Header="Số ngày"
                                     Binding="{Binding SoNgay}"
-                                    Width="80"/>
+                                    Width="*"/>
+
+                <DataGridTextColumn Header="Ngày gửi"
+                                    Binding="{Binding NgayGui, StringFormat=\{0:dd/MM/yyyy\}}"
+                                    Width="*"/>
 
                 <DataGridTextColumn Header="Lý do"
                                     Binding="{Binding LyDo}"
@@ -291,7 +298,11 @@
 
                 <DataGridTextColumn Header="Trạng thái"
                                     Binding="{Binding TrangThai}"
-                                    Width="150"/>
+                                    Width="*"/>
+
+                <DataGridTextColumn Header="Người duyệt"
+                                    Binding="{Binding NguoiDuyet}"
+                                    Width="*"/>
 
             </DataGrid.Columns>
 

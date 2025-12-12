@@ -3,10 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:constants1="clr-namespace:HRManagementApp.Constants;assembly=HRManagementApp.Models"
+             xmlns:converters="clr-namespace:HRManagementApp.Converters;assembly=HRManagementApp.Models"
              mc:Ignorable="d"
              d:DesignHeight="900"
              d:DesignWidth="1360">
-
+    <UserControl.Resources>
+        <converters:PermissionToBooleanConverter x:Key="PermToBool"/>
+    </UserControl.Resources>
     <Border Background="White"
             CornerRadius="0,12,12,12"
             Padding="32">
@@ -61,11 +65,19 @@
                             Padding="16,8"
                             BorderThickness="0"
                             Cursor="Hand"
-                            Click="BtnExport_Click">
+                            Click="BtnExport_Click"
+                            IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants1:AppPermissions.CHAMCONG_EXCEL}}">
+
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius"
                                         Value="6"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.4"/>
+                                        <Setter Property="Cursor" Value="Arrow"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </Button.Resources>
                     </Button>

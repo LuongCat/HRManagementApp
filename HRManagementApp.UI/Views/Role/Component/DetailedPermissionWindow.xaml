@@ -1,0 +1,44 @@
+﻿<Window x:Class="HRManagementApp.UI.Views.DetailedPermissionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Phân quyền chi tiết" Height="350" Width="400"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="White">
+    <Border Padding="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Chọn thao tác cho phép:" FontSize="16" FontWeight="Bold" Margin="0,0,0,15" Foreground="#1E293B"/>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="icDetails">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                                <CheckBox Content="{Binding MoTaHienThi}" 
+                                          IsChecked="{Binding IsSelected}"
+                                          FontSize="14" Foreground="#334155">
+                                    <CheckBox.LayoutTransform>
+                                        <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                                    </CheckBox.LayoutTransform>
+                                </CheckBox>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Button Grid.Row="2" Content="Xác nhận" Click="BtnConfirm_Click"
+                    Background="#1E293B" Foreground="White" BorderThickness="0"
+                    Padding="20,10" HorizontalAlignment="Right" Margin="0,15,0,0">
+                <Button.Resources>
+                    <Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
+    </Border>
+</Window>

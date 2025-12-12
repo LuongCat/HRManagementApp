@@ -1,12 +1,14 @@
 <UserControl x:Class="HRManagementApp.UI.Views.DepartmentPayrollView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="clr-namespace:HRManagementApp.UI.Views.Converters" 
+             xmlns:converters="clr-namespace:HRManagementApp.UI.Views.Converters"
+             xmlns:constants="clr-namespace:HRManagementApp.Constants;assembly=HRManagementApp.Models"
+             xmlns:converters1="clr-namespace:HRManagementApp.Converters;assembly=HRManagementApp.Models"
              Background="#F5F7FA">
 
     <UserControl.Resources>
         <converters:GroupTotalSalaryConverter x:Key="GroupTotalSalaryConverter"/>
-
+        <converters1:PermissionToBooleanConverter x:Key="PermToBool"/>
         <CollectionViewSource x:Key="cvsPayroll" Source="{Binding}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="TenPhongBan"/>
@@ -80,7 +82,8 @@
 
                     <Button Content="Tính &amp; Xem Lương" Click="LoadData_Click"
                             Background="#2563EB" Foreground="White" FontWeight="SemiBold"
-                            Padding="15,0" Margin="15,0,0,0" Height="35" BorderThickness="0">
+                            Padding="15,0" Margin="15,0,0,0" Height="35" BorderThickness="0"
+                            IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_TINHTOAN}}">
                         <Button.Resources>
                             <Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style>
                         </Button.Resources>

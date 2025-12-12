@@ -221,12 +221,13 @@ namespace HRManagementApp.DAL
         public bool AddAccount(AccountManagementModel acc)
         {
             // Insert bảng TaiKhoan
-            string queryAccount = @"INSERT INTO taikhoan (MaNV, TenDangNhap, MatKhau, TrangThai) 
-                                    VALUES (@MaNV, @User, @Pass, 'Hoạt động')";
+            string queryAccount = @"INSERT INTO taikhoan (MaNV, TenDangNhap, MatKhau,VaiTro, TrangThai) 
+                                    VALUES (@MaNV, @User, @Pass,@TenVaiTro, 'Hoạt động')";
 
             var paramsAccount = new Dictionary<string, object>
             {
                 { "@MaNV", acc.MaNV },
+                { "@TenVaiTro", acc.VaiTro },
                 { "@User", acc.TenDangNhap },
                 { "@Pass", acc.MatKhau } // Mật khẩu đã được hash trước khi truyền vào đây
             };

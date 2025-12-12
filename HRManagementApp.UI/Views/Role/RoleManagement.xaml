@@ -3,11 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:HRManagementApp.Converters;assembly=HRManagementApp.Models"
+             xmlns:constants="clr-namespace:HRManagementApp.Constants;assembly=HRManagementApp.Models"
              mc:Ignorable="d"
              d:DesignHeight="700"
              d:DesignWidth="1000">
 
     <UserControl.Resources>
+        <converters:PermissionToBooleanConverter x:Key="PermToBool"/>
         <Style x:Key="ModernButtonStyle"
                TargetType="Button">
             <Setter Property="Padding"
@@ -228,7 +231,8 @@
                             Click="BtnAddRole_Click"
                             Style="{StaticResource ModernButtonStyle}"
                             Background="#1E293B"
-                            Foreground="White"/>
+                            Foreground="White"
+                            IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.HETHONG_TAOVAITRO}}"/>
                 </StackPanel>
             </Grid>
 
@@ -277,7 +281,8 @@
                                                     BorderBrush="#F59E0B"
                                                     BorderThickness="1"
                                                     Margin="0,0,8,0"
-                                                    Cursor="Hand">
+                                                    Cursor="Hand"
+                                                    IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.HETHONG_SUAVAITRO}}">
                                                 <Button.Resources>
                                                     <Style TargetType="Border">
                                                         <Setter Property="CornerRadius"
@@ -296,7 +301,8 @@
                                                     Foreground="#2563EB"
                                                     BorderThickness="0"
                                                     Margin="0,0,8,0"
-                                                    Cursor="Hand">
+                                                    Cursor="Hand"
+                                                    IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.HETHONG_SUAVAITRO}}">
                                                 <Button.Resources>
                                                     <Style TargetType="Border">
                                                         <Setter Property="CornerRadius"
@@ -314,7 +320,8 @@
                                                     Background="#FEF2F2"
                                                     Foreground="#EF4444"
                                                     BorderThickness="0"
-                                                    Cursor="Hand">
+                                                    Cursor="Hand"
+                                                    IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.HETHONG_XOAVAITRO}}">
                                                 <Button.Resources>
                                                     <Style TargetType="Border">
                                                         <Setter Property="CornerRadius"

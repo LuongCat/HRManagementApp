@@ -3,12 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:HRManagementApp.Converters;assembly=HRManagementApp.Models"
+             xmlns:constants="clr-namespace:HRManagementApp.Constants;assembly=HRManagementApp.Models"
              mc:Ignorable="d"
              d:DesignHeight="800"
              d:DesignWidth="1200">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:PermissionToBooleanConverter x:Key="PermToBool"/>
     </UserControl.Resources>
 
     <Grid Background="#F5F5F5">
@@ -222,7 +225,8 @@
                                 Padding="20,10"
                                 FontWeight="SemiBold"
                                 FontSize="13"
-                                Cursor="Hand">
+                                Cursor="Hand"
+                                IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.HETHONG_TAOTAIKHOAN}}">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Template">
@@ -237,6 +241,16 @@
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value="0.5"/>
+                                            <Setter Property="Background" Value="#9CA3AF"/>
+                                            <Setter Property="Cursor" Value="No"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#334155"/>
+                                        </Trigger>
+                                    </Style.Triggers>
                                 </Style>
                             </Button.Style>
                         </Button>
@@ -515,38 +529,62 @@
                                                     FontSize="16"
                                                     ToolTip="Chỉnh sửa"
                                                     CommandParameter="{Binding}"
-                                                    Click="BtnEdit_Click"/>
+                                                    Click="BtnEdit_Click"
+                                                    IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.HETHONG_SUATAIKHOAN}}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#F1F5F9"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="Opacity" Value="0.3"/>
+                                                                <Setter Property="Cursor" Value="Arrow"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
                                             <Button Background="Transparent"
                                                     BorderThickness="0"
                                                     Padding="8"
                                                     Cursor="Hand"
                                                     FontSize="16"
                                                     CommandParameter="{Binding}"
-                                                    Click="BtnLock_Click">
+                                                    Click="BtnLock_Click"
+                                                    IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.HETHONG_SUATAIKHOAN}}">
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding TrangThai}"
-                                                                    Value="Hoạt động">
-                                                                <Setter Property="Content"
-                                                                        Value="🔓"/>
-                                                                <Setter Property="ToolTip"
-                                                                        Value="Khóa tài khoản"/>
+                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Hoạt động">
+                                                                <Setter Property="Content" Value="🔓"/>
+                                                                <Setter Property="ToolTip" Value="Khóa tài khoản"/>
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding TrangThai}"
-                                                                    Value="Đã khóa">
-                                                                <Setter Property="Content"
-                                                                        Value="🔒"/>
-                                                                <Setter Property="ToolTip"
-                                                                        Value="Mở khóa tài khoản"/>
+                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Đã khóa">
+                                                                <Setter Property="Content" Value="🔒"/>
+                                                                <Setter Property="ToolTip" Value="Mở khóa tài khoản"/>
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding TrangThai}"
-                                                                    Value="Đã xóa">
-                                                                <Setter Property="Content"
-                                                                        Value="🔄"/>
-                                                                <Setter Property="ToolTip"
-                                                                        Value="Khôi phục tài khoản"/>
+                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Đã xóa">
+                                                                <Setter Property="Content" Value="🔄"/>
+                                                                <Setter Property="ToolTip" Value="Khôi phục tài khoản"/>
                                                             </DataTrigger>
+                                                            
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#F1F5F9"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="Opacity" Value="0.3"/>
+                                                                <Setter Property="Cursor" Value="Arrow"/>
+                                                            </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Button.Style>

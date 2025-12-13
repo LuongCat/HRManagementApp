@@ -1,7 +1,7 @@
 <Window x:Class="HRManagementApp.UI.Views.AttendanceEditWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cập nhật chấm công" Height="400" Width="450"
+        Title="Cập nhật chấm công" Height="500" Width="450"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="#F9FAFB">
     
     <Border Padding="20" Background="White" Margin="10" CornerRadius="8">

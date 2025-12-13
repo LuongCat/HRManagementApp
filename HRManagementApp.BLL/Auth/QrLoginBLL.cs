@@ -4,7 +4,9 @@ using System.Text;
 using System.Threading.Tasks;
 using HRManagementApp.Models;
 using System.IO;
-
+using HRManagementApp.DAL;
+using System.Net;
+using System.Net.Sockets;
 namespace HRManagementApp.BLL
 {
     public class QrLoginBLL
@@ -84,20 +86,33 @@ namespace HRManagementApp.BLL
             {
                 string username = request.QueryString["user"]; // Lấy username từ điện thoại gửi lên
                 string password = request.QueryString["password"];
-                if (_currentSession != null && id == _currentSession.SessionId && !string.IsNullOrEmpty(username))
+                if (_currentSession != null && id == _currentSession.SessionId && !string.IsNullOrEmpty(username) && new AuthenticationBLL().Login(username, password,out var message))
                 {
                     _currentSession.IsConfirmed = true;
                     _currentSession.Username = username;
 
                     // Báo giao diện điện thoại thành công
-                    responseString = "<h1 style='color:green; text-align:center; margin-top:50px;'>Đăng nhập thành công!</h1><p style='text-align:center'>Bạn có thể xem trên máy tính.</p>";
+                    responseString = @"
+                    <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <title>Đăng nhập QR</title>
+                </head>
+                <h1 style='color:green; text-align:center; margin-top:50px;'>Đăng nhập thành công!</h1><p style='text-align:center'>Bạn có thể xem trên máy tính.</p>";
 
                     // Báo về WPF App xử lý tiếp
                     OnLoginSuccess?.Invoke(username , password);
                 }
                 else
                 {
-                    responseString = "<h1>Lỗi xác thực!</h1>";
+                    responseString = @"
+                    <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <title>Đăng nhập QR</title>
+                </head>
+                <h1 style='color:green; text-align:center; margin-top:50px;'>Đăng nhập thất bại!</h1><p style='text-align:center'>Sai tài khoản hoặc mật khẩu</p>";
+                    ;
                 }
             }
 
@@ -215,8 +230,7 @@ namespace HRManagementApp.BLL
 
         private string GetLocalIPAddress()
         {
-             
-            return "192.168.31.36";;
+            return "10.103.100.44";
         }
     }
 }

@@ -5,6 +5,8 @@ using System.Data;
 
 public class ChamCongRepository
 {
+    
+    private readonly SystemLogRepository _logRepo = new SystemLogRepository();
     public List<ChamCong> GetAllChamCongByNhanVienId(int maNV)
     {
         var listChamCong = new List<ChamCong>();
@@ -287,7 +289,9 @@ public class ChamCongRepository
         string query = "DELETE FROM chamcong WHERE MaCC = @MaCC";
         var parameters = new Dictionary<string, object> { { "@MaCC", maCC } };
 
-        return Database.ExecuteNonQuery(query, parameters) > 0;
+        bool isSuccess = Database.ExecuteNonQuery(query,parameters) > 0;
+
+        return isSuccess;
     }
 
     // =========================================================
@@ -407,8 +411,7 @@ public class ChamCongRepository
         DateTime endDate = startDate.AddMonths(1).AddDays(-1);
 
         // 2. Câu truy vấn SQL
-        // LƯU Ý QUAN TRỌNG: Đã sửa 'SELECT cc.Ngay' thành 'SELECT days.Ngay' 
-        // để lấy được ngày kể cả khi nhân viên không chấm công.
+        //  lấy được ngày kể cả khi nhân viên không chấm công.
         string query = @"
     SELECT 
         days.Ngay, 

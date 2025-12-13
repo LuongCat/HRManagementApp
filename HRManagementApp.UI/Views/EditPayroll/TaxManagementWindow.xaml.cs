@@ -12,14 +12,20 @@ namespace HRManagementApp.UI.Views
     {
         private NhanVien _targetEmployee;
         
-        // TODO: Inject TaxService
-         private ThueService _thueService;
+        // Services
+        private ThueService _thueService;
+        private LuongService _luongService;     // Service xử lý lương
+        private SystemLogService _logService;   // Service ghi log
 
         public TaxManagementWindow(NhanVien employee)
         {
             InitializeComponent();
             _targetEmployee = employee;
+            
             _thueService = new ThueService();
+            _luongService = new LuongService();     // Khởi tạo
+            _logService = new SystemLogService();   // Khởi tạo
+            
             // Header Info
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
 
@@ -31,10 +37,10 @@ namespace HRManagementApp.UI.Views
 
         private void LoadData()
         {
-            // TODO: Load data from Service
-             var list = _thueService.GetTaxByMaNV(_targetEmployee.MaNV);
+            // Load data from Service
+            var list = _thueService.GetTaxByMaNV(_targetEmployee.MaNV);
 
-            // Giả lập
+            // Giả lập loading (nếu service chưa trả về list gán vào object)
             if (_targetEmployee.Thues == null) 
                 _targetEmployee.Thues = new List<Thue>();
 
@@ -75,7 +81,7 @@ namespace HRManagementApp.UI.Views
         }
 
         // ==========================
-        // CRUD ACTIONS
+        // CRUD ACTIONS (CÓ GHI LOG & MỞ CHỐT LƯƠNG)
         // ==========================
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
@@ -91,13 +97,36 @@ namespace HRManagementApp.UI.Views
                 ApDungDenNgay = DpDenNgay.SelectedDate
             };
 
-            // TODO: Service Call ->
+            // Service Call
             _thueService.AddTax(newItem);
-            
-            // Giả lập
-            _targetEmployee.Thues.Add(newItem);
+            _targetEmployee.Thues.Add(newItem); // Update UI
 
-            MessageBox.Show("Thêm thông tin thuế thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            // --- GHI LOG INSERT ---
+            // Mẫu: Thêm thuế 'TNCN' cho NV Nguyễn Văn A (ID: 10) - Số tiền: 500,000
+            string logDesc = $"Thêm thuế '{newItem.TenThue}' cho NV {_targetEmployee.HoTen} (ID: {_targetEmployee.MaNV}) - Số tiền: {newItem.SoTien:N0}";
+            
+            _logService.WriteLog(
+                UserSession.HoTen,
+                "INSERT",
+                "Thue",
+                _targetEmployee.MaNV.ToString(),
+                logDesc
+            );
+            // ----------------------
+
+            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, newItem.ApDungTuNgay);
+
+            if (isUnlocked)
+            {
+                MessageBox.Show($"Thêm thuế thành công! Đã mở chốt lương tháng {newItem.ApDungTuNgay:MM/yyyy} để tính lại.", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Thêm thông tin thuế thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            
             LoadData();
             BtnClear_Click(null, null);
         }
@@ -107,17 +136,70 @@ namespace HRManagementApp.UI.Views
             if (DgTaxes.SelectedItem is not Thue selected) return;
             if (!ValidateInput()) return;
 
+            // 1. SNAPSHOT: Lưu giá trị cũ TRƯỚC khi update
+            string oldName = selected.TenThue;
+            decimal oldMoney = selected.SoTien;
+            DateTime oldDate = selected.ApDungTuNgay;
+
             // Update Object
             selected.TenThue = TxtTenThue.Text.Trim();
             selected.SoTien = decimal.Parse(TxtSoTien.Text);
             selected.ApDungTuNgay = DpTuNgay.SelectedDate.Value;
             selected.ApDungDenNgay = DpDenNgay.SelectedDate;
 
-            // TODO: Service Call ->
+            // Service Call
             _thueService.UpdateTax(selected);
 
-            MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-            LoadData(); // Reload Grid
+            // --- GHI LOG UPDATE ---
+            // Mẫu: Sửa thuế NV Nguyễn Văn A: [Tên: TNCN -> Giảm trừ] [Tiền: 500k -> 1tr]
+            string logDetail = $"Sửa thuế NV {_targetEmployee.HoTen} (ID: {_targetEmployee.MaNV}): ";
+            bool hasChange = false;
+
+            if (oldName != selected.TenThue)
+            {
+                logDetail += $"[Tên: {oldName} -> {selected.TenThue}] ";
+                hasChange = true;
+            }
+            if (oldMoney != selected.SoTien)
+            {
+                logDetail += $"[Tiền: {oldMoney:N0} -> {selected.SoTien:N0}] ";
+                hasChange = true;
+            }
+            if (oldDate != selected.ApDungTuNgay)
+            {
+                logDetail += $"[Ngày: {oldDate:dd/MM} -> {selected.ApDungTuNgay:dd/MM}] ";
+                hasChange = true;
+            }
+            if (!hasChange) logDetail += "Cập nhật ngày kết thúc.";
+
+            _logService.WriteLog(
+                UserSession.HoTen,
+                "UPDATE",
+                "Thue",
+                selected.MaThue.ToString(),
+                logDetail
+            );
+            // ----------------------
+
+            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, selected.ApDungTuNgay);
+            // Nếu đổi ngày áp dụng sang tháng khác, mở luôn cả tháng cũ
+            if (oldDate.Month != selected.ApDungTuNgay.Month)
+            {
+                 _luongService.UnLockSalary(_targetEmployee.MaNV, oldDate);
+            }
+
+            if (isUnlocked)
+            {
+                MessageBox.Show($"Cập nhật thành công! Đã mở chốt lương tháng {selected.ApDungTuNgay:MM/yyyy}.", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            
+            LoadData(); 
             BtnClear_Click(null, null);
         }
 
@@ -127,13 +209,36 @@ namespace HRManagementApp.UI.Views
 
             if (MessageBox.Show($"Bạn có chắc muốn xóa khoản thuế '{selected.TenThue}'?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                // TODO: Service Call ->
-                _thueService.Delete(selected.MaThue);
+                // Snapshot thông tin backup
+                string backupInfo = $"{selected.TenThue} - {selected.SoTien:N0} (Từ: {selected.ApDungTuNgay:dd/MM/yyyy})";
 
-                // Giả lập
+                // Service Call
+                _thueService.Delete(selected.MaThue);
                 _targetEmployee.Thues.Remove(selected);
 
-                MessageBox.Show("Đã xóa khoản thuế!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                // --- GHI LOG DELETE ---
+                _logService.WriteLog(
+                    UserSession.HoTen,
+                    "DELETE",
+                    "Thue",
+                    selected.MaThue.ToString(),
+                    $"Đã xóa khoản thuế của NV {_targetEmployee.HoTen}. Chi tiết: {backupInfo}"
+                );
+                // ----------------------
+
+                // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
+                bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, selected.ApDungTuNgay);
+
+                if (isUnlocked)
+                {
+                    MessageBox.Show($"Đã xóa khoản thuế! Đã mở chốt lương tháng {selected.ApDungTuNgay:MM/yyyy}.", 
+                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Đã xóa khoản thuế!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                
                 LoadData();
                 BtnClear_Click(null, null);
             }

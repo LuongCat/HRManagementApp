@@ -64,10 +64,6 @@ namespace HRManagementApp.BLL
             if (string.IsNullOrWhiteSpace(ca.TenCa))
                 throw new ArgumentException("Tên ca làm không được để trống.");
 
-            // Kiểm tra giờ bắt đầu vs kết thúc (nếu cần)
-            // Lưu ý: Nếu ca đêm (VD: 22:00 đến 06:00 sáng hôm sau) thì Start > End là bình thường.
-            // Nên tùy nghiệp vụ mà bạn validate chỗ này nhé.
-
             try
             {
                 return _repo.CreateCaLam(ca);
@@ -103,8 +99,6 @@ namespace HRManagementApp.BLL
 
             try
             {
-                // Có thể kiểm tra thêm: Nếu ca đang có nhân viên làm thì không cho xóa?
-                // Tuy nhiên Repository đang dùng Soft Delete (Đã xóa) nên khá an toàn.
                 return _repo.DeleteCaLam(maCa);
             }
             catch (Exception ex)
@@ -119,8 +113,6 @@ namespace HRManagementApp.BLL
         {
             try
             {
-                // Kiểm tra xem nhân viên đã có ca này chưa (Logic có thể nằm ở DB hoặc check list ở đây)
-                // Ở đây mình gọi thẳng Repository, Reponsitory dùng INSERT IGNORE nên sẽ không lỗi
                 bool result = _repo.AssignCaLamToNhanVien(maNV, maCa);
                 
                 return result ? "Phân công thành công" : "Phân công thất bại (Có thể đã tồn tại)";

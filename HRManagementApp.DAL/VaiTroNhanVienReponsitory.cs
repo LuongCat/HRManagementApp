@@ -132,7 +132,7 @@
             {
                 string query = @"
             DELETE FROM nhanvien_chucvu
-            WHERE MaNV = @MaNV AND MaCV = @MaCV AND MaPB = @MaPB;
+            WHERE MaNV = @MaNV AND MaCV = @MaCV ;
         ";
 
                 var parameters = new Dictionary<string, object>

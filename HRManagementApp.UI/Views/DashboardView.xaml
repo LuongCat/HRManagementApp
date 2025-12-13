@@ -4,295 +4,310 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="800" d:DesignWidth="1200">
+             d:DesignHeight="800" d:DesignWidth="1200"
+             FontFamily="Segoe UI">
 
     <UserControl.Resources>
-        <!-- Color Definitions -->
-        <SolidColorBrush x:Key="PrimaryColor" Color="#2E86AB"/>
-        <SolidColorBrush x:Key="SecondaryColor" Color="#A23B72"/>
-        <SolidColorBrush x:Key="AccentColor" Color="#F18F01"/>
-        <SolidColorBrush x:Key="BackgroundColor" Color="#F5F7FA"/>
-        <SolidColorBrush x:Key="SidebarColor" Color="#2C3E50"/>
-        <SolidColorBrush x:Key="CardColor" Color="White"/>
+        <SolidColorBrush x:Key="PrimaryColor" Color="#3498DB"/>       <SolidColorBrush x:Key="SuccessColor" Color="#2ECC71"/>       <SolidColorBrush x:Key="WarningColor" Color="#F1C40F"/>       <SolidColorBrush x:Key="DangerColor" Color="#E74C3C"/>        <SolidColorBrush x:Key="BackgroundColor" Color="#F4F6F9"/>    <SolidColorBrush x:Key="CardColor" Color="White"/>
         <SolidColorBrush x:Key="TextPrimary" Color="#2C3E50"/>
         <SolidColorBrush x:Key="TextSecondary" Color="#7F8C8D"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#E0E0E0"/>
 
-        <!-- Button Styles -->
-        <Style x:Key="SidebarButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
+        <Style x:Key="ModernDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="20,15"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#34495E"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#1ABC9C"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="RowHeight" Value="45"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#F0F0F0"/>
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
         </Style>
 
-        <Style x:Key="ActionButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="15,8"/>
-            <Setter Property="FontSize" Value="12"/>
+        <Style x:Key="ModernColumnHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#FAFAFA"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="10,12"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+
+        <Style x:Key="ModernCellStyle" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="10,0"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Padding="{TemplateBinding Padding}" 
+                                Background="Transparent"
+                                BorderBrush="Transparent" 
+                                BorderThickness="0">
+                            <ContentPresenter VerticalAlignment="Center"/>
                         </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#2574A9"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="Black"/> <Setter Property="Background" Value="#EBF5FB"/> </Trigger>
+            </Style.Triggers>
         </Style>
 
-        <!-- Card Style -->
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="#F5F5F5"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F8F9FA"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource CardColor}"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Margin" Value="10"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Margin" Value="0,0,15,15"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect Color="Gray" Direction="270" ShadowDepth="2" BlurRadius="8" Opacity="0.1"/>
+                    <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="1" BlurRadius="10" Opacity="0.05"/>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="FilterComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Margin" Value="0,0,15,0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+        </Style>
+
     </UserControl.Resources>
 
     <Grid Background="{StaticResource BackgroundColor}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    </Grid.RowDefinitions>
 
-        <!-- Top Bar -->
-        <Border Grid.Row="0"
-                Background="White"
-                Padding="20,15"
-                BorderBrush="#E5E5E5"
-                BorderThickness="0,0,0,1">
+        <Border Grid.Row="0" Background="White" Padding="30,20" Margin="0,0,0,20" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="Dashboard"
-                               FontSize="24"
-                               FontWeight="Bold"
-                               Foreground="{StaticResource TextPrimary}"/>
-                    <TextBlock Text="Welcome back! Here's what's happening today."
-                               FontSize="14"
-                               Foreground="{StaticResource TextSecondary}"
-                               Margin="0,5,0,0"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <TextBlock Text="🔔"
-                               FontSize="20"
-                               VerticalAlignment="Center"
-                               Margin="10,0"/>
-                    <TextBlock x:Name="TxtToday"
-                               Text="Today: September 19, 2025"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource TextSecondary}"
-                               FontSize="12"/>
+                <StackPanel>
+                    <TextBlock Text="Overview Dashboard" FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
+                    <TextBlock x:Name="TxtToday" Text="Today: September 20, 2025" FontSize="14" Foreground="{StaticResource TextSecondary}" Margin="0,5,0,0"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Dashboard Content -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="20">
+        <Grid Grid.Row="1" Margin="30,0,15,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <!-- Stats Cards Row -->
-                <Grid Margin="0,0,0,20">
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="20">
+                <StackPanel >
+                    <Grid>
+                        <Ellipse Width="40" Height="40" Fill="#EBF5FB" HorizontalAlignment="Left"/>
+                        <TextBlock Text="👥" FontSize="20" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock x:Name="TxtTotalEmployee" Text="150" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,15,0,0"/>
+                    <TextBlock Text="Total Employees" FontSize="13" Foreground="{StaticResource TextSecondary}"/>
+                    <TextBlock x:Name="TxtJoinedThisMonth" Text="+5 new" FontSize="12" Foreground="{StaticResource SuccessColor}" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Padding="20">
+                <StackPanel >
+                    <Grid>
+                        <Ellipse Width="40" Height="40" Fill="#E8F8F5" HorizontalAlignment="Left"/>
+                        <TextBlock Text="✅" FontSize="20" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock x:Name="TxtPresentToday" Text="142" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,15,0,0"/>
+                    <TextBlock Text="Present Today" FontSize="13" Foreground="{StaticResource TextSecondary}"/>
+                    <TextBlock x:Name="TxtAttendanceRate" Text="96% Rate" FontSize="12" Foreground="{StaticResource SuccessColor}" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="20">
+                <StackPanel >
+                    <Grid>
+                        <Ellipse Width="40" Height="40" Fill="#FDEDEC" HorizontalAlignment="Left"/>
+                        <TextBlock Text="🏖️" FontSize="20" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock x:Name="TxtOnLeave" Text="8" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,15,0,0"/>
+                    <TextBlock Text="On Leave" FontSize="13" Foreground="{StaticResource TextSecondary}"/>
+                    <TextBlock x:Name="TxtPendingApprovals" Text="2 Pending" FontSize="12" Foreground="{StaticResource WarningColor}" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="3" Style="{StaticResource CardStyle}" Margin="0,0,0,15" Padding="20">
+                <StackPanel >
+                    <Grid>
+                        <Ellipse Width="40" Height="40" Fill="#FEF9E7" HorizontalAlignment="Left"/>
+                        <TextBlock Text="💰" FontSize="20" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock x:Name="TxtMonthlyPayroll" Text="$420k" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextPrimary}" Margin="0,15,0,0"/>
+                    <TextBlock Text="Monthly Payroll" FontSize="13" Foreground="{StaticResource TextSecondary}"/>
+                    <TextBlock x:Name="TxtDueDate" Text="Due in 5 days" FontSize="12" Foreground="{StaticResource DangerColor}" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Margin="30,0,30,30" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="20">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/> <ColumnDefinition Width="*"/>    <ColumnDefinition Width="Auto"/> </Grid.ColumnDefinitions>
 
-                    <!-- Total Employees Card -->
-                    <Border Grid.Column="0" Style="{StaticResource CardStyle}">
-                        <StackPanel Margin="0,0,0,10">
-                            <Grid Margin="10">
-                                <TextBlock Text="👥" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
-                                <StackPanel>
-                                    <TextBlock Text="Total Employees" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock x:Name="TxtTotalEmployee" FontSize="28" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="0,5,0,0"/>
-                                    <TextBlock x:Name="TxtJoinedThisMonth" FontSize="12" Foreground="#27AE60" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="System Activity Logs" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Text="Monitor all system changes and user actions" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,5,0,0"/>
+                    </StackPanel>
 
-                    <!-- Present Today Card -->
-                    <Border Grid.Column="1" Style="{StaticResource CardStyle}">
-                        <StackPanel Margin="0,0,0,10">
-                            <Grid Margin="10">
-                                <TextBlock Text="✅" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
-                                <StackPanel>
-                                    <TextBlock Text="Present Today" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock x:Name="TxtPresentToday" FontSize="28" FontWeight="Bold" Foreground="#27AE60" Margin="0,5,0,0"/>
-                                    <TextBlock x:Name="TxtAttendanceRate" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <ComboBox x:Name="cboFilterMonth" Style="{StaticResource FilterComboBoxStyle}" Width="90" SelectionChanged="Filter_Changed" SelectedIndex="0">
+                            <ComboBoxItem Content="Month: All"/>
+                            <ComboBoxItem Content="1"/>
+                            <ComboBoxItem Content="2"/>
+                            <ComboBoxItem Content="3"/>
+                            <ComboBoxItem Content="4"/>
+                            <ComboBoxItem Content="5"/>
+                            <ComboBoxItem Content="6"/>
+                            <ComboBoxItem Content="7"/>
+                            <ComboBoxItem Content="8"/>
+                            <ComboBoxItem Content="9"/>
+                            <ComboBoxItem Content="10"/>
+                            <ComboBoxItem Content="11"/>
+                            <ComboBoxItem Content="12"/>
+                        </ComboBox>
 
-                    <!-- On Leave Card -->
-                    <Border Grid.Column="2" Style="{StaticResource CardStyle}">
-                        <StackPanel Margin="0,0,0,10">
-                            <Grid Margin="10">
-                                <TextBlock Text="🏖️" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
-                                <StackPanel>
-                                    <TextBlock Text="On Leave" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock x:Name="TxtOnLeave" FontSize="28" FontWeight="Bold" Foreground="{StaticResource AccentColor}" Margin="0,5,0,0"/>
-                                    <TextBlock x:Name="TxtPendingApprovals" FontSize="12" Foreground="#E74C3C" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
+                        <ComboBox x:Name="cboFilterYear" Style="{StaticResource FilterComboBoxStyle}" Width="90" SelectionChanged="Filter_Changed"/>
 
-                    <!-- Payroll Card -->
-                    <Border Grid.Column="3" Style="{StaticResource CardStyle}">
-                        <StackPanel Margin="0,0,0,10">
-                            <Grid Margin="10">
-                                <TextBlock Text="💰" FontSize="32" HorizontalAlignment="Right" Opacity="0.3"/>
-                                <StackPanel>
-                                    <TextBlock Text="Monthly Payroll" FontSize="12" Foreground="{StaticResource TextSecondary}"/>
-                                    <TextBlock x:Name="TxtMonthlyPayroll" FontSize="28" FontWeight="Bold" Foreground="{StaticResource SecondaryColor}" Margin="0,5,0,0"/>
-                                    <TextBlock x:Name="TxtDueDate" FontSize="12" Foreground="{StaticResource AccentColor}" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-                </Grid>
+                        <ComboBox x:Name="cboFilterAction" Style="{StaticResource FilterComboBoxStyle}" Width="110" SelectionChanged="Filter_Changed" SelectedIndex="0">
+                            <ComboBoxItem Content="Action: All"/>
+                            <ComboBoxItem Content="INSERT"/>
+                            <ComboBoxItem Content="UPDATE"/>
+                            <ComboBoxItem Content="DELETE"/>
+                            <ComboBoxItem Content="LOGIN"/>
+                            <ComboBoxItem Content="CHECK_IN"/>
+                            <ComboBoxItem Content="CHECK_OUT"/>
+                        </ComboBox>
 
-                <!-- Recent Activities and Quick Actions -->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="cboFilterTable" Style="{StaticResource FilterComboBoxStyle}" Width="110" SelectionChanged="Filter_Changed" SelectedIndex="0">
+                            <ComboBoxItem Content="Table: All"/>
+                            <ComboBoxItem Content="NhanVien"/>
+                            <ComboBoxItem Content="ChamCong"/>
+                            <ComboBoxItem Content="TaiKhoan"/>
+                        </ComboBox>
 
-                    <!-- Recent Activities -->
-                    <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="10">
-                        <StackPanel Margin="0,0,0,10">
-                            <Grid Margin="0,0,0,15">
-                                <TextBlock Text="Recent Activities" FontSize="16" FontWeight="SemiBold"/>
-                                <Button Content="View All" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Right" Padding="10,5"/>
-                            </Grid>
-
-                            <StackPanel>
-                                <!-- Activity Item 1 -->
-                                <Border BorderBrush="#E5E5E5" BorderThickness="0,0,0,1" Padding="0,10">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Ellipse Grid.Column="0" Width="8" Height="8" Fill="#27AE60" VerticalAlignment="Top" Margin="0,5,15,0"/>
-                                        <StackPanel Grid.Column="1">
-                                            <TextBlock Text="John Smith submitted a leave request" FontWeight="Medium"/>
-                                            <TextBlock Text="Annual Leave - Oct 15-20, 2025" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,2,0,0"/>
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="2" Text="2 min ago" FontSize="11" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Top"/>
-                                    </Grid>
-                                </Border>
-
-                                <!-- Activity Item 2 -->
-                                <Border BorderBrush="#E5E5E5" BorderThickness="0,0,0,1" Padding="0,10">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Ellipse Grid.Column="0" Width="8" Height="8" Fill="{StaticResource PrimaryColor}" VerticalAlignment="Top" Margin="0,5,15,0"/>
-                                        <StackPanel Grid.Column="1">
-                                            <TextBlock Text="New employee Sarah Johnson onboarded" FontWeight="Medium"/>
-                                            <TextBlock Text="Marketing Department - ID: EMP2025-248" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,2,0,0"/>
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="2" Text="1 hour ago" FontSize="11" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Top"/>
-                                    </Grid>
-                                </Border>
-
-                                <!-- Activity Item 3 -->
-                                <Border Padding="0,10,0,0">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Ellipse Grid.Column="0" Width="8" Height="8" Fill="{StaticResource AccentColor}" VerticalAlignment="Top" Margin="0,5,15,0"/>
-                                        <StackPanel Grid.Column="1">
-                                            <TextBlock Text="Payroll processed for September 2025" FontWeight="Medium"/>
-                                            <TextBlock Text="247 employees - Total: $428,500" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,2,0,0"/>
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="2" Text="3 hours ago" FontSize="11" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Top"/>
-                                    </Grid>
-                                </Border>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Quick Actions -->
-                    <Border Grid.Column="1" Style="{StaticResource CardStyle}" Padding="10">
-                        <StackPanel Margin="0,0,0,10">
-                            <TextBlock Text="Quick Actions" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
-
-                            <Button Content="Add New Employee" Click="GoToAddNewEmployee" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10"/>
-                            <Button Content="Process Payroll" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10" Background="{StaticResource AccentColor}"/>
-                            <Button Content="Approve Leave Requests" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,10" Background="{StaticResource SecondaryColor}"/>
-                            <Button Content="Generate Reports" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Stretch" Margin="0,0,0,20" Background="#27AE60"/>
-
-                            <!-- Calendar Widget -->
-                            <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="4" Padding="10">
-                                <StackPanel>
-                                    <TextBlock Text="September 2025" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                                    <Calendar Name="QuickCalendar" HorizontalAlignment="Center"/>
-                                </StackPanel>
+                        <Button Click="BtnRefresh_Click" Background="Transparent" BorderThickness="0" Cursor="Hand" ToolTip="Refresh Data">
+                            <Border Background="#F4F6F9" CornerRadius="4" Padding="10">
+                                <TextBlock Text="🔄" FontSize="14"/>
                             </Border>
-
-                        </StackPanel>
-                    </Border>
+                        </Button>
+                    </StackPanel>
                 </Grid>
-            </StackPanel>
-        </ScrollViewer>
+
+                <DataGrid Grid.Row="1" x:Name="dgSystemLogs"
+                          Style="{StaticResource ModernDataGridStyle}"
+                          ColumnHeaderStyle="{StaticResource ModernColumnHeaderStyle}"
+                          CellStyle="{StaticResource ModernCellStyle}">
+                    
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="TIME" Binding="{Binding ThoiGian, StringFormat='dd/MM/yyyy HH:mm'}" Width="150" Foreground="{StaticResource TextSecondary}"/>
+
+                        <DataGridTemplateColumn Header="USER" Width="180">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Border Width="24" Height="24" CornerRadius="12" Background="#D6EAF8" Margin="0,0,10,0">
+                                            <TextBlock Text="👤" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding NguoiThucHien}" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="ACTION" Width="140">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="12" Padding="12,4" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#F0F0F0"/> <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HanhDong}" Value="INSERT">
+                                                        <Setter Property="Background" Value="#E8F8F5"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding HanhDong}" Value="CHECK_IN">
+                                                        <Setter Property="Background" Value="#E8F8F5"/>
+                                                    </DataTrigger>
+                                                    
+                                                    <DataTrigger Binding="{Binding HanhDong}" Value="UPDATE">
+                                                        <Setter Property="Background" Value="#FEF9E7"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding HanhDong}" Value="CHECK_OUT">
+                                                        <Setter Property="Background" Value="#FEF9E7"/>
+                                                    </DataTrigger>
+                                                    
+                                                    <DataTrigger Binding="{Binding HanhDong}" Value="DELETE">
+                                                        <Setter Property="Background" Value="#FDEDEC"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        
+                                        <TextBlock Text="{Binding HanhDong}" FontWeight="Bold" FontSize="11">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#7F8C8D"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HanhDong}" Value="INSERT">
+                                                            <Setter Property="Foreground" Value="#27AE60"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding HanhDong}" Value="CHECK_IN">
+                                                            <Setter Property="Foreground" Value="#27AE60"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding HanhDong}" Value="UPDATE">
+                                                            <Setter Property="Foreground" Value="#F39C12"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding HanhDong}" Value="CHECK_OUT">
+                                                            <Setter Property="Foreground" Value="#F39C12"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding HanhDong}" Value="DELETE">
+                                                            <Setter Property="Foreground" Value="#E74C3C"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="TABLE" Binding="{Binding BangLienQuan}" Width="120" Foreground="{StaticResource TextSecondary}"/>
+
+                        <DataGridTemplateColumn Header="DESCRIPTION" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding MoTa}" TextTrimming="CharacterEllipsis" ToolTip="{Binding MoTa}" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

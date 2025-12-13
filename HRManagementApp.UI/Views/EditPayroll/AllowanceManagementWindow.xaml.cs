@@ -12,16 +12,20 @@ namespace HRManagementApp.UI.Views
     {
         private NhanVien _targetEmployee;
         
-        // TODO: Inject Service phụ cấp
-         private PhuCapService _phuCapService;
-         private LuongService _luongService;
+        // Service
+        private PhuCapService _phuCapService;
+        private LuongService _luongService;
+        private SystemLogService _logService; // 1. Khai báo Service Log
 
         public AllowanceManagementWindow(NhanVien employee)
         {
             InitializeComponent();
             _targetEmployee = employee;
+            
             _phuCapService = new PhuCapService();
             _luongService = new LuongService();
+            _logService = new SystemLogService(); // 2. Khởi tạo Service Log
+
             // Hiển thị info
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
 
@@ -52,7 +56,7 @@ namespace HRManagementApp.UI.Views
             if (DgAllowances.SelectedItem is PhuCapNhanVien selected)
             {
                 TxtTenPhuCap.Text = selected.TenPhuCap;
-                TxtSoTien.Text = selected.SoTien.ToString("N0"); // Format số nguyên có dấu phẩy
+                TxtSoTien.Text = selected.SoTien.ToString("N0");
                 DpTuNgay.SelectedDate = selected.ApDungTuNgay;
                 DpDenNgay.SelectedDate = selected.ApDungDenNgay;
 
@@ -77,17 +81,8 @@ namespace HRManagementApp.UI.Views
         }
 
         // ==========================
-        // CRUD ACTIONS
+        // CRUD ACTIONS (CÓ GHI LOG)
         // ==========================
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
@@ -95,7 +90,6 @@ namespace HRManagementApp.UI.Views
 
             var newItem = new PhuCapNhanVien
             {
-                // ID = ... (DB tự sinh),
                 MaNV = _targetEmployee.MaNV,
                 TenPhuCap = TxtTenPhuCap.Text.Trim(),
                 SoTien = decimal.Parse(TxtSoTien.Text),
@@ -103,25 +97,30 @@ namespace HRManagementApp.UI.Views
                 ApDungDenNgay = DpDenNgay.SelectedDate
             };
 
-            // TODO: Service Call ->
+            // Service Call
             _phuCapService.AddPhuCap(newItem);
-            // Giả lập
-            _targetEmployee.PhuCaps.Add(newItem);
-            
-            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
-            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, newItem.ApDungTuNgay);
+            _targetEmployee.PhuCaps.Add(newItem); // Update UI
 
+            // --- GHI LOG INSERT (CẬP NHẬT MÔ TẢ) ---
+            // Mẫu: "Thêm phụ cấp 'Xăng xe' cho NV Nguyễn Văn A (ID: 10) - Số tiền: 500,000"
+            string moTaLog = $"Thêm phụ cấp '{newItem.TenPhuCap}' cho NV {_targetEmployee.HoTen} (ID: {_targetEmployee.MaNV}) - Số tiền: {newItem.SoTien:N0}";
+
+            _logService.WriteLog(
+                UserSession.HoTen,       // Người thực hiện (HR)
+                "INSERT", 
+                "PhuCapNhanVien", 
+                newItem.MaNV.ToString(), 
+                moTaLog                  // <--- Đã thêm tên nhân viên vào đây
+            );
+            // ----------------------------------------
+    
+            // Mở chốt lương...
+            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, newItem.ApDungTuNgay);
             if (isUnlocked)
-            {
-                MessageBox.Show($"Thêm thành công! Bảng lương tháng {newItem.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.", 
-                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+                MessageBox.Show($"Thêm thành công! Đã mở chốt lương tháng {newItem.ApDungTuNgay:MM/yyyy}.", "Thông báo");
             else
-            {
-                // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
-                MessageBox.Show("Thêm phụ cấp thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            
+                MessageBox.Show("Thêm phụ cấp thành công!", "Thông báo");
+    
             LoadData();
             BtnClear_Click(null, null);
         }
@@ -130,33 +129,50 @@ namespace HRManagementApp.UI.Views
         {
             if (DgAllowances.SelectedItem is not PhuCapNhanVien selected) return;
             if (!ValidateInput()) return;
-            
-            // Lưu lại ngày cũ trước khi sửa để mở chốt cả tháng cũ (nếu user đổi ngày áp dụng sang tháng khác)
-            DateTime oldDate = selected.ApDungTuNgay;
-            
+    
+            // Snapshot giá trị cũ
+            string oldName = selected.TenPhuCap;
+            decimal oldMoney = selected.SoTien;
+    
             // Update Value
             selected.TenPhuCap = TxtTenPhuCap.Text.Trim();
             selected.SoTien = decimal.Parse(TxtSoTien.Text);
             selected.ApDungTuNgay = DpTuNgay.SelectedDate.Value;
             selected.ApDungDenNgay = DpDenNgay.SelectedDate;
 
-            // TODO: Service Call ->
+            // Service Call
             _phuCapService.UpdatePhuCap(selected);
-            
-            // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
-            bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, selected.ApDungTuNgay);
 
-            if (isUnlocked)
+            // --- GHI LOG UPDATE (CẬP NHẬT MÔ TẢ) ---
+            // Mẫu: "Sửa phụ cấp của NV Nguyễn Văn A (ID: 10): [Tiền: 500,000 -> 600,000]"
+            string logDetail = $"Sửa phụ cấp của NV {_targetEmployee.HoTen} (ID: {_targetEmployee.MaNV}): ";
+            bool hasChange = false;
+
+            if (oldName != selected.TenPhuCap) 
             {
-                MessageBox.Show($"Sửa thành công! Bảng lương tháng {selected.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.", 
-                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                logDetail += $"[Tên: {oldName} -> {selected.TenPhuCap}] ";
+                hasChange = true;
             }
-            else
+            if (oldMoney != selected.SoTien) 
             {
-                // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
-                MessageBox.Show("cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                logDetail += $"[Tiền: {oldMoney:N0} -> {selected.SoTien:N0}] ";
+                hasChange = true;
             }
-            
+            if (!hasChange) logDetail += "Cập nhật ngày áp dụng.";
+
+            _logService.WriteLog(
+                UserSession.HoTen,
+                "UPDATE",
+                "PhuCapNhanVien",
+                selected.ID.ToString(),
+                logDetail // <--- Đã có tên nhân viên
+            );
+            // ----------------------------------------
+    
+            // Mở chốt lương...
+            _luongService.UnLockSalary(_targetEmployee.MaNV, selected.ApDungTuNgay);
+            MessageBox.Show("Cập nhật thành công!", "Thông báo");
+    
             LoadData();
             BtnClear_Click(null, null);
         }
@@ -167,24 +183,29 @@ namespace HRManagementApp.UI.Views
 
             if (MessageBox.Show($"Bạn có chắc muốn xóa phụ cấp '{selected.TenPhuCap}'?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                // TODO: Service Call ->
+                // Snapshot
+                string backupInfo = $"{selected.TenPhuCap} - {selected.SoTien:N0}";
+
+                // Service Call
                 _phuCapService.DeletePhuCap(selected.ID);
-
-                // Giả lập
                 _targetEmployee.PhuCaps.Remove(selected);
-                // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
-                bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, selected.ApDungTuNgay);
 
-                if (isUnlocked)
-                {
-                    MessageBox.Show($"xóa phụ cấp thành công! Bảng lương tháng {selected.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.", 
-                        "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
-                    MessageBox.Show("xóa phụ cấp thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                // --- GHI LOG DELETE (CẬP NHẬT MÔ TẢ) ---
+                string logDesc = $"Đã xóa phụ cấp của NV {_targetEmployee.HoTen} (ID: {_targetEmployee.MaNV}). Chi tiết: {backupInfo}";
+
+                _logService.WriteLog(
+                    UserSession.HoTen,
+                    "DELETE",
+                    "PhuCapNhanVien",
+                    selected.ID.ToString(),
+                    logDesc // <--- Đã có tên nhân viên
+                );
+                // ----------------------------------------
+
+                // Mở chốt lương...
+                _luongService.UnLockSalary(_targetEmployee.MaNV, selected.ApDungTuNgay);
+                MessageBox.Show("Xóa thành công!", "Thông báo");
+
                 LoadData();
                 BtnClear_Click(null, null);
             }

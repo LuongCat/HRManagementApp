@@ -11,10 +11,10 @@ namespace HRManagementApp.UI.Views
     public partial class AllowanceManagementWindow : Window
     {
         private NhanVien _targetEmployee;
-        
+
         // TODO: Inject Service phụ cấp
-         private PhuCapService _phuCapService;
-         private LuongService _luongService;
+        private PhuCapService _phuCapService;
+        private LuongService _luongService;
 
         public AllowanceManagementWindow(NhanVien employee)
         {
@@ -29,6 +29,12 @@ namespace HRManagementApp.UI.Views
             DpTuNgay.SelectedDate = DateTime.Now;
 
             LoadData();
+
+            DateTime prev = DateTime.Now.AddMonths(-1);
+
+            int month = prev.Month;
+            int year = prev.Year;
+            LoadRewardEvaluation(month: month, year: year);
         }
 
         private void LoadData()
@@ -37,7 +43,7 @@ namespace HRManagementApp.UI.Views
             // var list = _phuCapService.GetByEmployee(_targetEmployee.MaNV);
 
             // Giả lập load từ object truyền vào
-            if (_targetEmployee.PhuCaps == null) 
+            if (_targetEmployee.PhuCaps == null)
                 _targetEmployee.PhuCaps = new List<PhuCapNhanVien>();
 
             DgAllowances.ItemsSource = null;
@@ -79,16 +85,16 @@ namespace HRManagementApp.UI.Views
         // ==========================
         // CRUD ACTIONS
         // ==========================
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             if (!ValidateInput()) return;
@@ -107,13 +113,13 @@ namespace HRManagementApp.UI.Views
             _phuCapService.AddPhuCap(newItem);
             // Giả lập
             _targetEmployee.PhuCaps.Add(newItem);
-            
+
             // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
             bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, newItem.ApDungTuNgay);
 
             if (isUnlocked)
             {
-                MessageBox.Show($"Thêm thành công! Bảng lương tháng {newItem.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.", 
+                MessageBox.Show($"Thêm thành công! Bảng lương tháng {newItem.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.",
                     "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -121,7 +127,7 @@ namespace HRManagementApp.UI.Views
                 // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
                 MessageBox.Show("Thêm phụ cấp thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            
+
             LoadData();
             BtnClear_Click(null, null);
         }
@@ -130,10 +136,10 @@ namespace HRManagementApp.UI.Views
         {
             if (DgAllowances.SelectedItem is not PhuCapNhanVien selected) return;
             if (!ValidateInput()) return;
-            
+
             // Lưu lại ngày cũ trước khi sửa để mở chốt cả tháng cũ (nếu user đổi ngày áp dụng sang tháng khác)
             DateTime oldDate = selected.ApDungTuNgay;
-            
+
             // Update Value
             selected.TenPhuCap = TxtTenPhuCap.Text.Trim();
             selected.SoTien = decimal.Parse(TxtSoTien.Text);
@@ -142,13 +148,13 @@ namespace HRManagementApp.UI.Views
 
             // TODO: Service Call ->
             _phuCapService.UpdatePhuCap(selected);
-            
+
             // === GỌI SERVICE ĐỂ MỞ CHỐT LƯƠNG ===
             bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, selected.ApDungTuNgay);
 
             if (isUnlocked)
             {
-                MessageBox.Show($"Sửa thành công! Bảng lương tháng {selected.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.", 
+                MessageBox.Show($"Sửa thành công! Bảng lương tháng {selected.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.",
                     "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -156,7 +162,7 @@ namespace HRManagementApp.UI.Views
                 // Chỉ thông báo thêm thành công, không nhắc gì tới lương vì chưa có bảng lương
                 MessageBox.Show("cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            
+
             LoadData();
             BtnClear_Click(null, null);
         }
@@ -177,7 +183,7 @@ namespace HRManagementApp.UI.Views
 
                 if (isUnlocked)
                 {
-                    MessageBox.Show($"xóa phụ cấp thành công! Bảng lương tháng {selected.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.", 
+                    MessageBox.Show($"xóa phụ cấp thành công! Bảng lương tháng {selected.ApDungTuNgay:MM/yyyy} đã được mở chốt để tính lại.",
                         "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
@@ -220,6 +226,44 @@ namespace HRManagementApp.UI.Views
             }
 
             return true;
+        }
+
+        private void BtnOpenRewardEvaluation_Click(object sender, RoutedEventArgs e)
+        {
+            ReportPanel.Visibility = Visibility.Visible;
+            DgAllowances.IsEnabled = false;
+        }
+
+        private void BtnCloseReport_Click(object sender, RoutedEventArgs e)
+        {
+            ReportPanel.Visibility = Visibility.Collapsed;
+            DgAllowances.IsEnabled = true;
+        }
+
+        private void LoadRewardEvaluation(int month, int year)
+        {
+            List<RewardEvaluation> report = _phuCapService.GetRewardEvaluation(_targetEmployee.MaNV, month, year);
+
+            TxtRewardEvaluation.Text = $"Đánh giá khen thưởng tháng ";
+
+            DgRewardEvaluation.ItemsSource = report ?? new List<RewardEvaluation>();
+
+            int summaryRewardPoint = report?.Sum(x => x.Diem) ?? 0;
+            
+            int rewardPercentRecommend = 0;
+
+            if (summaryRewardPoint >= 350) { rewardPercentRecommend = 10; }
+            else if (summaryRewardPoint >= 300) { rewardPercentRecommend = 8; }
+            else if (summaryRewardPoint >= 260) { rewardPercentRecommend = 5; }
+            else if (summaryRewardPoint >= 230) { rewardPercentRecommend = 2; }
+
+            double mainSalary = Math.Round((double)(new PayrollResultService().GetPayrollResultForEmployee(_targetEmployee, month, year).luongchinh ?? 0m), 2);
+            double rewardSalaryRecommend = mainSalary * rewardPercentRecommend / 100;
+
+            TxtTongDiem.Text = $"Tổng điểm: {summaryRewardPoint}";
+            TxtLuongChinh.Text = $"Lương chính (VND): {mainSalary}";
+            TxtThuongPhanTram.Text = $"Đề xuất thưởng (%): {rewardPercentRecommend}";
+            TxtTienThuong.Text = $"Đề xuất thưởng (VND): {rewardSalaryRecommend}";
         }
     }
 }

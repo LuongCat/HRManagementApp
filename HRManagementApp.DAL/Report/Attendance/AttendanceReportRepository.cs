@@ -26,20 +26,18 @@ namespace HRManagementApp.DAL.Report
             FROM chamcong cc
             JOIN nhanvien nv ON cc.MaNV = nv.MaNV
             JOIN phongban pb ON nv.MaPB = pb.MaPB
-            JOIN calam ca ON ca.MaCa = (
+            JOIN calam ca ON ca.MaCa = COALESCE((
                     SELECT nvc.MaCa
                     FROM nhanvien_calam nvc
                     JOIN calam c2 ON c2.MaCa = nvc.MaCa
                     WHERE nvc.MaNV = nv.MaNV
+                        AND c2.GioKetThuc >= cc.GioVao
                     ORDER BY
                         (cc.GioVao BETWEEN c2.GioBatDau AND c2.GioKetThuc) DESC,
-
                         CASE WHEN c2.GioBatDau >= cc.GioVao THEN 0 ELSE 1 END,
-
                         ABS(TIME_TO_SEC(TIMEDIFF(c2.GioBatDau, cc.GioVao))) ASC
-
                     LIMIT 1
-            )
+            ), '0')
             WHERE cc.GioVao IS NOT NULL
             ";
 
@@ -97,6 +95,7 @@ namespace HRManagementApp.DAL.Report
                         FROM nhanvien_calam nvc
                         JOIN calam c2 ON c2.MaCa = nvc.MaCa
                         WHERE nvc.MaNV = nv.MaNV
+                            AND c2.GioKetThuc >= cc.GioVao
                         ORDER BY
                             (cc.GioVao BETWEEN c2.GioBatDau AND c2.GioKetThuc) DESC,
 

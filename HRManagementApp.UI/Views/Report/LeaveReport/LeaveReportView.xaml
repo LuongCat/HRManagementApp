@@ -298,12 +298,12 @@
 
                 <DataGridTextColumn Header="Trạng thái"
                                     Binding="{Binding TrangThai}"
+
                                     Width="150"/>
                 
                 <DataGridTextColumn Header="Người duyệt"
                                     Binding="{Binding NguoiDuyet}"
                                     Width="150"/>
-
             </DataGrid.Columns>
 
         </DataGrid>

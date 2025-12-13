@@ -50,9 +50,10 @@ namespace HRManagementApp.DAL.Report
             if (date.HasValue)
             {
                 query += @"
-            AND DATE(@date) >= DATE(dt.NgayBatDau)
+                    AND DATE(@date) >= DATE(dt.NgayBatDau)
                     AND DATE(@date) <= DATE(dt.NgayKetThuc)
-        ";
+                ";
+
                 parameters.Add("@date", date.Value.ToDateTime(TimeOnly.MinValue));
             }
 

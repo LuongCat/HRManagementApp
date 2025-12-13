@@ -2,6 +2,9 @@ namespace HRManagementApp.DAL;
 
 using HRManagementApp.models;
 using System.Data;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using System.Security.Cryptography.X509Certificates;
 
 public class ChamCongRepository
 {
@@ -488,5 +491,120 @@ public class ChamCongRepository
         result.SoNgayVang = soVang;
 
         return result;
+    }
+
+    public int GetWorkingDays(int maNV, int month, int year)
+    {
+        string query = @"
+        SELECT COUNT(DISTINCT cc.Ngay)
+        FROM chamcong cc
+        WHERE cc.MaNV = @maNV
+          AND cc.GioVao IS NOT NULL
+          AND MONTH(cc.Ngay) = @month
+          AND YEAR(cc.Ngay) = @year
+          AND EXISTS (
+              SELECT 1
+              FROM nhanvien_calam nvc
+              JOIN calam c ON c.MaCa = nvc.MaCa
+              WHERE nvc.MaNV = cc.MaNV
+                AND c.GioKetThuc >= cc.GioVao
+          );
+    ";
+
+        var parameters = new Dictionary<string, object>
+    {
+        { "@maNV", maNV },
+        { "@month", month },
+        { "@year", year }
+    };
+
+        object result = Database.ExecuteScalar(query, parameters);
+
+        return Convert.ToInt32(result ?? 0);
+    }
+
+    public int GetLateCount(int maNV, int month, int year)
+    {
+        string query = @"
+        SELECT COUNT(*) 
+            FROM chamcong cc
+            JOIN nhanvien nv ON cc.MaNV = nv.MaNV
+            JOIN calam ca ON ca.MaCa = (
+                SELECT nvc.MaCa
+                FROM nhanvien_calam nvc
+                JOIN calam c2 ON c2.MaCa = nvc.MaCa
+                WHERE nvc.MaNV = nv.MaNV
+                AND c2.GioKetThuc >= cc.GioVao       -- bỏ ca đã qua
+                ORDER BY
+                    (cc.GioVao BETWEEN c2.GioBatDau AND c2.GioKetThuc) DESC,
+                    CASE WHEN c2.GioBatDau >= cc.GioVao THEN 0 ELSE 1 END,
+                    ABS(TIME_TO_SEC(TIMEDIFF(c2.GioBatDau, cc.GioVao))) ASC
+                LIMIT 1
+            )
+            WHERE cc.MaNV = @maNV
+            AND cc.GioVao IS NOT NULL
+            AND cc.GioVao > ca.GioBatDau             -- đi trễ
+            AND MONTH(cc.Ngay) = @month
+            AND YEAR(cc.Ngay) = @year;
+    ";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "@maNV", maNV },
+            { "@month", month },
+            { "@year", year }
+        };
+
+        object result = Database.ExecuteScalar(query, parameters);
+
+        return Convert.ToInt32(result ?? 0);
+    }
+
+    public double GetOTHours(int maNV, int month, int year)
+    {
+        string query = @"
+        SELECT COALESCE(
+            SUM(
+                CASE 
+                    WHEN ca.MaCa IS NOT NULL 
+                        AND cc.GioRa > ca.GioKetThuc
+                    THEN TIME_TO_SEC(TIMEDIFF(cc.GioRa, ca.GioKetThuc))
+                    WHEN ca.MaCa IS NULL
+                    THEN TIME_TO_SEC(TIMEDIFF(cc.GioRa, cc.GioVao))
+                    ELSE 0
+                END
+            ) / 3600
+        , 0)
+        FROM chamcong cc
+        LEFT JOIN calam ca ON ca.MaCa = (
+            SELECT nvc.MaCa
+            FROM nhanvien_calam nvc
+            JOIN calam c2 ON c2.MaCa = nvc.MaCa
+            WHERE nvc.MaNV = cc.MaNV
+              AND c2.GioKetThuc >= cc.GioVao
+            ORDER BY
+                (cc.GioVao BETWEEN c2.GioBatDau AND c2.GioKetThuc) DESC,
+                CASE WHEN c2.GioBatDau >= cc.GioVao THEN 0 ELSE 1 END,
+                ABS(TIME_TO_SEC(TIMEDIFF(c2.GioBatDau, cc.GioVao))) ASC
+            LIMIT 1
+        )
+        WHERE cc.MaNV = @maNV
+          AND cc.GioVao IS NOT NULL
+          AND cc.GioRa IS NOT NULL
+          AND MONTH(cc.Ngay) = @month
+          AND YEAR(cc.Ngay) = @year;
+    ";
+
+        var parameters = new Dictionary<string, object>
+    {
+        { "@maNV", maNV },
+        { "@month", month },
+        { "@year", year }
+    };
+
+
+        object result = Database.ExecuteScalar(query, parameters);
+        
+        return Convert.ToDouble(result ?? 0);
     }
 }

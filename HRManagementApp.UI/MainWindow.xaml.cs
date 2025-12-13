@@ -99,22 +99,14 @@ namespace HRManagementApp.UI
         {
             SetActiveButton(clickedButton);
 
-            // Update the header text and description
             var headerTextBlock = FindName("HeaderText") as TextBlock;
             var descTextBlock = FindName("DescriptionText") as TextBlock;
 
-            // Since we don't have named elements in the current XAML, we'll show a message box for now
-            // In a real application, you would have a ContentFrame or similar to load different user controls
-            // MessageBox.Show($"Navigating to {section} section.\n\nIn a complete application, this would load the {section} module with its specific functionality.",
-            //               "Navigation", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            // Here you would typically load different UserControls or Pages based on the section
             LoadSectionContent(section);
         }
 
         private void SetActiveButton(Button activeButton)
         {
-            // Reset previous active button
             if (currentActiveButton != null)
             {
                 currentActiveButton.Background = Brushes.Transparent;
@@ -130,9 +122,6 @@ namespace HRManagementApp.UI
 
         private void LoadSectionContent(string section)
         {
-            // This method would contain the logic to load different sections
-            // For now, we'll just update some sample data based on the section
-
             switch (section.ToLower())
             {
                 case "dashboard": ContentArea.Content = new Views.DashboardView(); break;
@@ -151,53 +140,6 @@ namespace HRManagementApp.UI
                 case "mypayslip": ContentArea.Content = new Views.MyPayslipView(); break;
             }
         }
-
-        private void LoadEditPayrollSection()
-        {
-            ContentArea.Content = new Views.EditPayroll();
-        }
-        
-        
-        private void LoadDoashboardSection()
-        {
-            ContentArea.Content = new Views.DashboardView();
-        }
-        private void LoadEmployeeSection()
-        {
-            ContentArea.Content = new Views.EmployeesManagementView();
-        }
-
-        private void LoadAttendanceSection()
-        {
-            ContentArea.Content = new Views.AttendanceTagView();
-        }
-
-        private void LoadPayrollSection()
-        {
-            ContentArea.Content = new Views.PayrollTag();
-            // Salary calculations, pay slips, tax deductions, etc.
-        }
-
-        private void LoadLeaveSection()
-        {
-            // Khởi tạo và hiển thị View quản lý đơn từ
-            ContentArea.Content = new LeaveManagementView(); 
-        }
-
-        private void LoadReportsSection()
-        {
-            ContentArea.Content = new ReportView(); 
-        }
-
-        private void LoadSettingsSection()
-        {
-             ContentArea.Content = new ForEmployeeManagementView();
-        }
-        private void LoadAccountsSection()
-        {
-            ContentArea.Content = new Views.AccountManagementView();
-
-        }   
 
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -221,5 +163,3 @@ namespace HRManagementApp.UI
         }
     }
 }
-
-        // Sample data models that would be used in a real application

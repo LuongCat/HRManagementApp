@@ -21,11 +21,8 @@ namespace HRManagementApp.UI.Views
         {
             InitializeComponent();
             _targetEmployee = employee;
-            
             _phuCapService = new PhuCapService();
             _luongService = new LuongService();
-            _logService = new SystemLogService(); // 2. Khởi tạo Service Log
-
             // Hiển thị info
             TxtEmployeeName.Text = $"{_targetEmployee.HoTen} (Mã: {_targetEmployee.MaNV})";
 
@@ -56,7 +53,7 @@ namespace HRManagementApp.UI.Views
             if (DgAllowances.SelectedItem is PhuCapNhanVien selected)
             {
                 TxtTenPhuCap.Text = selected.TenPhuCap;
-                TxtSoTien.Text = selected.SoTien.ToString("N0");
+                TxtSoTien.Text = selected.SoTien.ToString("N0"); // Format số nguyên có dấu phẩy
                 DpTuNgay.SelectedDate = selected.ApDungTuNgay;
                 DpDenNgay.SelectedDate = selected.ApDungDenNgay;
 
@@ -84,12 +81,22 @@ namespace HRManagementApp.UI.Views
         // CRUD ACTIONS (CÓ GHI LOG)
         // ==========================
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             if (!ValidateInput()) return;
 
             var newItem = new PhuCapNhanVien
             {
+                // ID = ... (DB tự sinh),
                 MaNV = _targetEmployee.MaNV,
                 TenPhuCap = TxtTenPhuCap.Text.Trim(),
                 SoTien = decimal.Parse(TxtSoTien.Text),
@@ -97,7 +104,7 @@ namespace HRManagementApp.UI.Views
                 ApDungDenNgay = DpDenNgay.SelectedDate
             };
 
-            // Service Call
+            // TODO: Service Call ->
             _phuCapService.AddPhuCap(newItem);
             _targetEmployee.PhuCaps.Add(newItem); // Update UI
 
@@ -116,6 +123,7 @@ namespace HRManagementApp.UI.Views
     
             // Mở chốt lương...
             bool isUnlocked = _luongService.UnLockSalary(_targetEmployee.MaNV, newItem.ApDungTuNgay);
+
             if (isUnlocked)
                 MessageBox.Show($"Thêm thành công! Đã mở chốt lương tháng {newItem.ApDungTuNgay:MM/yyyy}.", "Thông báo");
             else
@@ -188,6 +196,8 @@ namespace HRManagementApp.UI.Views
 
                 // Service Call
                 _phuCapService.DeletePhuCap(selected.ID);
+
+                // Giả lập
                 _targetEmployee.PhuCaps.Remove(selected);
 
                 // --- GHI LOG DELETE (CẬP NHẬT MÔ TẢ) ---
@@ -241,6 +251,44 @@ namespace HRManagementApp.UI.Views
             }
 
             return true;
+        }
+
+        private void BtnOpenRewardEvaluation_Click(object sender, RoutedEventArgs e)
+        {
+            ReportPanel.Visibility = Visibility.Visible;
+            DgAllowances.IsEnabled = false;
+        }
+
+        private void BtnCloseReport_Click(object sender, RoutedEventArgs e)
+        {
+            ReportPanel.Visibility = Visibility.Collapsed;
+            DgAllowances.IsEnabled = true;
+        }
+
+        private void LoadRewardEvaluation(int month, int year)
+        {
+            List<RewardEvaluation> report = _phuCapService.GetRewardEvaluation(_targetEmployee.MaNV, month, year);
+
+            TxtRewardEvaluation.Text = $"Đánh giá khen thưởng tháng ";
+
+            DgRewardEvaluation.ItemsSource = report ?? new List<RewardEvaluation>();
+
+            int summaryRewardPoint = report?.Sum(x => x.Diem) ?? 0;
+            
+            int rewardPercentRecommend = 0;
+
+            if (summaryRewardPoint >= 350) { rewardPercentRecommend = 10; }
+            else if (summaryRewardPoint >= 300) { rewardPercentRecommend = 8; }
+            else if (summaryRewardPoint >= 260) { rewardPercentRecommend = 5; }
+            else if (summaryRewardPoint >= 230) { rewardPercentRecommend = 2; }
+
+            double mainSalary = Math.Round((double)(new PayrollResultService().GetPayrollResultForEmployee(_targetEmployee, month, year).luongchinh ?? 0m), 2);
+            double rewardSalaryRecommend = mainSalary * rewardPercentRecommend / 100;
+
+            TxtTongDiem.Text = $"Tổng điểm: {summaryRewardPoint}";
+            TxtLuongChinh.Text = $"Lương chính (VND): {mainSalary}";
+            TxtThuongPhanTram.Text = $"Đề xuất thưởng (%): {rewardPercentRecommend}";
+            TxtTienThuong.Text = $"Đề xuất thưởng (VND): {rewardSalaryRecommend}";
         }
     }
 }

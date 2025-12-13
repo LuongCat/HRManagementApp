@@ -2,6 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="clr-namespace:HRManagementApp.Converters"
+        xmlns:converters1="clr-namespace:HRManagementApp.Converters;assembly=HRManagementApp.Models"
+        xmlns:constants1="clr-namespace:HRManagementApp.Constants;assembly=HRManagementApp.Models"
+
         Title="Danh sách nhân viên phòng ban" 
         Height="700" Width="1100"
         WindowStartupLocation="CenterScreen"
@@ -9,10 +12,12 @@
         AllowsTransparency="True"
         WindowStyle="None"
         ResizeMode="NoResize">
-
+    
     <Window.Resources>
         <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
         <converters:StatusToBackgroundConverter x:Key="StatusToBackgroundConverter"/>
+        <converters1:PermissionToBooleanConverter x:Key="PermToBool"/>
+
     </Window.Resources>
 
     <Border Background="#F5F7FA" CornerRadius="16" Margin="10">
@@ -289,7 +294,9 @@
                             Background="#2563EB" Foreground="White"
                             BorderThickness="0" Padding="20,12" FontSize="14" FontWeight="SemiBold"
                             Cursor="Hand" Margin="0,0,10,0"
-                            Click="BtnExport_Click">
+                            Click="BtnExport_Click"
+                            IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants1:AppPermissions.PHONGBAN_EXCEL}}">
+
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
@@ -305,6 +312,10 @@
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Background" Value="#1D4ED8"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.4"/>
+                                        <Setter Property="Cursor" Value="Arrow"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>

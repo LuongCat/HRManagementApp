@@ -3,9 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:HRManagementApp.Converters;assembly=HRManagementApp.Models"
+             xmlns:constants="clr-namespace:HRManagementApp.Constants;assembly=HRManagementApp.Models"
              mc:Ignorable="d"
              Background="#F3F4F6">
-
+    <UserControl.Resources>
+        <converters:PermissionToBooleanConverter x:Key="PermToBool"/>
+    </UserControl.Resources>
     <Grid Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" /> <RowDefinition Height="Auto" /> <RowDefinition Height="*" />
@@ -44,7 +48,8 @@
                              FontSize="14" />
                     <Button Content="Xem" Click="LoadData_Click" Margin="10,0,0,0" Background="#3B82F6"
                             Foreground="White" BorderThickness="0" Padding="15,0" Height="32" Cursor="Hand"
-                            FontWeight="SemiBold">
+                            FontWeight="SemiBold"
+                            IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_XEM}}">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="4" />
@@ -88,10 +93,18 @@
 
                 <Button Grid.Column="4" Content="⬇ Xuất Excel" Background="#1F2937" Foreground="White"
                         BorderThickness="0" Padding="15,0" Height="35" Cursor="Hand" FontWeight="SemiBold"
-                        Click="ExportExcel_Click">
+                        Click="ExportExcel_Click"
+                        IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_EXCEL}}">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="6" />
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.5"/>
+                                    <Setter Property="Background" Value="#9CA3AF"/>
+                                    <Setter Property="Cursor" Value="No"/>
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </Button.Resources>
                 </Button>
@@ -281,18 +294,39 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Click="ViewDetail_Click" ToolTip="Xem chi tiết"
+                                            IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_XEM}}"
                                             Background="Transparent" BorderThickness="0" Cursor="Hand" Margin="0,0,5,0">
                                         <TextBlock Text="📄" FontSize="16" Foreground="#6B7280" />
                                     </Button>
 
                                     <Button Click="ConfirmSalary_Click" ToolTip="Chốt lương"
-                                            Background="Transparent" BorderThickness="0" Cursor="Hand" Margin="0,0,5,0">
+                                            Background="Transparent" BorderThickness="0" Cursor="Hand" Margin="0,0,5,0"
+                                            IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_CHOT}}">
                                         <TextBlock Text="🔒" FontSize="16" Foreground="#DC2626" />
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Opacity" Value="0.3"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
                                     </Button>
 
                                     <Button Click="ChangeStatusSalary_Click" ToolTip="Thanh toán"
-                                            Background="Transparent" BorderThickness="0" Cursor="Hand">
+                                            Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                            IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_THANHTOAN}}">
                                         <TextBlock Text="💸" FontSize="16" Foreground="#059669" />
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Opacity" Value="0.3"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>

@@ -16,7 +16,7 @@ namespace HRManagementApp.DAL
                     nv.HoTen, nv.DienThoai, nv.SoCCCD, nv.NgaySinh, nv.GioiTinh, nv.MaPB,
                     pb.TenPB
                 FROM taikhoan tk
-                LEFT JOIN nhanvien nv ON tk.MaNV = nv.MaNV
+                JOIN nhanvien nv ON tk.MaNV = nv.MaNV
                 LEFT JOIN phongban pb ON nv.MaPB = pb.MaPB
                 WHERE tk.TenDangNhap = @User 
                   AND tk.MatKhau = @Pass 

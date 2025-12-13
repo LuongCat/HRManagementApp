@@ -2,12 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:HRManagementApp.Converters"
+             xmlns:converters1="clr-namespace:HRManagementApp.Converters;assembly=HRManagementApp.Models"
+             xmlns:constants="clr-namespace:HRManagementApp.Constants;assembly=HRManagementApp.Models"
              Background="#F5F7FA">
 
     <UserControl.Resources>
         <converters:LeaveStatusBackgroundConverter x:Key="BgConverter"/>
         <converters:LeaveStatusForegroundConverter x:Key="FgConverter"/>
-        
+        <converters1:PermissionToBooleanConverter x:Key="PermToBool"/>
         <Style x:Key="TabButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#6B7280"/>
@@ -139,7 +141,8 @@
                             Content="+ Tạo đơn mới" HorizontalAlignment="Right"
                             Background="#111827" Foreground="White" FontWeight="SemiBold"
                             Padding="15,8" BorderThickness="0" Cursor="Hand"
-                            Click="BtnCreate_Click">
+                            Click="BtnCreate_Click"
+                            IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.DONTU_TAO}}">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="6"/>
@@ -216,12 +219,14 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <Button Width="28" Height="28" Margin="0,0,8,0" Background="White" BorderBrush="#10B981" BorderThickness="1"
-                                                Cursor="Hand" ToolTip="Duyệt" Tag="{Binding MaDon}" Click="BtnApprove_Click">
+                                                Cursor="Hand" ToolTip="Duyệt" Tag="{Binding MaDon}" Click="BtnApprove_Click"
+                                                IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.DONTU_DUYETDON}}">
                                             <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="14"/></Style></Button.Resources>
                                             <TextBlock Text="✓" Foreground="#10B981" FontWeight="Bold"/>
                                         </Button>
                                         <Button Width="28" Height="28" Background="White" BorderBrush="#EF4444" BorderThickness="1"
-                                                Cursor="Hand" ToolTip="Từ chối" Tag="{Binding MaDon}" Click="BtnReject_Click">
+                                                Cursor="Hand" ToolTip="Từ chối" Tag="{Binding MaDon}" Click="BtnReject_Click"
+                                                IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.DONTU_DUYETDON}}">
                                             <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="14"/></Style></Button.Resources>
                                             <TextBlock Text="✕" Foreground="#EF4444" FontSize="10" FontWeight="Bold"/>
                                         </Button>
@@ -286,7 +291,8 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <Button Width="80" Height="30" Margin="0,0,8,0" Background="White" BorderBrush="#10B981" BorderThickness="1"
-                                                Cursor="Hand" Tag="{Binding MaDon}" Click="BtnApprove_Click">
+                                                Cursor="Hand" Tag="{Binding MaDon}" Click="BtnApprove_Click"
+                                                IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.DONTU_DUYETDON}}">
                                             <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="15"/></Style></Button.Resources>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="✓" Foreground="#10B981" FontWeight="Bold" Margin="0,0,5,0"/>
@@ -295,7 +301,8 @@
                                         </Button>
                                         
                                         <Button Width="80" Height="30" Background="White" BorderBrush="#EF4444" BorderThickness="1"
-                                                Cursor="Hand" Tag="{Binding MaDon}" Click="BtnReject_Click">
+                                                Cursor="Hand" Tag="{Binding MaDon}" Click="BtnReject_Click"
+                                                IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.DONTU_DUYETDON}}">
                                             <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="15"/></Style></Button.Resources>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="✕" Foreground="#EF4444" FontWeight="Bold" Margin="0,0,5,0"/>
@@ -350,11 +357,13 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="Sửa" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" 
                                         Padding="10,4" Margin="0,0,5,0" Cursor="Hand"
-                                        Tag="{Binding}" Click="BtnEditType_Click"/>
+                                        Tag="{Binding}" Click="BtnEditType_Click"
+                                        IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.DONTU_SUALOAIDON}}"/>
 
                                         <Button Content="Xóa" Background="White" BorderBrush="#FEE2E2" BorderThickness="1" 
                                         Foreground="Red" Padding="10,4" Cursor="Hand"
-                                        Tag="{Binding MaLoaiDon}" Click="BtnDeleteType_Click"/>
+                                        Tag="{Binding MaLoaiDon}" Click="BtnDeleteType_Click"
+                                        IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.DONTU_XOALOAIDON}}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

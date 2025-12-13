@@ -44,20 +44,20 @@ namespace HRManagementApp.UI
             // Hoặc kiểm tra chi tiết từng quyền trong UserSession.QuyenHan
             bool isAdmin = UserSession.VaiTro == "Admin";
             
-            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QL_NHAN_VIEN))
+            if (isAdmin || UserSession.HasPermission(AppPermissions.NHANVIEN_XEM))
             { EmployeesBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_XEM_BAO_CAO)) 
+            if (isAdmin || UserSession.HasPermission(AppPermissions.BAOCAO_XEM)) 
             { ReportsBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QL_CHAM_CONG)) 
+            if (isAdmin || UserSession.HasPermission(AppPermissions.CHAMCONG_XEM)) 
             { AttendanceBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_DUYET_DON)) 
+            if (isAdmin || UserSession.HasPermission(AppPermissions.DONTU_XEM)) 
             { LeaveBtn.Visibility = Visibility.Visible; }
-            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QT_HE_THONG))
+            if (isAdmin || UserSession.HasPermission(AppPermissions.HETHONG_XEM))
             {
                 RoleBtn.Visibility = Visibility.Visible;
                 AccountBtn.Visibility = Visibility.Visible;
             }
-            if (isAdmin || UserSession.HasPermission(AppPermissions.PERM_QL_LUONG))
+            if (isAdmin || UserSession.HasPermission(AppPermissions.LUONG_XEM))
             {   
                 PayrollBtn.Visibility = Visibility.Visible;
                 EditPayrollBtn.Visibility = Visibility.Visible; 

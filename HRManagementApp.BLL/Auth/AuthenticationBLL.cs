@@ -27,6 +27,7 @@ namespace HRManagementApp.BLL
             }
 
             string haspassword = HashPassword(password);
+            //string haspassword = password;
             bool isSuccess = dal.Login(username, haspassword);
 
             if (!isSuccess)

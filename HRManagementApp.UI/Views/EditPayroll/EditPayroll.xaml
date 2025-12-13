@@ -1,8 +1,12 @@
 <UserControl x:Class="HRManagementApp.UI.Views.EditPayroll"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:HRManagementApp.Converters;assembly=HRManagementApp.Models"
+             xmlns:constants="clr-namespace:HRManagementApp.Constants;assembly=HRManagementApp.Models"
              Background="#F9FAFB">
-
+    <UserControl.Resources>
+        <converters:PermissionToBooleanConverter x:Key="PermToBool"/>
+    </UserControl.Resources>
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -178,7 +182,8 @@
                                         Padding="12,5"
                                         BorderThickness="0"
                                         Cursor="Hand"
-                                        HorizontalAlignment="Left">
+                                        HorizontalAlignment="Left"
+                                        IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_SUAVAITRO}}">
                                     <Button.Style>
                                         <Style TargetType="Button">
                                             <Setter Property="Template">
@@ -189,10 +194,16 @@
                                                         </Border>
                                                     </ControlTemplate>
                                                 </Setter.Value>
+                                                
+                                                
                                             </Setter>
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter Property="Background" Value="#DDD6FE"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.5"/>
+                                                    <Setter Property="Background" Value="#E5E7EB"/> <Setter Property="Foreground" Value="#9CA3AF"/>
                                                 </Trigger>
                                             </Style.Triggers>
                                         </Style>
@@ -214,7 +225,8 @@
                                         Padding="12,5"
                                         BorderThickness="0"
                                         Cursor="Hand"
-                                        HorizontalAlignment="Left">
+                                        HorizontalAlignment="Left"
+                                        IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_SUAPHUCAP}}">
                                     <Button.Style>
                                         <Style TargetType="Button">
                                             <Setter Property="Template">
@@ -230,6 +242,10 @@
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter Property="Background" Value="#A7F3D0"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.5"/>
+                                                    <Setter Property="Background" Value="#E5E7EB"/> <Setter Property="Foreground" Value="#9CA3AF"/>
                                                 </Trigger>
                                             </Style.Triggers>
                                         </Style>
@@ -251,7 +267,8 @@
                                         Padding="12,5"
                                         BorderThickness="0"
                                         Cursor="Hand"
-                                        HorizontalAlignment="Left">
+                                        HorizontalAlignment="Left"
+                                        IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_SUAKHAUTRU}}">
                                     <Button.Style>
                                         <Style TargetType="Button">
                                             <Setter Property="Template">
@@ -267,6 +284,10 @@
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter Property="Background" Value="#FECACA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.5"/>
+                                                    <Setter Property="Background" Value="#E5E7EB"/> <Setter Property="Foreground" Value="#9CA3AF"/>
                                                 </Trigger>
                                             </Style.Triggers>
                                         </Style>
@@ -288,7 +309,8 @@
                                         Padding="12,5"
                                         BorderThickness="0"
                                         Cursor="Hand"
-                                        HorizontalAlignment="Left">
+                                        HorizontalAlignment="Left"
+                                        IsEnabled="{Binding Converter={StaticResource PermToBool}, ConverterParameter={x:Static constants:AppPermissions.LUONG_SUATHUE}}">
                                     <Button.Style>
                                         <Style TargetType="Button">
                                             <Setter Property="Template">
@@ -304,6 +326,10 @@
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter Property="Background" Value="#FDE68A"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.5"/>
+                                                    <Setter Property="Background" Value="#E5E7EB"/> <Setter Property="Foreground" Value="#9CA3AF"/>
                                                 </Trigger>
                                             </Style.Triggers>
                                         </Style>
@@ -343,6 +369,7 @@
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter Property="Background" Value="#BFDBFE"/>
                                                 </Trigger>
+                                                
                                             </Style.Triggers>
                                         </Style>
                                     </Button.Style>

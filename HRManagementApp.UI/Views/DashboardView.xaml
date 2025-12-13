@@ -204,9 +204,9 @@
 
                         <ComboBox x:Name="cboFilterTable" Style="{StaticResource FilterComboBoxStyle}" Width="110" SelectionChanged="Filter_Changed" SelectedIndex="0">
                             <ComboBoxItem Content="Table: All"/>
-                            <ComboBoxItem Content="NhanVien"/>
+                            <ComboBoxItem Content="VaiTroNhanVien"/>
                             <ComboBoxItem Content="ChamCong"/>
-                            <ComboBoxItem Content="TaiKhoan"/>
+                            
                         </ComboBox>
 
                         <Button Click="BtnRefresh_Click" Background="Transparent" BorderThickness="0" Cursor="Hand" ToolTip="Refresh Data">

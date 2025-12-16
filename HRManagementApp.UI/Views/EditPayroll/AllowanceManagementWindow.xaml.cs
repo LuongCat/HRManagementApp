@@ -30,6 +30,11 @@ namespace HRManagementApp.UI.Views
             DpTuNgay.SelectedDate = DateTime.Now;
 
             LoadData();
+            DateTime prev = DateTime.Now.AddMonths(-1);
+
+            int month = prev.Month;
+            int year = prev.Year;
+            LoadRewardEvaluation(month: month, year: year);
         }
 
         private void LoadData()
@@ -283,7 +288,7 @@ namespace HRManagementApp.UI.Views
             else if (summaryRewardPoint >= 230) { rewardPercentRecommend = 2; }
 
             double mainSalary = Math.Round((double)(new PayrollResultService().GetPayrollResultForEmployee(_targetEmployee, month, year).luongchinh ?? 0m), 2);
-            double rewardSalaryRecommend = mainSalary * rewardPercentRecommend / 100;
+            double rewardSalaryRecommend = Math.Round((mainSalary * rewardPercentRecommend / 100),2);
 
             TxtTongDiem.Text = $"Tổng điểm: {summaryRewardPoint}";
             TxtLuongChinh.Text = $"Lương chính (VND): {mainSalary}";

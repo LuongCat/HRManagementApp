@@ -1,3 +1,15 @@
+NHóm 2 thành viên: 
+Dương Văn Khánh 3123410161
+Cao Cát Lượng 3123410209
+Nguyễn Tuấn Khanh
+Đinh Văn Thanh Sơn 3123410307
+Từ Huy Bình 3123410033
+
+Tài khoản có trong App:
+a
+123456
+
+
 # HR Management App
 
 A human resource management application developed by **SCC Team** using **C# (.NET)**.  
